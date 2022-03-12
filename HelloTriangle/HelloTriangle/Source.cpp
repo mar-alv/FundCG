@@ -135,6 +135,8 @@ int main()
 		glDrawArrays(GL_POINTS, 0, 3);
 		glBindVertexArray(0);
 
+
+
 		// Troca os buffers da tela
 		glfwSwapBuffers(window);
 	}
