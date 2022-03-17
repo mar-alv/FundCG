@@ -10,5 +10,8 @@ Assim como HLSL, é uma linguagem de shader que trabalha com programas executado
 - Representação de uma forma geométrica
 
 # Exercício 3) Explique o que é VBO, VAO e EBO, e como se relacionam (se achar mais fácil, pode fazer um gráfico representando a relação entre eles). 
+- VBO: Buffer/Array, normalmente de float, que envia dados dos vértices diretamente na memória da GPU, permitindo que objs sejam renderizados mais rapdiamente pela place gráfica
+- VAO
+- EBO
 
 # Exercício 4) Analise o código fonte do projeto Hello Triangle. Localize e relacione os conceitos de shaders, VBOs e VAO apresentados até então. Não precisa entregar nada neste exercício. 
