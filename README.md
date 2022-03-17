@@ -1,6 +1,6 @@
 # FCG2022-1
 
-- Exercício 1) O que é a GLSL? Quais os dois tipos de shaders são obrigatórios no pipeline programável
+# Exercício 1) O que é a GLSL? Quais os dois tipos de shaders são obrigatórios no pipeline programável
 da versão atual que trabalhamos em aula e o que eles processam?
 Assim como HLSL, é uma linguagem de shader que trabalha com programas executados na GPU. Tem como shaders obrigatórios:
 - Vertex Shader, que posiciona os vértices nas coordenadas finais antes do OpenGL rasterizar a geomentri para 2D
