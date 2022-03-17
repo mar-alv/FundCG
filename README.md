@@ -7,6 +7,7 @@ Assim como HLSL, é uma linguagem de shader que trabalha com programas executado
 - Fragment Shader, rodam para cada fragmento entre os vértices
 
 # Exercício 2) O que são primitivas gráficas? Como fazemos o armazenamento dos vértices na OpenGL?
+- Representação de uma forma geométrica
 
 # Exercício 3) Explique o que é VBO, VAO e EBO, e como se relacionam (se achar mais fácil, pode fazer um gráfico representando a relação entre eles). 
 
