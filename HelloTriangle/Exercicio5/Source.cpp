@@ -106,7 +106,7 @@ int main()
 		glDrawArrays(GL_LINE_LOOP, 0, 6);
 		
 		// Letra C - Pontos
-		glUniform4f(colorLoc, 0.0f, 1.0f, 0.0f, 1.0f);
+		glUniform4f(colorLoc, 1.0f, 1.0f, 0.0f, 1.0f);
 		glDrawArrays(GL_POINTS, 0, 6);
 
 		glBindVertexArray(0);
