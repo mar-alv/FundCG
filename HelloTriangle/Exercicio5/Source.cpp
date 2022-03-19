@@ -96,17 +96,17 @@ int main()
 
 		// Comente todos menos o exercício que deseja ver, não deixe comentáraios para ver a letra D
 
-		// Letra A
+		// Letra A - Triângulo prenchido
 		glUniform4f(colorLoc, 0.0f, 0.0f, 0.0f, 1.0f);
 		glBindVertexArray(VAO);
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 
-		// Letra B
+		// Letra B - Contorno
 		glUniform4f(colorLoc, 1.0f, 1.0f, 0.0f, 1.0f);
 		glDrawArrays(GL_LINE_LOOP, 0, 6);
 		
-		// Letra C
-		glUniform4f(colorLoc, 1.0f, 1.0f, 0.0f, 1.0f);
+		// Letra C - Pontos
+		glUniform4f(colorLoc, 0.0f, 1.0f, 0.0f, 1.0f);
 		glDrawArrays(GL_POINTS, 0, 6);
 
 		glBindVertexArray(0);
