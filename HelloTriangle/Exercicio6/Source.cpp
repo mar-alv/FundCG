@@ -42,10 +42,11 @@ int main()
 
 	Shader shader("../shaders/hello.vs", "../shaders/hello.fs");
 
-	// Exercício 6.0: 0.5,100
-	// Exercício 6.a: 0.5,8
-	// Exercício 6.b: 0.5,5
-	GLuint VAO = createCircle(0.5, 5);
+	// Exercício 6   -   Círculo: 0.5,100
+	// Exercício 6.a -  Octágono: 0.5,8
+	// Exercício 6.b - Pentágono: 0.5,5
+	// Exercício 6.c -   Pac-Man: 0.5,20
+	GLuint VAO = createCircle(0.5, 20);
 
 	GLint colorLoc = glGetUniformLocation(shader.ID, "inputColor");
 	assert(colorLoc > -1);
@@ -62,13 +63,14 @@ int main()
 		glLineWidth(10);
 		glPointSize(20);
 
-		glUniform4f(colorLoc, 0.0f, 0.0f, 0.0f, 1.0f);
+		glUniform4f(colorLoc, 1.0f, 1.0f, 0.0f, 1.0f);
 		glBindVertexArray(VAO);
 
 		// Exercício 6   -   Círculo: 0.5,102
 		// Exercício 6.a -  Octágono: 0.5,10
 		// Exercício 6.b - Pentágono: 0.5,7
-		glDrawArrays(GL_TRIANGLE_FAN, 0, 7);
+		// Exercício 6.c -   Pac-Man: 0.5,20
+		glDrawArrays(GL_TRIANGLE_FAN, 0, 20);
 
 		glBindVertexArray(0);
 
