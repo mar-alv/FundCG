@@ -98,20 +98,9 @@ int main()
 		glLineWidth(10);
 		glPointSize(20);
 
-		// Comente todos menos o exercício que deseja ver, não deixe comentáraios para ver a letra D
-
-		// Letra A - Triângulo prenchido
 		glUniform4f(colorLoc, 1.0f, 0.0f, 0.0f, 1.0f);
 		glBindVertexArray(VAO);
-		glDrawArrays(GL_TRIANGLE_FAN, 0, 100);
-
-		// Letra B - Contorno
-		//glUniform4f(colorLoc, 1.0f, 1.0f, 0.0f, 1.0f);
-		//glDrawArrays(GL_LINE_LOOP, 0, 6);
-		//
-		//// Letra C - Pontos
-		//glUniform4f(colorLoc, 0.0f, 1.0f, 0.0f, 1.0f);
-		//glDrawArrays(GL_POINTS, 0, 6);
+		glDrawArrays(GL_TRIANGLE_FAN, 0, 102);
 
 		glBindVertexArray(0);
 
@@ -195,7 +184,7 @@ int createCircle(float radius, int nPoints)
 {
 	float* vertices;
 
-	const int totalSize = (nPoints + 1) * 3;
+	const int totalSize = (nPoints + 2) * 3;
 
 	vertices = new float[totalSize];
 
@@ -213,7 +202,7 @@ int createCircle(float radius, int nPoints)
 
 	const float z = 0.0;
 
-	while (angle < maxAngle)
+	while (i < totalSize)
 	{
 		float x = radius * cos(angle);
 		float y = radius * sin(angle);
@@ -234,7 +223,7 @@ int createCircle(float radius, int nPoints)
 	//Faz a conexão (vincula) do buffer como um buffer de array
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	//Envia os dados do array de floats para o buffer da OpenGl
-	glBufferData(GL_ARRAY_BUFFER, totalSize * sizeof(float), vertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, totalSize * sizeof(GLfloat), vertices, GL_STATIC_DRAW);
 
 	//Geração do identificador do VAO (Vertex Array Object)
 	glGenVertexArrays(1, &VAO);
