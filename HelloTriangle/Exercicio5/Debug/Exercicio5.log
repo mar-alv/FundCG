@@ -1,3 +1,0 @@
-﻿  Source.cpp
-C:\Users\Marcelo\Desktop\Unisinos\2022 01\Fundamentos de Computação Gráfica\Repositório\FundCG\HelloTriangle\Exercicio5\Source.cpp(152,2): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
-  Exercicio5.vcxproj -> C:\Users\Marcelo\Desktop\Unisinos\2022 01\Fundamentos de Computação Gráfica\Repositório\FundCG\HelloTriangle\Debug\Exercicio5.exe

@@ -1,6 +1,0 @@
-﻿  Source.cpp
-C:\Users\Marcelo\Desktop\Unisinos\2022 01\Fundamentos de Computação Gráfica\Repositório\FundCG\HelloTriangle\HelloTriangle\Source.cpp(128,1): error C2059: syntax error: 'constant'
-C:\Users\Marcelo\Desktop\Unisinos\2022 01\Fundamentos de Computação Gráfica\Repositório\FundCG\HelloTriangle\HelloTriangle\Source.cpp(128,3): error C2059: syntax error: 'constant'
-C:\Users\Marcelo\Desktop\Unisinos\2022 01\Fundamentos de Computação Gráfica\Repositório\FundCG\HelloTriangle\HelloTriangle\Source.cpp(128,6): error C2059: syntax error: 'constant'
-C:\Users\Marcelo\Desktop\Unisinos\2022 01\Fundamentos de Computação Gráfica\Repositório\FundCG\HelloTriangle\HelloTriangle\Source.cpp(135,1): error C2143: syntax error: missing ';' before '{'
-C:\Users\Marcelo\Desktop\Unisinos\2022 01\Fundamentos de Computação Gráfica\Repositório\FundCG\HelloTriangle\HelloTriangle\Source.cpp(135,1): error C2447: '{': missing function header (old-style formal list?)
