@@ -1,0 +1,7 @@
+﻿  glad.c
+  Shader.cpp
+  Source.cpp
+C:\Users\Marcelo\Desktop\Unisinos\2022 01\Fundamentos de Computação Gráfica\Repositório\FundCG\Lista1\HelloTriangle\Exercicio5\Source.cpp(152,2): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
+  Generating Code...
+LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
+  Exercicio5.vcxproj -> C:\Users\Marcelo\Desktop\Unisinos\2022 01\Fundamentos de Computação Gráfica\Repositório\FundCG\Lista1\HelloTriangle\Debug\Exercicio5.exe
