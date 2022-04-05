@@ -89,25 +89,18 @@ int main()
 
 		glPointSize(20);
 
-		/*glm::mat4 model = glm::mat4(1);
-		model = glm::translate(model, glm::vec3(0.4, 0.0, 0.0));
-		model = glm::rotate(model, glm::radians(45.f), glm::vec3(0, 0, 1));
-		model = glm::scale(model, glm::vec3(2.0, 2.0, 1.0));
-		GLint modelLoc = glGetUniformLocation(shader.ID, "model");
-		glUniformMatrix4fv(modelLoc, 1, FALSE, glm::value_ptr(model));*/
-
 		glBindVertexArray(VAO);
 
 		glm::mat4 model = glm::mat4(1);
-		model = glm::translate(model, glm::vec3(0.4, 0.0, 0.0));
 		renderTransformedTriangle(0, 0, colorLoc); // Bottom Left
+		model = glm::translate(model, glm::vec3(0.4, 0.0, 0.0));
 		model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(0, 0, 1));
-		renderTransformedTriangle(0, height / 2, colorLoc); // Top Left
 		model = glm::scale(model, glm::vec3(2.0, 2.0, 1.0));
-		renderTransformedTriangle(width / 2, height / 2, colorLoc); // Top Right
-
 		GLint modelLoc = glGetUniformLocation(shader.ID, "model");
 		glUniformMatrix4fv(modelLoc, 1, FALSE, glm::value_ptr(model));
+		renderTransformedTriangle(0, height / 2, colorLoc); // Top Left
+		renderTransformedTriangle(width / 2, height / 2, colorLoc); // Top Right
+
 
 		glBindVertexArray(0);
 
