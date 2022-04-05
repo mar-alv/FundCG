@@ -19,11 +19,19 @@ int setupGeometry();
 
 const GLuint WIDTH = 800, HEIGHT = 600;
 
+void renderTriangleAccordingToViewport(int x, int y)
+{
+	glViewport(x, y, WIDTH / 2, HEIGHT / 2);
+
+	glDrawArrays(GL_TRIANGLES, 0, 3);
+}
+
 int main()
 {
 	glfwInit();
 
 	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "HelloTriangle - Marcelo dos Santos Alvarez!", nullptr, nullptr);
+
 	glfwMakeContextCurrent(window);
 
 	glfwSetKeyCallback(window, key_callback);
@@ -35,6 +43,7 @@ int main()
 
 	const GLubyte* renderer = glGetString(GL_RENDERER);
 	const GLubyte* version = glGetString(GL_VERSION);
+
 	cout << "Renderer: " << renderer << endl;
 	cout << "OpenGL version supported " << version << endl;
 
@@ -43,6 +52,7 @@ int main()
 	GLuint VAO = setupGeometry();
 
 	GLint colorLoc = glGetUniformLocation(shader.ID, "inputColor");
+
 	assert(colorLoc > -1);
 
 	glUseProgram(shader.ID);
@@ -55,6 +65,7 @@ int main()
 	projection = glm::ortho(-1.0, 1.0, -1.0, 1.0, -1.0, 1.0);
 
 	GLint projLoc = glGetUniformLocation(shader.ID, "projection");
+
 	glUniformMatrix4fv(projLoc, 1, FALSE, glm::value_ptr(projection));
 
 	while (!glfwWindowShouldClose(window))
@@ -62,20 +73,27 @@ int main()
 		glfwPollEvents();
 
 		int width, height;
+
 		glfwGetFramebufferSize(window, &width, &height);
 
-		// Exercício 4: width / 2, height / 2, width / 2, height / 2
-		glViewport(width / 2, height / 2, width / 2, height / 2);
-
 		glClearColor(0.8, 0.8, 0.8, 1.0);
+
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		glLineWidth(10);
+
 		glPointSize(20);
 
 		glUniform4f(colorLoc, 0.0, 0.0, 0.0, 1.0);
+
 		glBindVertexArray(VAO);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+
+		// Exercício 5
+		renderTriangleAccordingToViewport(0, 0); // Bottom Left
+		renderTriangleAccordingToViewport(0, height / 2); // Top Left
+		renderTriangleAccordingToViewport(width / 2, 0); // Bottom Right
+		renderTriangleAccordingToViewport(width / 2, height / 2); // Top Right / Exercício 4
+
 		glBindVertexArray(0);
 
 		glfwSwapBuffers(window);
@@ -83,13 +101,18 @@ int main()
 	glDeleteVertexArrays(1, &VAO);
 
 	glfwTerminate();
+
 	return 0;
 }
+
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
 {
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+	{
+
 		glfwSetWindowShouldClose(window, GL_TRUE);
+	}
 }
 
 int setupGeometry()
@@ -108,12 +131,12 @@ int setupGeometry()
 
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-
 	glGenVertexArrays(1, &VAO);
 
 	glBindVertexArray(VAO);
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+
 	glEnableVertexAttribArray(0);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
