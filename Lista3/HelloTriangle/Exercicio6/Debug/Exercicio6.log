@@ -1,0 +1,5 @@
+﻿C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppBuild.targets(514,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (Exercicio6.vcxproj, Exercicios.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+  Source.cpp
+C:\Users\Marcelo\Desktop\Unisinos\2022 01\Fundamentos de Computação Gráfica\Repositório\FundCG\Lista3\HelloTriangle\Exercicio6\Source.cpp(14,25): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\Marcelo\Desktop\Unisinos\2022 01\Fundamentos de Computação Gráfica\Repositório\FundCG\Lista3\HelloTriangle\Exercicio6\Source.cpp(85,34): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+  Exercicio6.vcxproj -> C:\Users\Marcelo\Desktop\Unisinos\2022 01\Fundamentos de Computação Gráfica\Repositório\FundCG\Lista3\HelloTriangle\Debug\Exercicio1.exe
