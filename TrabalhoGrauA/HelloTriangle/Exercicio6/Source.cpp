@@ -84,7 +84,7 @@ void processInput(GLFWwindow* window) {
 }
 
 void renderCube() {
-	glDrawArrays(GL_TRIANGLES, 0, CUBES_PER_GRID * 6 * 4); // por no lugar do 4: CUBE_FACES_COUNT);
+	glDrawArrays(GL_TRIANGLES, 0, CUBES_PER_GRID * SIZE_PER_CUBE);
 }
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
@@ -166,7 +166,7 @@ int setupCube() {
 	float topTriangleLeftY = initialTopTriangleLeftY;
 	float topTriangleLeftZ = initialZ;
 
-	GLfloat vertices[(CUBES_PER_GRID * SIZE_PER_CUBE) * 4]; /* No lugar do 2 CUBE_FACES_COUNT */
+	GLfloat vertices[CUBES_PER_GRID * SIZE_PER_CUBE * CUBE_FACES_COUNT]; 
 
 	float xCount = 0.0;
 	int actualIndex = 0;
@@ -388,6 +388,125 @@ int setupCube() {
 			topTriangleTopY = 0.1;
 			topTriangleRightY = 0.0;
 			topTriangleLeftY = 0.1;
+		}
+	}
+
+	bottomTriangleLeftX = 0.1;
+	bottomTriangleLeftY = 0.1;
+	bottomTriangleLeftZ = 0.0;
+
+	bottomTriangleTopX = 0.0;
+	bottomTriangleTopY = 0.1;
+	bottomTriangleTopZ = 0.0;
+
+	bottomTriangleRightX = 0.1;
+	bottomTriangleRightY = 0.1;
+	bottomTriangleRightZ = 0.1;
+
+	topTriangleTopX = 0.0;
+	topTriangleTopY = 0.1;
+	topTriangleTopZ = 0.1;
+
+	topTriangleRightX = 0.1;
+	topTriangleRightY = 0.1;
+	topTriangleRightZ = 0.1;
+
+	topTriangleLeftX = 0.0;
+	topTriangleLeftY = 0.1;
+	topTriangleLeftZ = 0.0;
+
+	for (int actualCube = 1, cubePerRowCounter = 1; actualCube <= CUBES_PER_GRID * 2; actualCube++, cubePerRowCounter++, actualIndex += 36) {
+		vertices[actualIndex] = bottomTriangleLeftX;
+		vertices[actualIndex + 1] = bottomTriangleLeftY;
+		vertices[actualIndex + 2] = bottomTriangleLeftZ;
+
+		vertices[actualIndex + 3] = 1.1;
+		vertices[actualIndex + 4] = 1.1;
+		vertices[actualIndex + 5] = 1.1;
+
+		vertices[actualIndex + 6] = bottomTriangleTopX;
+		vertices[actualIndex + 7] = bottomTriangleTopY;
+		vertices[actualIndex + 8] = bottomTriangleTopZ;
+
+		vertices[actualIndex + 9] = 1.1;
+		vertices[actualIndex + 10] = 1.1;
+		vertices[actualIndex + 11] = 1.1;
+
+		vertices[actualIndex + 12] = bottomTriangleRightX;
+		vertices[actualIndex + 13] = bottomTriangleRightY;
+		vertices[actualIndex + 14] = bottomTriangleRightZ;
+
+		vertices[actualIndex + 15] = 1.1;
+		vertices[actualIndex + 16] = 1.1;
+		vertices[actualIndex + 17] = 1.1;
+
+		vertices[actualIndex + 18] = topTriangleTopX;
+		vertices[actualIndex + 19] = topTriangleTopY;
+		vertices[actualIndex + 20] = topTriangleTopZ;
+
+		vertices[actualIndex + 21] = 1.1;
+		vertices[actualIndex + 22] = 1.1;
+		vertices[actualIndex + 23] = 1.1;
+
+		vertices[actualIndex + 24] = topTriangleRightX;
+		vertices[actualIndex + 25] = topTriangleRightY;
+		vertices[actualIndex + 26] = topTriangleRightZ;
+
+		vertices[actualIndex + 27] = 1.1;
+		vertices[actualIndex + 28] = 1.1;
+		vertices[actualIndex + 29] = 1.1;
+
+		vertices[actualIndex + 30] = topTriangleLeftX;
+		vertices[actualIndex + 31] = topTriangleLeftY;
+		vertices[actualIndex + 32] = topTriangleLeftZ;
+
+		vertices[actualIndex + 33] = 1.1;
+		vertices[actualIndex + 34] = 1.1;
+		vertices[actualIndex + 35] = 1.1;
+
+		bottomTriangleLeftZ += 0.1;
+		bottomTriangleTopZ += 0.1;
+		bottomTriangleRightZ += 0.1;
+		topTriangleTopZ += 0.1;
+		topTriangleRightZ += 0.1;
+		topTriangleLeftZ += 0.1;
+
+		if (cubePerRowCounter == CUBES_PER_ROW)
+		{
+			bottomTriangleLeftX += 0.1;
+			bottomTriangleTopX += 0.1;
+			bottomTriangleRightX += 0.1;
+			topTriangleTopX += 0.1;
+			topTriangleRightX += 0.1;
+			topTriangleLeftX += 0.1;
+
+			bottomTriangleLeftZ = 0.0;
+			bottomTriangleTopZ = 0.0;
+			bottomTriangleRightZ = 0.1;
+			topTriangleTopZ = 0.1;
+			topTriangleRightZ = 0.1;
+			topTriangleLeftZ = 0.0;
+
+			cubePerRowCounter = 0;
+		}
+
+		if (actualCube == CUBES_PER_GRID)
+		{
+			zCount = -0.2;
+
+			bottomTriangleLeftX = 0.1;
+			bottomTriangleTopX = 0.0;
+			bottomTriangleRightX = 0.1;
+			topTriangleTopX = 0.0;
+			topTriangleRightX = 0.1;
+			topTriangleLeftX = 0.0;
+
+			bottomTriangleLeftY = zCount;
+			bottomTriangleTopY = zCount;
+			bottomTriangleRightY = zCount;
+			topTriangleTopY = zCount;
+			topTriangleRightY = zCount;
+			topTriangleLeftY = zCount;
 		}
 	}
 
