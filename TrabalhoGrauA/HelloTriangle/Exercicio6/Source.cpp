@@ -12,11 +12,11 @@
 
 using namespace std;
 
-const float PI = 3.14159;
-
-int setupGeometry3D();
-
+const int CUBES_PER_ROW = 3;
+const int SIZE_PER_CUBE = 36;
+const int CUBE_FACES_COUNT = 6;
 const GLuint WIDTH = 800, HEIGHT = 600;
+const int CUBES_PER_GRID = CUBES_PER_ROW * CUBES_PER_ROW;
 
 char viewID = 'W';
 
@@ -34,10 +34,10 @@ float pitch = 0.0;
 
 std::vector <glm::vec3> palette;
 
-enum colors 
-{ 
-	RED, 
-	GREEN, 
+
+enum colors {
+	RED,
+	GREEN,
 	BLUE,
 	WHITE
 };
@@ -52,40 +52,42 @@ enum keyDirections {
 	EXIT = 'ESC',
 };
 
-void initializePaletteVector()
-{
+void initializePaletteVector() {
 	palette[colors::RED] = glm::vec3(1.0, 0.0, 0.0);
 	palette[colors::BLUE] = glm::vec3(0.0, 0.0, 1.0);
 	palette[colors::GREEN] = glm::vec3(0.0, 1.0, 0.0);
 	palette[colors::WHITE] = glm::vec3(1.0, 1.0, 1.0);
 }
 
-void processInput(GLFWwindow* window)
-{
+void processInput(GLFWwindow* window) {
 	float cameraSpeed = 0.005f;
 
-	if (glfwGetKey(window, keyDirections::FRONT) == GLFW_PRESS)
+	if (glfwGetKey(window, keyDirections::FRONT) == GLFW_PRESS) {
 		cameraPos += cameraSpeed * cameraFront;
+	}
 
-	if (glfwGetKey(window, keyDirections::BACK) == GLFW_PRESS)
+	if (glfwGetKey(window, keyDirections::BACK) == GLFW_PRESS) {
 		cameraPos -= cameraSpeed * cameraFront;
+	}
 
-	if (glfwGetKey(window, keyDirections::LEFT) == GLFW_PRESS)
+	if (glfwGetKey(window, keyDirections::LEFT) == GLFW_PRESS) {
 		cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+	}
 
-	if (glfwGetKey(window, keyDirections::RIGHT) == GLFW_PRESS)
+	if (glfwGetKey(window, keyDirections::RIGHT) == GLFW_PRESS) {
 		cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+	}
 
-	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
 		glfwSetWindowShouldClose(window, GL_TRUE);
+	}
 }
 
-void renderTriangle() {
-	glDrawArrays(GL_TRIANGLES, 0, 18);
+void renderCube() {
+	glDrawArrays(GL_TRIANGLES, 0, CUBES_PER_GRID * 6 * 4); // por no lugar do 4: CUBE_FACES_COUNT);
 }
 
-void mouse_callback(GLFWwindow* window, double xpos, double ypos)
-{
+void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 	if (firstTimeMovingMouse)
 	{
 		lastX = xpos;
@@ -122,11 +124,302 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	cameraFront = glm::normalize(front);
 }
 
-int main()
-{
+
+int setupCube() {
+	float initialBottomTriangleLeftX = 0.0;
+	float initialBottomTriangleTopX = 0.0;
+	float initialBottomTriangleRightX = 0.1;
+	float initialTopTriangleTopX = 0.0;
+	float initialTopTriangleRightX = 0.1;
+	float initialTopTriangleLeftX = 0.1;
+
+	float initialBottomTriangleLeftY = 0.0;
+	float initialBottomTriangleTopY = 0.1;
+	float initialBottomTriangleRightY = 0.0;
+	float initialTopTriangleTopY = 0.1;
+	float initialTopTriangleRightY = 0.1;
+	float initialTopTriangleLeftY = 0.0;
+
+	float initialZ = 0.0;
+
+	float bottomTriangleLeftX = initialBottomTriangleLeftX;
+	float bottomTriangleLeftY = initialBottomTriangleLeftY;
+	float bottomTriangleLeftZ = initialZ;
+
+	float bottomTriangleTopX = initialBottomTriangleTopX;
+	float bottomTriangleTopY = initialBottomTriangleTopY;
+	float bottomTriangleTopZ = initialZ;
+
+	float bottomTriangleRightX = initialBottomTriangleRightX;
+	float bottomTriangleRightY = initialBottomTriangleRightY;
+	float bottomTriangleRightZ = initialZ;
+
+	float topTriangleTopX = initialTopTriangleTopX;
+	float topTriangleTopY = initialTopTriangleTopY;
+	float topTriangleTopZ = initialZ;
+
+	float topTriangleRightX = initialTopTriangleRightX;
+	float topTriangleRightY = initialTopTriangleRightY;
+	float topTriangleRightZ = initialZ;
+
+	float topTriangleLeftX = initialTopTriangleLeftX;
+	float topTriangleLeftY = initialTopTriangleLeftY;
+	float topTriangleLeftZ = initialZ;
+
+	GLfloat vertices[(CUBES_PER_GRID * SIZE_PER_CUBE) * 4]; /* No lugar do 2 CUBE_FACES_COUNT */
+
+	float xCount = 0.0;
+	int actualIndex = 0;
+
+	for (int actualCube = 1, cubePerRowCounter = 1; actualCube <= CUBES_PER_GRID * 2; actualCube++, cubePerRowCounter++, actualIndex += 36) {
+		vertices[actualIndex] = bottomTriangleLeftX;
+		vertices[actualIndex + 1] = bottomTriangleLeftY;
+		vertices[actualIndex + 2] = bottomTriangleLeftZ;
+
+		vertices[actualIndex + 3] = 1.1;
+		vertices[actualIndex + 4] = 1.1;
+		vertices[actualIndex + 5] = 1.1;
+
+		vertices[actualIndex + 6] = bottomTriangleTopX;
+		vertices[actualIndex + 7] = bottomTriangleTopY;
+		vertices[actualIndex + 8] = bottomTriangleTopZ;
+
+		vertices[actualIndex + 9] = 1.1;
+		vertices[actualIndex + 10] = 1.1;
+		vertices[actualIndex + 11] = 1.1;
+
+		vertices[actualIndex + 12] = bottomTriangleRightX;
+		vertices[actualIndex + 13] = bottomTriangleRightY;
+		vertices[actualIndex + 14] = bottomTriangleRightZ;
+
+		vertices[actualIndex + 15] = 1.1;
+		vertices[actualIndex + 16] = 1.1;
+		vertices[actualIndex + 17] = 1.1;
+
+		vertices[actualIndex + 18] = topTriangleTopX;
+		vertices[actualIndex + 19] = topTriangleTopY;
+		vertices[actualIndex + 20] = topTriangleTopZ;
+
+		vertices[actualIndex + 21] = 1.1;
+		vertices[actualIndex + 22] = 1.1;
+		vertices[actualIndex + 23] = 1.1;
+
+		vertices[actualIndex + 24] = topTriangleRightX;
+		vertices[actualIndex + 25] = topTriangleRightY;
+		vertices[actualIndex + 26] = topTriangleRightZ;
+
+		vertices[actualIndex + 27] = 1.1;
+		vertices[actualIndex + 28] = 1.1;
+		vertices[actualIndex + 29] = 1.1;
+
+		vertices[actualIndex + 30] = topTriangleLeftX;
+		vertices[actualIndex + 31] = topTriangleLeftY;
+		vertices[actualIndex + 32] = topTriangleLeftZ;
+
+		vertices[actualIndex + 33] = 1.1;
+		vertices[actualIndex + 34] = 1.1;
+		vertices[actualIndex + 35] = 1.1;
+
+		xCount += 0.04;
+
+		bottomTriangleLeftX += 0.1;
+		bottomTriangleTopX += 0.1;
+		bottomTriangleRightX += 0.1;
+
+		topTriangleTopX += 0.1;
+		topTriangleRightX += 0.1;
+		topTriangleLeftX += 0.1;
+
+		if (cubePerRowCounter == CUBES_PER_ROW)
+		{
+			bottomTriangleLeftY -= 0.1;
+			bottomTriangleTopY -= 0.1;
+			bottomTriangleRightY -= 0.1;
+			topTriangleTopY -= 0.1;
+			topTriangleRightY -= 0.1;
+			topTriangleLeftY -= 0.1;
+
+			bottomTriangleLeftX = initialBottomTriangleLeftX;
+			bottomTriangleTopX = initialBottomTriangleTopX;
+			bottomTriangleRightX = initialBottomTriangleRightX;
+			topTriangleTopX = initialTopTriangleTopX;
+			topTriangleRightX = initialTopTriangleRightX;
+			topTriangleLeftX = initialTopTriangleLeftX;
+
+			cubePerRowCounter = 0;
+		}
+
+		if (actualCube == CUBES_PER_GRID)
+		{
+			xCount = 0.3;
+
+			bottomTriangleLeftZ = xCount;
+			bottomTriangleTopZ = xCount;
+			bottomTriangleRightZ = xCount;
+			topTriangleTopZ = xCount;
+			topTriangleRightZ = xCount;
+			topTriangleLeftZ = xCount;
+
+			bottomTriangleLeftY = initialBottomTriangleLeftY;
+			bottomTriangleTopY = initialBottomTriangleTopY;
+			bottomTriangleRightY = initialBottomTriangleRightY;
+			topTriangleTopY = initialTopTriangleTopY;
+			topTriangleRightY = initialTopTriangleRightY;
+			topTriangleLeftY = initialTopTriangleLeftY;
+		}
+	}
+
+	bottomTriangleLeftX = 0.0;
+	bottomTriangleLeftY = 0.0;
+	bottomTriangleLeftZ = 0.0;
+
+	bottomTriangleTopX = 0.0;
+	bottomTriangleTopY = 0.1;
+	bottomTriangleTopZ = 0.0;
+
+	bottomTriangleRightX = 0.0;
+	bottomTriangleRightY = 0.0;
+	bottomTriangleRightZ = 0.1;
+
+	topTriangleTopX = 0.0;
+	topTriangleTopY = 0.1;
+	topTriangleTopZ = 0.1;
+
+	topTriangleRightX = 0.0;
+	topTriangleRightY = 0.0;
+	topTriangleRightZ = 0.1;
+
+	topTriangleLeftX = 0.0;
+	topTriangleLeftY = 0.1;
+	topTriangleLeftZ = 0.0;
+
+	float zCount = 0.0;
+
+	for (int actualCube = 1, cubePerRowCounter = 1; actualCube <= CUBES_PER_GRID * 2; actualCube++, cubePerRowCounter++, actualIndex += 36) {
+		vertices[actualIndex] = bottomTriangleLeftX;
+		vertices[actualIndex + 1] = bottomTriangleLeftY;
+		vertices[actualIndex + 2] = bottomTriangleLeftZ;
+
+		vertices[actualIndex + 3] = 1.1;
+		vertices[actualIndex + 4] = 1.1;
+		vertices[actualIndex + 5] = 1.1;
+
+		vertices[actualIndex + 6] = bottomTriangleTopX;
+		vertices[actualIndex + 7] = bottomTriangleTopY;
+		vertices[actualIndex + 8] = bottomTriangleTopZ;
+
+		vertices[actualIndex + 9] = 1.1;
+		vertices[actualIndex + 10] = 1.1;
+		vertices[actualIndex + 11] = 1.1;
+
+		vertices[actualIndex + 12] = bottomTriangleRightX;
+		vertices[actualIndex + 13] = bottomTriangleRightY;
+		vertices[actualIndex + 14] = bottomTriangleRightZ;
+
+		vertices[actualIndex + 15] = 1.1;
+		vertices[actualIndex + 16] = 1.1;
+		vertices[actualIndex + 17] = 1.1;
+
+		vertices[actualIndex + 18] = topTriangleTopX;
+		vertices[actualIndex + 19] = topTriangleTopY;
+		vertices[actualIndex + 20] = topTriangleTopZ;
+
+		vertices[actualIndex + 21] = 1.1;
+		vertices[actualIndex + 22] = 1.1;
+		vertices[actualIndex + 23] = 1.1;
+
+		vertices[actualIndex + 24] = topTriangleRightX;
+		vertices[actualIndex + 25] = topTriangleRightY;
+		vertices[actualIndex + 26] = topTriangleRightZ;
+
+		vertices[actualIndex + 27] = 1.1;
+		vertices[actualIndex + 28] = 1.1;
+		vertices[actualIndex + 29] = 1.1;
+
+		vertices[actualIndex + 30] = topTriangleLeftX;
+		vertices[actualIndex + 31] = topTriangleLeftY;
+		vertices[actualIndex + 32] = topTriangleLeftZ;
+
+		vertices[actualIndex + 33] = 1.1;
+		vertices[actualIndex + 34] = 1.1;
+		vertices[actualIndex + 35] = 1.1;
+
+		bottomTriangleLeftZ += 0.1;
+		bottomTriangleTopZ += 0.1;
+		bottomTriangleRightZ += 0.1;
+
+		topTriangleTopZ += 0.1;
+		topTriangleRightZ += 0.1;
+		topTriangleLeftZ += 0.1;
+
+		if (cubePerRowCounter == CUBES_PER_ROW)
+		{
+			bottomTriangleLeftY -= 0.1;
+			bottomTriangleTopY -= 0.1;
+			bottomTriangleRightY -= 0.1;
+			topTriangleTopY -= 0.1;
+			topTriangleRightY -= 0.1;
+			topTriangleLeftY -= 0.1;
+
+			bottomTriangleLeftZ = 0.0;
+			bottomTriangleTopZ = 0.0;
+			bottomTriangleRightZ = 0.1;
+			topTriangleTopZ = 0.1;
+			topTriangleRightZ = 0.1;
+			topTriangleLeftZ = 0.0;
+
+			cubePerRowCounter = 0;
+		}
+
+		if (actualCube == CUBES_PER_GRID)
+		{
+			zCount = 0.3;
+		
+			bottomTriangleLeftX = zCount;
+			bottomTriangleTopX = zCount;
+			bottomTriangleRightX = zCount;
+			topTriangleTopX = zCount;
+			topTriangleRightX = zCount;
+			topTriangleLeftX = zCount;
+
+			bottomTriangleLeftY = 0.0;
+			bottomTriangleTopY = 0.1;
+			bottomTriangleRightY = 0.0;
+			topTriangleTopY = 0.1;
+			topTriangleRightY = 0.0;
+			topTriangleLeftY = 0.1;
+		}
+	}
+
+	GLuint VBO, VAO;
+
+	glGenBuffers(1, &VBO);
+
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+	glGenVertexArrays(1, &VAO);
+
+	glBindVertexArray(VAO);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)0);
+	glEnableVertexAttribArray(0);
+
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+	glEnableVertexAttribArray(1);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	glBindVertexArray(0);
+
+	return VAO;
+}
+
+int main() {
 	glfwInit();
 
-	initializePaletteVector();
+	// initializePaletteVector();
 
 	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Trabalho Grau A - Marcelo dos Santos Alvarez!", nullptr, nullptr);
 
@@ -143,7 +436,7 @@ int main()
 
 	Shader shader("../shaders/helloCamera.vs", "../shaders/helloCamera.fs");
 
-	GLuint VAO = setupGeometry3D();
+	GLuint VAO = setupCube();
 
 	glUseProgram(shader.ID);
 
@@ -183,7 +476,7 @@ int main()
 		glBindVertexArray(VAO);
 
 		glm::mat4 model = glm::mat4(1);
-		renderTriangle();
+		renderCube();
 		//model = glm::translate(model, glm::vec3(0.4, 0.0, 0.0));
 		//model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(0, 1, 0));
 		//model = glm::scale(model, glm::vec3(2.0, 2.0, 1.0));
@@ -201,84 +494,3 @@ int main()
 
 	return 0;
 }
-
-int setupGeometry3D()
-{
-	/*GLfloat matrizCubos[10][10][10];
-
-	for (int x = 0; x < 10; x++)
-	{
-		for (int y = 0; y < 10; y++)
-		{
-			for (int z = 0; z < 10; z++)
-			{
-				matrizCubos[x][y][z] = palette[colors::WHITE];
-			}
-		}
-	}
-
-	matrizCubos[0][9][5] = colors::RED;*/
-
-	// Aqui setamos as coordenadas x, y e z do triângulo e as armazenamos de forma
-	// sequencial, já visando mandar para o VBO (Vertex Buffer Objects)
-	// Cada atributo do vértice (coordenada, cores, coordenadas de textura, normal, etc)
-	// Pode ser arazenado em um VBO único ou em VBOs separados
-	GLfloat vertices[] = {
-		//Base da pirâmide: 2 triângulos
-		//x    y    z    r    g    b
-		-0.5, -0.5, -0.5, 1.0, 1.0, 0.0,
-		-0.5, -0.5,  0.5, 0.0, 1.0, 1.0,
-		 0.5, -0.5, -0.5, 1.0, 0.0, 1.0,
-		 -0.5, -0.5, 0.5, 1.0, 1.0, 0.0,
-		  0.5, -0.5,  0.5, 0.0, 1.0, 1.0,
-		  0.5, -0.5, -0.5, 1.0, 0.0, 1.0,
-		  //
-		  -0.5, -0.5, -0.5,1.0, 1.0, 1.0,
-		   0.0,  0.5,  0.0, 1.0, 1.0, 1.0,
-		   0.5, -0.5, -0.5,1.0, 1.0, 1.0,
-		  -0.5, -0.5, -0.5,1.0, 1.0, 1.0,
-		   0.0,  0.5,  0.0, 1.0, 1.0, 1.0,
-		  -0.5, -0.5,  0.5, 1.0, 1.0, 1.0,
-		  -0.5, -0.5, 0.5, 1.0, 1.0, 0.0,
-		   0.0,  0.5, 0.0, 1.0, 1.0, 0.0,
-		   0.5, -0.5, 0.5, 1.0, 1.0, 0.0,
-		   0.5, -0.5, 0.5, 0.0, 1.0, 1.0,
-		   0.0,  0.5,  0.0, 0.0, 1.0, 1.0,
-		   0.5, -0.5, -0.5, 0.0, 1.0, 1.0,
-	};
-	GLuint VBO, VAO;
-	//Geração do identificador do VBO
-	glGenBuffers(1, &VBO);
-	//Faz a conexão (vincula) do buffer como um buffer de array
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	//Envia os dados do array de floats para o buffer da OpenGl
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-	//Geração do identificador do VAO (Vertex Array Object)
-	glGenVertexArrays(1, &VAO);
-	// Vincula (bind) o VAO primeiro, e em seguida  conecta e seta o(s) buffer(s) de vértices
-	// e os ponteiros para os atributos 
-	glBindVertexArray(VAO);
-
-	//Para cada atributo do vertice, criamos um "AttribPointer" (ponteiro para o atributo), indicando: 
-	// Localização no shader * (a localização dos atributos devem ser correspondentes no layout especificado no vertex shader)
-	// Numero de valores que o atributo tem (por ex, 3 coordenadas xyz) 
-	// Tipo do dado
-	// Se está normalizado (entre zero e um)
-	// Tamanho em bytes 
-	// Deslocamento a partir do byte zero 
-
-	//Atributo posição (x, y, z)
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)0);
-	glEnableVertexAttribArray(0);
-	//Atributo cor (r, g, b)
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
-	glEnableVertexAttribArray(1);
-	// Observe que isso é permitido, a chamada para glVertexAttribPointer registrou o VBO como o objeto de buffer de vértice 
-	// atualmente vinculado - para que depois possamos desvincular com segurança
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	// Desvincula o VAO (é uma boa prática desvincular qualquer buffer ou array para evitar bugs medonhos)
-	glBindVertexArray(0);
-
-	return VAO;
-}
-
