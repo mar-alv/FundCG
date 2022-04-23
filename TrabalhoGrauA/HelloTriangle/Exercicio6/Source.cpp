@@ -4,6 +4,7 @@
 #include <assert.h>
 #include <iostream>
 #include "Shader.h"
+#include <iterator>
 #include <glm/glm.hpp>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -12,13 +13,12 @@
 
 using namespace std;
 
-const int CUBES_PER_ROW = 3;
-const int SIZE_PER_CUBE = 36;
-const int CUBE_FACES_COUNT = 6;
+const int GRID_SIZE = 3;
+const int SIZE_PER_CUBE = 216;
+const int POINTS_PER_SQUARE = 36;
 const GLuint WIDTH = 800, HEIGHT = 600;
-const int CUBES_PER_GRID = CUBES_PER_ROW * CUBES_PER_ROW;
-
-char viewID = 'W';
+const int TOTAL_CUBES = GRID_SIZE * GRID_SIZE * GRID_SIZE;
+const int TOTAL_VERTICES_SIZE = SIZE_PER_CUBE * TOTAL_CUBES;
 
 glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
@@ -33,7 +33,6 @@ float yaw = -90.0;
 float pitch = 0.0;
 
 std::vector <glm::vec3> palette;
-
 
 enum colors {
 	RED,
@@ -83,8 +82,8 @@ void processInput(GLFWwindow* window) {
 	}
 }
 
-void renderCube() {
-	glDrawArrays(GL_TRIANGLES, 0, CUBES_PER_GRID * SIZE_PER_CUBE);
+void renderCubes() {
+	glDrawArrays(GL_TRIANGLES, 0, TOTAL_CUBES * POINTS_PER_SQUARE);
 }
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
@@ -124,392 +123,318 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 	cameraFront = glm::normalize(front);
 }
 
+class Color {
+private:
+	float r;
+	float g;
+	float b;
 
-int setupCube() {
-	float initialBottomTriangleLeftX = 0.0;
-	float initialBottomTriangleTopX = 0.0;
-	float initialBottomTriangleRightX = 0.1;
-	float initialTopTriangleTopX = 0.0;
-	float initialTopTriangleRightX = 0.1;
-	float initialTopTriangleLeftX = 0.1;
+public:
+	Color(float r, float g, float b) {
+		this->r = r;
+		this->g = g;
+		this->b = b;
+	}
 
-	float initialBottomTriangleLeftY = 0.0;
-	float initialBottomTriangleTopY = 0.1;
-	float initialBottomTriangleRightY = 0.0;
-	float initialTopTriangleTopY = 0.1;
-	float initialTopTriangleRightY = 0.1;
-	float initialTopTriangleLeftY = 0.0;
+	Color() {
+	}
 
-	float initialZ = 0.0;
+	float* getPoints() {
+		float* points = new float[3];
 
-	float bottomTriangleLeftX = initialBottomTriangleLeftX;
-	float bottomTriangleLeftY = initialBottomTriangleLeftY;
-	float bottomTriangleLeftZ = initialZ;
+		points[0] = r;
+		points[1] = g;
+		points[2] = b;
 
-	float bottomTriangleTopX = initialBottomTriangleTopX;
-	float bottomTriangleTopY = initialBottomTriangleTopY;
-	float bottomTriangleTopZ = initialZ;
+		return points;
+	}
+};
 
-	float bottomTriangleRightX = initialBottomTriangleRightX;
-	float bottomTriangleRightY = initialBottomTriangleRightY;
-	float bottomTriangleRightZ = initialZ;
+class Point {
+private:
+	float x;
+	float y;
+	float z;
 
-	float topTriangleTopX = initialTopTriangleTopX;
-	float topTriangleTopY = initialTopTriangleTopY;
-	float topTriangleTopZ = initialZ;
+public:
+	Point(float x, float y, float z) {
+		this->x = x;
+		this->y = y;
+		this->z = z;
+	}
 
-	float topTriangleRightX = initialTopTriangleRightX;
-	float topTriangleRightY = initialTopTriangleRightY;
-	float topTriangleRightZ = initialZ;
+	Point() {
+	}
 
-	float topTriangleLeftX = initialTopTriangleLeftX;
-	float topTriangleLeftY = initialTopTriangleLeftY;
-	float topTriangleLeftZ = initialZ;
+	float getX() {
+		return this->x;
+	}
 
-	GLfloat vertices[CUBES_PER_GRID * SIZE_PER_CUBE * CUBE_FACES_COUNT]; 
+	float getY() {
+		return this->y;
+	}
 
-	float xCount = 0.0;
+	float getZ() {
+		return this->z;
+	}
+
+	float* getPoints() {
+		float* points = new float[3];
+
+		points[0] = x; 
+		points[1] = y;
+		points[2] = z;
+		
+		return points;
+	}
+};
+
+class Triangle {
+private:
+	Point top;
+	Point left;
+	Point right;
+	Color color;
+
+public:
+	Triangle(Point top, Point left, Point right) {
+		this->top = top;
+		this->left = left;
+		this->right = right;
+		this->color = Color(1.1, 1.1, 1.1);
+	}
+
+	Triangle() {
+	}
+
+	Point getTop() {
+		return top;
+	}
+
+	Point getLeft() {
+		return left;
+	}
+
+	Point getRight() {
+		return right;
+	}
+
+	float* getPoints() {
+		float* topPoints = top.getPoints();
+		float* leftPoints = left.getPoints();
+		float* rightPoints = right.getPoints();
+		float* colorPoints = color.getPoints();
+
+		float* points = new float[18];
+
+		for (int i = 0; i < 3; i++) {
+			points[i] = topPoints[i];
+			points[i + 3] = colorPoints[i];
+			points[i + 6] = leftPoints[i];
+			points[i + 9] = colorPoints[i];
+			points[i + 12] = rightPoints[i];
+			points[i + 15] = colorPoints[i];
+		}
+
+		return points;
+	}
+};
+
+class Square {
+private:
+	Triangle topTriangle;
+	Triangle bottomTriangle;
+
+public:
+	Square(Triangle topTriangle, Triangle bottomTriangle) {
+		this->topTriangle = topTriangle;
+		this->bottomTriangle = bottomTriangle;
+	}
+
+	Square() {
+	}
+
+	Triangle getTopTriangle() {
+		return topTriangle;
+	}
+
+	Triangle getBottomTriangle() {
+		return bottomTriangle;
+	}
+
+	float* getPoints() {
+		float* topPoints = topTriangle.getPoints();
+		float* bottomPoints = bottomTriangle.getPoints();
+
+		float* points = new float[36];
+
+		for (int i = 0; i < 18; i++) {
+			points[i] = topPoints[i];
+			points[i + 18] = bottomPoints[i];
+		}
+
+		return points;
+	}
+};
+
+class Cube {
+private:
+	Square frontSquare;
+	Square backSquare;
+	Square leftSquare;
+	Square rightSquare;
+	Square topSquare;
+	Square bottomSquare;
+
+public:
+	Cube(Square frontSquare, Square backSquare, Square leftSquare, Square rightSquare, Square topSquare, Square bottomSquare) {
+		this->frontSquare = frontSquare;
+		this->backSquare = backSquare;
+		this->leftSquare = leftSquare;
+		this->rightSquare = rightSquare;
+		this->topSquare = topSquare;
+		this->bottomSquare = bottomSquare;
+	}
+
+	Cube() {
+	}
+
+	Square getFrontSquare() {
+		return frontSquare;
+	}
+
+	Square getBackSquare() {
+		return backSquare;
+	}
+
+	Square getLeftSquare() {
+		return leftSquare;
+	}
+
+	Square getRightSquare() {
+		return rightSquare;
+	}
+
+	Square getTopSquare() {
+		return topSquare;
+	}
+
+	Square getBottomSquare() {
+		return bottomSquare;
+	}
+
+	float* getPoints() {
+		float* frontPoints = frontSquare.getPoints();
+		float* backPoints = backSquare.getPoints();
+		float* leftPoints = leftSquare.getPoints();
+		float* rightPoints = rightSquare.getPoints();
+		float* topPoints = topSquare.getPoints();
+		float* bottomPoints = bottomSquare.getPoints();
+
+		float* points = new float[216];
+
+		for (int i = 0; i < 36; i++) {
+			points[i] = frontPoints[i];
+			points[i + 36] = backPoints[i];
+			points[i + 72] = leftPoints[i];
+			points[i + 108] = rightPoints[i];
+			points[i + 144] = topPoints[i];
+			points[i + 180] = bottomPoints[i];
+		}
+
+		return points;
+	}
+};
+
+Cube initializateCube() {
+	Point frontBottomTriangleTopPoint = Point(0.0, 0.1, 0.0);
+	Point frontBottomTriangleLeftPoint = Point(0.0, 0.0, 0.0);
+	Point frontBottomTriangleRightPoint = Point(0.1, 0.0, 0.0);
+	Triangle frontBottomTriangle = Triangle(frontBottomTriangleTopPoint, frontBottomTriangleLeftPoint, frontBottomTriangleRightPoint);
+
+	Point frontTopTriangleTopPoint = Point(0.1, 0.1, 0.0);
+	Point frontTopTriangleLeftPoint = Point(0.0, 0.1, 0.0);
+	Point frontTopTriangleRightPoint = Point(0.1, 0.0, 0.0);
+	Triangle frontTopTriangle = Triangle(frontTopTriangleTopPoint, frontTopTriangleLeftPoint, frontTopTriangleRightPoint);
+
+	Square frontSquare = Square(frontTopTriangle, frontBottomTriangle);
+
+	Point backBottomTriangleTopPoint = Point(0.0, 0.1, 0.1);
+	Point backBottomTriangleLeftPoint = Point(0.0, 0.0, 0.1);
+	Point backBottomTriangleRightPoint = Point(0.1, 0.0, 0.1);
+	Triangle backBottomTriangle = Triangle(backBottomTriangleTopPoint, backBottomTriangleLeftPoint, backBottomTriangleRightPoint);
+
+	Point backTopTriangleTopPoint = Point(0.1, 0.1, 0.1);
+	Point backTopTriangleLeftPoint = Point(0.0, 0.1, 0.1);
+	Point backTopTriangleRightPoint = Point(0.1, 0.0, 0.1);
+	Triangle backTopTriangle = Triangle(backTopTriangleTopPoint, backTopTriangleLeftPoint, backTopTriangleRightPoint);
+
+	Square backSquare = Square(backTopTriangle, backBottomTriangle);
+
+	Point leftBottomTriangleTopPoint = Point(0.0, 0.1, 0.0);
+	Point leftBottomTriangleLeftPoint = Point(0.0, 0.0, 0.0);
+	Point leftBottomTriangleRightPoint = Point(0.0, 0.0, 0.1);
+	Triangle leftBottomTriangle = Triangle(leftBottomTriangleTopPoint, leftBottomTriangleLeftPoint, leftBottomTriangleRightPoint);
+
+	Point leftTopTriangleTopPoint = Point(0.0, 0.1, 0.1);
+	Point leftTopTriangleLeftPoint = Point(0.0, 0.1, 0.0);
+	Point leftTopTriangleRightPoint = Point(0.0, 0.0, 0.1);
+	Triangle leftTopTriangle = Triangle(leftTopTriangleTopPoint, leftTopTriangleLeftPoint, leftTopTriangleRightPoint);
+
+	Square leftSquare = Square(leftTopTriangle, leftBottomTriangle);
+
+	Point rightBottomTriangleTopPoint = Point(0.1, 0.1, 0.0);
+	Point rightBottomTriangleLeftPoint = Point(0.1, 0.0, 0.0);
+	Point rightBottomTriangleRightPoint = Point(0.1, 0.0, 0.1);
+	Triangle rightBottomTriangle = Triangle(rightBottomTriangleTopPoint, rightBottomTriangleLeftPoint, rightBottomTriangleRightPoint);
+
+	Point rightTopTriangleTopPoint = Point(0.1, 0.1, 0.1);
+	Point rightTopTriangleLeftPoint = Point(0.1, 0.1, 0.0);
+	Point rightTopTriangleRightPoint = Point(0.1, 0.0, 0.1);
+	Triangle rightTopTriangle = Triangle(rightTopTriangleTopPoint, rightTopTriangleLeftPoint, rightTopTriangleRightPoint);
+
+	Square rightSquare = Square(rightTopTriangle, rightBottomTriangle);
+
+	Point topBottomTriangleTopPoint = Point(0.0, 0.1, 0.0);
+	Point topBottomTriangleLeftPoint = Point(0.1, 0.1, 0.0);
+	Point topBottomTriangleRightPoint = Point(0.1, 0.1, 0.1);
+	Triangle topBottomTriangle = Triangle(topBottomTriangleTopPoint, topBottomTriangleLeftPoint, topBottomTriangleRightPoint);
+
+	Point topTopTriangleTopPoint = Point(0.0, 0.1, 0.1);
+	Point topTopTriangleLeftPoint = Point(0.0, 0.1, 0.0);
+	Point topTopTriangleRightPoint = Point(0.1, 0.1, 0.1);
+	Triangle topTopTriangle = Triangle(topTopTriangleTopPoint, topTopTriangleLeftPoint, topTopTriangleRightPoint);
+
+	Square topSquare = Square(topTopTriangle, topBottomTriangle);
+
+	Point bottomBottomTriangleTopPoint = Point(0.0, 0.1, 0.0);
+	Point bottomBottomTriangleLeftPoint = Point(0.1, 0.1, 0.0);
+	Point bottomBottomTriangleRightPoint = Point(0.1, 0.1, 0.1);
+	Triangle bottomBottomTriangle = Triangle(bottomBottomTriangleTopPoint, bottomBottomTriangleLeftPoint, bottomBottomTriangleRightPoint);
+
+	Point bottomTopTriangleTopPoint = Point(0.0, 0.1, 0.1);
+	Point bottomTopTriangleLeftPoint = Point(0.0, 0.1, 0.0);
+	Point bottomTopTriangleRightPoint = Point(0.1, 0.1, 0.1);
+	Triangle bottomTopTriangle = Triangle(bottomTopTriangleTopPoint, bottomTopTriangleLeftPoint, bottomTopTriangleRightPoint);
+
+	Square bottomSquare = Square(bottomTopTriangle, bottomBottomTriangle);
+
+	return Cube(frontSquare, backSquare, leftSquare, rightSquare, topSquare, bottomSquare);
+}
+
+int setupCubesClass() {
+	Cube cube = initializateCube();
+
+	float* points = cube.getPoints();
+
+	GLfloat vertices[TOTAL_VERTICES_SIZE];
+
 	int actualIndex = 0;
 
-	for (int actualCube = 1, cubePerRowCounter = 1; actualCube <= CUBES_PER_GRID * 2; actualCube++, cubePerRowCounter++, actualIndex += 36) {
-		vertices[actualIndex] = bottomTriangleLeftX;
-		vertices[actualIndex + 1] = bottomTriangleLeftY;
-		vertices[actualIndex + 2] = bottomTriangleLeftZ;
-
-		vertices[actualIndex + 3] = 1.1;
-		vertices[actualIndex + 4] = 1.1;
-		vertices[actualIndex + 5] = 1.1;
-
-		vertices[actualIndex + 6] = bottomTriangleTopX;
-		vertices[actualIndex + 7] = bottomTriangleTopY;
-		vertices[actualIndex + 8] = bottomTriangleTopZ;
-
-		vertices[actualIndex + 9] = 1.1;
-		vertices[actualIndex + 10] = 1.1;
-		vertices[actualIndex + 11] = 1.1;
-
-		vertices[actualIndex + 12] = bottomTriangleRightX;
-		vertices[actualIndex + 13] = bottomTriangleRightY;
-		vertices[actualIndex + 14] = bottomTriangleRightZ;
-
-		vertices[actualIndex + 15] = 1.1;
-		vertices[actualIndex + 16] = 1.1;
-		vertices[actualIndex + 17] = 1.1;
-
-		vertices[actualIndex + 18] = topTriangleTopX;
-		vertices[actualIndex + 19] = topTriangleTopY;
-		vertices[actualIndex + 20] = topTriangleTopZ;
-
-		vertices[actualIndex + 21] = 1.1;
-		vertices[actualIndex + 22] = 1.1;
-		vertices[actualIndex + 23] = 1.1;
-
-		vertices[actualIndex + 24] = topTriangleRightX;
-		vertices[actualIndex + 25] = topTriangleRightY;
-		vertices[actualIndex + 26] = topTriangleRightZ;
-
-		vertices[actualIndex + 27] = 1.1;
-		vertices[actualIndex + 28] = 1.1;
-		vertices[actualIndex + 29] = 1.1;
-
-		vertices[actualIndex + 30] = topTriangleLeftX;
-		vertices[actualIndex + 31] = topTriangleLeftY;
-		vertices[actualIndex + 32] = topTriangleLeftZ;
-
-		vertices[actualIndex + 33] = 1.1;
-		vertices[actualIndex + 34] = 1.1;
-		vertices[actualIndex + 35] = 1.1;
-
-		xCount += 0.04;
-
-		bottomTriangleLeftX += 0.1;
-		bottomTriangleTopX += 0.1;
-		bottomTriangleRightX += 0.1;
-
-		topTriangleTopX += 0.1;
-		topTriangleRightX += 0.1;
-		topTriangleLeftX += 0.1;
-
-		if (cubePerRowCounter == CUBES_PER_ROW)
-		{
-			bottomTriangleLeftY -= 0.1;
-			bottomTriangleTopY -= 0.1;
-			bottomTriangleRightY -= 0.1;
-			topTriangleTopY -= 0.1;
-			topTriangleRightY -= 0.1;
-			topTriangleLeftY -= 0.1;
-
-			bottomTriangleLeftX = initialBottomTriangleLeftX;
-			bottomTriangleTopX = initialBottomTriangleTopX;
-			bottomTriangleRightX = initialBottomTriangleRightX;
-			topTriangleTopX = initialTopTriangleTopX;
-			topTriangleRightX = initialTopTriangleRightX;
-			topTriangleLeftX = initialTopTriangleLeftX;
-
-			cubePerRowCounter = 0;
-		}
-
-		if (actualCube == CUBES_PER_GRID)
-		{
-			xCount = 0.3;
-
-			bottomTriangleLeftZ = xCount;
-			bottomTriangleTopZ = xCount;
-			bottomTriangleRightZ = xCount;
-			topTriangleTopZ = xCount;
-			topTriangleRightZ = xCount;
-			topTriangleLeftZ = xCount;
-
-			bottomTriangleLeftY = initialBottomTriangleLeftY;
-			bottomTriangleTopY = initialBottomTriangleTopY;
-			bottomTriangleRightY = initialBottomTriangleRightY;
-			topTriangleTopY = initialTopTriangleTopY;
-			topTriangleRightY = initialTopTriangleRightY;
-			topTriangleLeftY = initialTopTriangleLeftY;
-		}
+	for (int i = 0; i < 216; i++) {
+		vertices[i] = points[i];
 	}
-
-	bottomTriangleLeftX = 0.0;
-	bottomTriangleLeftY = 0.0;
-	bottomTriangleLeftZ = 0.0;
-
-	bottomTriangleTopX = 0.0;
-	bottomTriangleTopY = 0.1;
-	bottomTriangleTopZ = 0.0;
-
-	bottomTriangleRightX = 0.0;
-	bottomTriangleRightY = 0.0;
-	bottomTriangleRightZ = 0.1;
-
-	topTriangleTopX = 0.0;
-	topTriangleTopY = 0.1;
-	topTriangleTopZ = 0.1;
-
-	topTriangleRightX = 0.0;
-	topTriangleRightY = 0.0;
-	topTriangleRightZ = 0.1;
-
-	topTriangleLeftX = 0.0;
-	topTriangleLeftY = 0.1;
-	topTriangleLeftZ = 0.0;
-
-	float zCount = 0.0;
-
-	for (int actualCube = 1, cubePerRowCounter = 1; actualCube <= CUBES_PER_GRID * 2; actualCube++, cubePerRowCounter++, actualIndex += 36) {
-		vertices[actualIndex] = bottomTriangleLeftX;
-		vertices[actualIndex + 1] = bottomTriangleLeftY;
-		vertices[actualIndex + 2] = bottomTriangleLeftZ;
-
-		vertices[actualIndex + 3] = 1.1;
-		vertices[actualIndex + 4] = 1.1;
-		vertices[actualIndex + 5] = 1.1;
-
-		vertices[actualIndex + 6] = bottomTriangleTopX;
-		vertices[actualIndex + 7] = bottomTriangleTopY;
-		vertices[actualIndex + 8] = bottomTriangleTopZ;
-
-		vertices[actualIndex + 9] = 1.1;
-		vertices[actualIndex + 10] = 1.1;
-		vertices[actualIndex + 11] = 1.1;
-
-		vertices[actualIndex + 12] = bottomTriangleRightX;
-		vertices[actualIndex + 13] = bottomTriangleRightY;
-		vertices[actualIndex + 14] = bottomTriangleRightZ;
-
-		vertices[actualIndex + 15] = 1.1;
-		vertices[actualIndex + 16] = 1.1;
-		vertices[actualIndex + 17] = 1.1;
-
-		vertices[actualIndex + 18] = topTriangleTopX;
-		vertices[actualIndex + 19] = topTriangleTopY;
-		vertices[actualIndex + 20] = topTriangleTopZ;
-
-		vertices[actualIndex + 21] = 1.1;
-		vertices[actualIndex + 22] = 1.1;
-		vertices[actualIndex + 23] = 1.1;
-
-		vertices[actualIndex + 24] = topTriangleRightX;
-		vertices[actualIndex + 25] = topTriangleRightY;
-		vertices[actualIndex + 26] = topTriangleRightZ;
-
-		vertices[actualIndex + 27] = 1.1;
-		vertices[actualIndex + 28] = 1.1;
-		vertices[actualIndex + 29] = 1.1;
-
-		vertices[actualIndex + 30] = topTriangleLeftX;
-		vertices[actualIndex + 31] = topTriangleLeftY;
-		vertices[actualIndex + 32] = topTriangleLeftZ;
-
-		vertices[actualIndex + 33] = 1.1;
-		vertices[actualIndex + 34] = 1.1;
-		vertices[actualIndex + 35] = 1.1;
-
-		bottomTriangleLeftZ += 0.1;
-		bottomTriangleTopZ += 0.1;
-		bottomTriangleRightZ += 0.1;
-
-		topTriangleTopZ += 0.1;
-		topTriangleRightZ += 0.1;
-		topTriangleLeftZ += 0.1;
-
-		if (cubePerRowCounter == CUBES_PER_ROW)
-		{
-			bottomTriangleLeftY -= 0.1;
-			bottomTriangleTopY -= 0.1;
-			bottomTriangleRightY -= 0.1;
-			topTriangleTopY -= 0.1;
-			topTriangleRightY -= 0.1;
-			topTriangleLeftY -= 0.1;
-
-			bottomTriangleLeftZ = 0.0;
-			bottomTriangleTopZ = 0.0;
-			bottomTriangleRightZ = 0.1;
-			topTriangleTopZ = 0.1;
-			topTriangleRightZ = 0.1;
-			topTriangleLeftZ = 0.0;
-
-			cubePerRowCounter = 0;
-		}
-
-		if (actualCube == CUBES_PER_GRID)
-		{
-			zCount = 0.3;
-		
-			bottomTriangleLeftX = zCount;
-			bottomTriangleTopX = zCount;
-			bottomTriangleRightX = zCount;
-			topTriangleTopX = zCount;
-			topTriangleRightX = zCount;
-			topTriangleLeftX = zCount;
-
-			bottomTriangleLeftY = 0.0;
-			bottomTriangleTopY = 0.1;
-			bottomTriangleRightY = 0.0;
-			topTriangleTopY = 0.1;
-			topTriangleRightY = 0.0;
-			topTriangleLeftY = 0.1;
-		}
-	}
-
-	bottomTriangleLeftX = 0.1;
-	bottomTriangleLeftY = 0.1;
-	bottomTriangleLeftZ = 0.0;
-
-	bottomTriangleTopX = 0.0;
-	bottomTriangleTopY = 0.1;
-	bottomTriangleTopZ = 0.0;
-
-	bottomTriangleRightX = 0.1;
-	bottomTriangleRightY = 0.1;
-	bottomTriangleRightZ = 0.1;
-
-	topTriangleTopX = 0.0;
-	topTriangleTopY = 0.1;
-	topTriangleTopZ = 0.1;
-
-	topTriangleRightX = 0.1;
-	topTriangleRightY = 0.1;
-	topTriangleRightZ = 0.1;
-
-	topTriangleLeftX = 0.0;
-	topTriangleLeftY = 0.1;
-	topTriangleLeftZ = 0.0;
-
-	for (int actualCube = 1, cubePerRowCounter = 1; actualCube <= CUBES_PER_GRID * 2; actualCube++, cubePerRowCounter++, actualIndex += 36) {
-		vertices[actualIndex] = bottomTriangleLeftX;
-		vertices[actualIndex + 1] = bottomTriangleLeftY;
-		vertices[actualIndex + 2] = bottomTriangleLeftZ;
-
-		vertices[actualIndex + 3] = 1.1;
-		vertices[actualIndex + 4] = 1.1;
-		vertices[actualIndex + 5] = 1.1;
-
-		vertices[actualIndex + 6] = bottomTriangleTopX;
-		vertices[actualIndex + 7] = bottomTriangleTopY;
-		vertices[actualIndex + 8] = bottomTriangleTopZ;
-
-		vertices[actualIndex + 9] = 1.1;
-		vertices[actualIndex + 10] = 1.1;
-		vertices[actualIndex + 11] = 1.1;
-
-		vertices[actualIndex + 12] = bottomTriangleRightX;
-		vertices[actualIndex + 13] = bottomTriangleRightY;
-		vertices[actualIndex + 14] = bottomTriangleRightZ;
-
-		vertices[actualIndex + 15] = 1.1;
-		vertices[actualIndex + 16] = 1.1;
-		vertices[actualIndex + 17] = 1.1;
-
-		vertices[actualIndex + 18] = topTriangleTopX;
-		vertices[actualIndex + 19] = topTriangleTopY;
-		vertices[actualIndex + 20] = topTriangleTopZ;
-
-		vertices[actualIndex + 21] = 1.1;
-		vertices[actualIndex + 22] = 1.1;
-		vertices[actualIndex + 23] = 1.1;
-
-		vertices[actualIndex + 24] = topTriangleRightX;
-		vertices[actualIndex + 25] = topTriangleRightY;
-		vertices[actualIndex + 26] = topTriangleRightZ;
-
-		vertices[actualIndex + 27] = 1.1;
-		vertices[actualIndex + 28] = 1.1;
-		vertices[actualIndex + 29] = 1.1;
-
-		vertices[actualIndex + 30] = topTriangleLeftX;
-		vertices[actualIndex + 31] = topTriangleLeftY;
-		vertices[actualIndex + 32] = topTriangleLeftZ;
-
-		vertices[actualIndex + 33] = 1.1;
-		vertices[actualIndex + 34] = 1.1;
-		vertices[actualIndex + 35] = 1.1;
-
-		bottomTriangleLeftZ += 0.1;
-		bottomTriangleTopZ += 0.1;
-		bottomTriangleRightZ += 0.1;
-		topTriangleTopZ += 0.1;
-		topTriangleRightZ += 0.1;
-		topTriangleLeftZ += 0.1;
-
-		if (cubePerRowCounter == CUBES_PER_ROW)
-		{
-			bottomTriangleLeftX += 0.1;
-			bottomTriangleTopX += 0.1;
-			bottomTriangleRightX += 0.1;
-			topTriangleTopX += 0.1;
-			topTriangleRightX += 0.1;
-			topTriangleLeftX += 0.1;
-
-			bottomTriangleLeftZ = 0.0;
-			bottomTriangleTopZ = 0.0;
-			bottomTriangleRightZ = 0.1;
-			topTriangleTopZ = 0.1;
-			topTriangleRightZ = 0.1;
-			topTriangleLeftZ = 0.0;
-
-			cubePerRowCounter = 0;
-		}
-
-		if (actualCube == CUBES_PER_GRID)
-		{
-			zCount = -0.2;
-
-			bottomTriangleLeftX = 0.1;
-			bottomTriangleTopX = 0.0;
-			bottomTriangleRightX = 0.1;
-			topTriangleTopX = 0.0;
-			topTriangleRightX = 0.1;
-			topTriangleLeftX = 0.0;
-
-			bottomTriangleLeftY = zCount;
-			bottomTriangleTopY = zCount;
-			bottomTriangleRightY = zCount;
-			topTriangleTopY = zCount;
-			topTriangleRightY = zCount;
-			topTriangleLeftY = zCount;
-		}
-	}
-
+	
 	GLuint VBO, VAO;
 
 	glGenBuffers(1, &VBO);
@@ -538,7 +463,7 @@ int setupCube() {
 int main() {
 	glfwInit();
 
-	// initializePaletteVector();
+	//initializePaletteVector();
 
 	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Trabalho Grau A - Marcelo dos Santos Alvarez!", nullptr, nullptr);
 
@@ -555,7 +480,7 @@ int main() {
 
 	Shader shader("../shaders/helloCamera.vs", "../shaders/helloCamera.fs");
 
-	GLuint VAO = setupCube();
+	GLuint VAO = setupCubesClass();
 
 	glUseProgram(shader.ID);
 
@@ -595,7 +520,7 @@ int main() {
 		glBindVertexArray(VAO);
 
 		glm::mat4 model = glm::mat4(1);
-		renderCube();
+		renderCubes();
 		//model = glm::translate(model, glm::vec3(0.4, 0.0, 0.0));
 		//model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(0, 1, 0));
 		//model = glm::scale(model, glm::vec3(2.0, 2.0, 1.0));
