@@ -15,8 +15,9 @@ using namespace std;
 
 const int GRID_SIZE = 3;
 const int SIZE_PER_CUBE = 216;
-const int POINTS_PER_SQUARE = 36;
 const GLuint WIDTH = 800, HEIGHT = 600;
+const int POINTS_PER_SQUARE = SIZE_PER_CUBE / 6;
+const int CUBES_PER_GRID = GRID_SIZE * GRID_SIZE;
 const int TOTAL_CUBES = GRID_SIZE * GRID_SIZE * GRID_SIZE;
 const int TOTAL_VERTICES_SIZE = SIZE_PER_CUBE * TOTAL_CUBES;
 
@@ -155,12 +156,16 @@ private:
 	float x;
 	float y;
 	float z;
+	float initialX;
+	float initialY;
 
 public:
 	Point(float x, float y, float z) {
 		this->x = x;
 		this->y = y;
 		this->z = z;
+		this->initialX = x;
+		this->initialY = y;
 	}
 
 	Point() {
@@ -178,6 +183,26 @@ public:
 		return this->z;
 	}
 
+	void setX(float x) {
+		this->x = x;
+	}
+
+	void setY(float y) {
+		this->y = y;
+	}
+
+	void setZ(float z) {
+		this->z = z;
+	}
+
+	float getInitialX() {
+		return this->initialX;
+	}
+
+	float getInitialY() {
+		return this->initialY;
+	}
+
 	float* getPoints() {
 		float* points = new float[3];
 
@@ -186,6 +211,26 @@ public:
 		points[2] = z;
 		
 		return points;
+	}
+
+	void initializateX() {
+		this->x = this->getInitialX();
+	}
+
+	void increaseX() {
+		setX(x + 0.1);
+	}
+
+	void increaseY() {
+		setY(y + 0.1);
+	}
+
+	void increaseZ() {
+		setZ(z + 0.1);
+	}
+
+	void initializateY() {
+		this->y = this->getInitialY();
 	}
 };
 
@@ -238,6 +283,36 @@ public:
 
 		return points;
 	}
+
+	void initializateX() {
+		top.initializateX();
+		left.initializateX();
+		right.initializateX();
+	}
+
+	void increaseX() {
+		top.increaseX();
+		left.increaseX();
+		right.increaseX();
+	}
+
+	void increaseY() {
+		top.increaseY();
+		left.increaseY();
+		right.increaseY();
+	}
+
+	void increaseZ() {
+		top.increaseZ();
+		left.increaseZ();
+		right.increaseZ();
+	}
+
+	void initializateY() {
+		top.initializateY();
+		left.initializateY();
+		right.initializateY();
+	}
 };
 
 class Square {
@@ -274,6 +349,31 @@ public:
 		}
 
 		return points;
+	}
+
+	void initializateX() {
+		topTriangle.initializateX();
+		bottomTriangle.initializateX();
+	}
+
+	void increaseX() {
+		topTriangle.increaseX();
+		bottomTriangle.increaseX();
+	}
+
+	void increaseY() {
+		topTriangle.increaseY();
+		bottomTriangle.increaseY();
+	}
+
+	void increaseZ() {
+		topTriangle.increaseZ();
+		bottomTriangle.increaseZ();
+	}
+
+	void initializateY() {
+		topTriangle.initializateY();
+		bottomTriangle.initializateY();
 	}
 };
 
@@ -343,6 +443,51 @@ public:
 		}
 
 		return points;
+	}
+
+	void initializateX() {
+		frontSquare.initializateX();
+		backSquare.initializateX();
+		leftSquare.initializateX();
+		rightSquare.initializateX();
+		topSquare.initializateX();
+		bottomSquare.initializateX();
+	}
+
+	void increaseX() {
+		frontSquare.increaseX();
+		backSquare.increaseX();
+		leftSquare.increaseX();
+		rightSquare.increaseX();
+		topSquare.increaseX();
+		bottomSquare.increaseX();
+	}
+
+	void increaseY() {
+		frontSquare.increaseY();
+		backSquare.increaseY();
+		leftSquare.increaseY();
+		rightSquare.increaseY();
+		topSquare.increaseY();
+		bottomSquare.increaseY();
+	}
+
+	void increaseZ() {
+		frontSquare.increaseZ();
+		backSquare.increaseZ();
+		leftSquare.increaseZ();
+		rightSquare.increaseZ();
+		topSquare.increaseZ();
+		bottomSquare.increaseZ();
+	}
+
+	void initializateY() {
+		frontSquare.initializateY();
+		backSquare.initializateY();
+		leftSquare.initializateY();
+		rightSquare.initializateY();
+		topSquare.initializateY();
+		bottomSquare.initializateY();
 	}
 };
 
@@ -431,8 +576,26 @@ int setupCubesClass() {
 
 	int actualIndex = 0;
 
-	for (int i = 0; i < 216; i++) {
-		vertices[i] = points[i];
+	for (int i = 0; i < TOTAL_CUBES; i++) {
+		for (int j = 0; j < SIZE_PER_CUBE; j++) {
+			vertices[actualIndex] = points[j];
+
+			actualIndex++;
+		}
+
+		cube.increaseX();
+
+		if (i != 0 && (i + 1) % GRID_SIZE == 0) {
+			cube.increaseY();
+			cube.initializateX();
+		}
+
+		if (i != 0 && (i + 1) % CUBES_PER_GRID == 0) {
+			cube.increaseZ();
+			cube.initializateY();
+		}
+
+		points = cube.getPoints();
 	}
 	
 	GLuint VBO, VAO;
