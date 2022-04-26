@@ -14,7 +14,7 @@
 
 using namespace std;
 
-const int GRID_SIZE = 12;
+const int GRID_SIZE = 3;
 const int SIZE_PER_CUBE = 216;
 const GLuint WIDTH = 800, HEIGHT = 600;
 const int POINTS_PER_SQUARE = SIZE_PER_CUBE / 6;
@@ -86,12 +86,21 @@ enum keyDirections {
 enum keyColors {
 	ZERO = '0',
 	ONE = '1',
-	TWO = '2'
+	TWO = '2',
+	THREE = '3',
 };
 
-enum gridDirections {
-	UP = GLFW_KEY_UP,
-};
+namespace gridDirections
+{
+	enum gridDirectionsEnum {
+		UP = GLFW_KEY_UP,
+		DOWN = GLFW_KEY_DOWN,
+		LEFT = GLFW_KEY_LEFT,
+		RIGHT = GLFW_KEY_RIGHT
+	};
+}
+
+using namespace gridDirections;
 
 void processColorInput(int key) {
 	switch (key) {
@@ -103,6 +112,9 @@ void processColorInput(int key) {
 			break;
 		case keyColors::TWO:
 			changeActualColor(colors::BLUE);
+			break;
+		case keyColors::THREE:
+			changeActualColor(colors::WHITE);
 			break;
 	}
 }
@@ -130,9 +142,10 @@ void processMovementInput(GLFWwindow* window) {
 void processGridInput(int key) {
 	switch (key) {
 		case gridDirections::UP:
-			actualCubeY++;
-
-			cout << "up" << actualCubeY;
+			actualCubeY = actualCubeY < GRID_SIZE - 1 ? actualCubeY + 1 : actualCubeY;
+			break;
+		case gridDirections::DOWN:
+			actualCubeY = actualCubeY > 1 ? actualCubeY - 1 : actualCubeY;
 			break;
 	}
 }
