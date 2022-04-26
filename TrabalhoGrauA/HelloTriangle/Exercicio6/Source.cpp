@@ -93,17 +93,17 @@ enum gridDirections {
 	UP = GLFW_KEY_UP,
 };
 
-void processColorInput(GLFWwindow* window) {
-	if (glfwGetKey(window, keyColors::ZERO) == GLFW_PRESS) {
-		changeActualColor(colors::RED);
-	}
-
-	if (glfwGetKey(window, keyColors::ONE) == GLFW_PRESS) {
-		changeActualColor(colors::GREEN);
-	}
-
-	if (glfwGetKey(window, keyColors::TWO) == GLFW_PRESS) {
-		changeActualColor(colors::BLUE);
+void processColorInput(int key) {
+	switch (key) {
+		case keyColors::ZERO:
+			changeActualColor(colors::RED);
+			break;
+		case keyColors::ONE:
+			changeActualColor(colors::GREEN);
+			break;
+		case keyColors::TWO:
+			changeActualColor(colors::BLUE);
+			break;
 	}
 }
 
@@ -125,11 +125,15 @@ void processMovementInput(GLFWwindow* window) {
 	if (glfwGetKey(window, keyDirections::RIGHT) == GLFW_PRESS) {
 		cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
 	}
+}
 
-	if (glfwGetKey(window, gridDirections::UP) == GLFW_PRESS) {
-		actualCubeY++;
+void processGridInput(int key) {
+	switch (key) {
+		case gridDirections::UP:
+			actualCubeY++;
 
-		cout << "up" << actualCubeY;
+			cout << "up" << actualCubeY;
+			break;
 	}
 }
 
@@ -173,22 +177,25 @@ void setupCubesClass() {
 	glBindVertexArray(0);
 }
 
-void processActionInput(GLFWwindow* window) {
-	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
-		glfwSetWindowShouldClose(window, GL_TRUE);
-	}
+void processActionInput(int key, GLFWwindow* window) {
+	switch (key) {
+		case GLFW_KEY_ESCAPE:
+			glfwSetWindowShouldClose(window, GL_TRUE);
+			break;
+		case GLFW_KEY_ENTER:
+			cubes[actualCubeX][actualCubeY][actualCubeZ].changeColor(actualColor);
 
-	if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS) {
-		cubes[actualCubeX][actualCubeY][actualCubeZ].changeColor(actualColor);
-
-		setupCubesClass();
+			setupCubesClass();
+			break;
 	}
 }
 
-void processInput(GLFWwindow* window) {
-	processColorInput(window); 
-	processActionInput(window);
-	processMovementInput(window);
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode) {
+	if (action == GLFW_PRESS) {
+		processGridInput(key);
+		processColorInput(key);
+		processActionInput(key, window);
+	}
 }
 
 void renderCubes() {
@@ -338,6 +345,8 @@ int main() {
 
 	glfwMakeContextCurrent(window);
 
+	glfwSetKeyCallback(window, key_callback);
+
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	glfwSetCursorPosCallback(window, mouse_callback);
@@ -370,7 +379,7 @@ int main() {
 	{
 		glfwPollEvents();
 
-		processInput(window);
+		processMovementInput(window);
 
 		int width, height;
 
