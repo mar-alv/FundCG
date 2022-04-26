@@ -14,7 +14,7 @@
 
 using namespace std;
 
-const int GRID_SIZE = 3;
+const int GRID_SIZE = 12;
 const int SIZE_PER_CUBE = 216;
 const GLuint WIDTH = 800, HEIGHT = 600;
 const int POINTS_PER_SQUARE = SIZE_PER_CUBE / 6;
@@ -89,6 +89,10 @@ enum keyColors {
 	TWO = '2'
 };
 
+enum gridDirections {
+	UP = GLFW_KEY_UP,
+};
+
 void processColorInput(GLFWwindow* window) {
 	if (glfwGetKey(window, keyColors::ZERO) == GLFW_PRESS) {
 		changeActualColor(colors::RED);
@@ -104,7 +108,7 @@ void processColorInput(GLFWwindow* window) {
 }
 
 void processMovementInput(GLFWwindow* window) {
-	float cameraSpeed = 0.005f;
+	float cameraSpeed = 0.001f;
 
 	if (glfwGetKey(window, keyDirections::FRONT) == GLFW_PRESS) {
 		cameraPos += cameraSpeed * cameraFront;
@@ -120,6 +124,12 @@ void processMovementInput(GLFWwindow* window) {
 
 	if (glfwGetKey(window, keyDirections::RIGHT) == GLFW_PRESS) {
 		cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+	}
+
+	if (glfwGetKey(window, gridDirections::UP) == GLFW_PRESS) {
+		actualCubeY++;
+
+		cout << "up" << actualCubeY;
 	}
 }
 
@@ -352,11 +362,15 @@ int main() {
 	shader.setMat4("view", glm::value_ptr(view));
 	shader.setMat4("projection", glm::value_ptr(projection));
 
+	glEnable(GL_BLEND);
 	glEnable(GL_DEPTH_TEST);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	while (!glfwWindowShouldClose(window))
 	{
 		glfwPollEvents();
+
+		processInput(window);
 
 		int width, height;
 
@@ -373,8 +387,6 @@ int main() {
 		view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 
 		shader.setMat4("view", glm::value_ptr(view));
-
-		processInput(window);
 
 		glBindVertexArray(VAO);
 

@@ -78,6 +78,4 @@ void Triangle::initializateY() {
 
 void Triangle::changeColor(Color color) {
 	this->color = color;
-
-	std::cout << "TRIANGULO: " << this->color.getR() << " - " << this->color.getG() << " - " << this->color.getB() << " - " << std::endl;
 }

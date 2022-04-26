@@ -1,7 +1,6 @@
 #pragma once
 #include "Color.h"
 #include "Point.h"
-#include <iostream>
 
 class Triangle {
 private:
