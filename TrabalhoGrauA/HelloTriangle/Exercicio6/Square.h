@@ -21,4 +21,6 @@ public:
 
 	void initializateX();
 	void initializateY();
+
+	void changeColor(Color color);
 };

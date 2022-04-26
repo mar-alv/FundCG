@@ -4,7 +4,7 @@ Triangle::Triangle(Point top, Point left, Point right) {
 	this->top = top;
 	this->left = left;
 	this->right = right;
-	this->color = Color(1.1, 1.1, 1.1);
+	this->color = Color(1.0, 1.0, 1.0);
 }
 
 Triangle::Triangle() {
@@ -20,6 +20,10 @@ Point Triangle::getLeft() {
 
 Point Triangle::getRight() {
 	return right;
+}
+
+Color Triangle::getColor() {
+	return this->color;
 }
 
 float* Triangle::getPoints() {
@@ -70,4 +74,10 @@ void Triangle::initializateY() {
 	top.initializateY();
 	left.initializateY();
 	right.initializateY();
+}
+
+void Triangle::changeColor(Color color) {
+	this->color = color;
+
+	std::cout << "TRIANGULO: " << this->color.getR() << " - " << this->color.getG() << " - " << this->color.getB() << " - " << std::endl;
 }

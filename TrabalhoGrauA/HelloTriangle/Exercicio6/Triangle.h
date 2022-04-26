@@ -1,6 +1,7 @@
 #pragma once
 #include "Color.h"
 #include "Point.h"
+#include <iostream>
 
 class Triangle {
 private:
@@ -17,6 +18,8 @@ public:
 	Point getLeft();
 	Point getRight();
 
+	Color getColor();
+
 	void increaseX();
 	void increaseY();
 	void increaseZ();
@@ -25,4 +28,6 @@ public:
 
 	void initializateX();
 	void initializateY();
+
+	void changeColor(Color color);
 };

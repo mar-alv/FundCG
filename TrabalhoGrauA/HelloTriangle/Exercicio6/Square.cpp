@@ -54,3 +54,8 @@ void Square::initializateY() {
 	topTriangle.initializateY();
 	bottomTriangle.initializateY();
 }
+
+void Square::changeColor(Color color) {
+	topTriangle.changeColor(color);
+	bottomTriangle.changeColor(color);
+}

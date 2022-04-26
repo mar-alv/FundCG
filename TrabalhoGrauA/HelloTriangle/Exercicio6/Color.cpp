@@ -18,3 +18,16 @@ float* Color::getPoints() {
 
 	return points;
 }
+
+
+float Color::getR() {
+	return this->r;
+}
+
+float Color::getG() {
+	return this->g;
+}
+
+float Color::getB() {
+	return this->b;
+}

@@ -12,4 +12,8 @@ public:
 	Color();
 
 	float* getPoints();
+
+	float getR();
+	float getG();
+	float getB();
 };

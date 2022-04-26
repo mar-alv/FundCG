@@ -1,4 +1,5 @@
 #include <cmath>
+#include "Cube.h"
 #include <string>
 #include <vector>
 #include <assert.h>
@@ -10,7 +11,6 @@
 #include <GLFW/glfw3.h>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include "Cube.h"
 
 using namespace std;
 
@@ -34,7 +34,19 @@ bool firstTimeMovingMouse = true;
 float yaw = -90.0;
 float pitch = 0.0;
 
-std::vector <glm::vec3> palette;
+Color actualColor;
+
+Cube cubes[GRID_SIZE][GRID_SIZE][GRID_SIZE];
+
+int actualCubeX = 0;
+int actualCubeY = 0;
+int actualCubeZ = 0;
+
+std::vector <Color> pallete;
+
+GLfloat vertices[TOTAL_VERTICES_SIZE];
+
+GLuint VAO;
 
 enum colors {
 	RED,
@@ -42,6 +54,24 @@ enum colors {
 	BLUE,
 	WHITE
 };
+
+void initializeColors() {
+	Color red = Color(1.0, 0.0, 0.0);
+	Color green = Color(0.0, 1.0, 0.0);
+	Color blue = Color(0.0, 0.0, 1.0);
+	Color white = Color(1.0, 1.0, 1.0);
+
+	pallete.push_back(red);
+	pallete.push_back(green);
+	pallete.push_back(blue);
+	pallete.push_back(white);
+
+	actualColor = red;
+}
+
+void changeActualColor(int index) {
+	actualColor = pallete.at(index);
+}
 
 enum keyDirections {
 	FRONT = 'W',
@@ -53,14 +83,27 @@ enum keyDirections {
 	EXIT = 'ESC',
 };
 
-void initializePaletteVector() {
-	palette[colors::RED] = glm::vec3(1.0, 0.0, 0.0);
-	palette[colors::BLUE] = glm::vec3(0.0, 0.0, 1.0);
-	palette[colors::GREEN] = glm::vec3(0.0, 1.0, 0.0);
-	palette[colors::WHITE] = glm::vec3(1.0, 1.0, 1.0);
+enum keyColors {
+	ZERO = '0',
+	ONE = '1',
+	TWO = '2'
+};
+
+void processColorInput(GLFWwindow* window) {
+	if (glfwGetKey(window, keyColors::ZERO) == GLFW_PRESS) {
+		changeActualColor(colors::RED);
+	}
+
+	if (glfwGetKey(window, keyColors::ONE) == GLFW_PRESS) {
+		changeActualColor(colors::GREEN);
+	}
+
+	if (glfwGetKey(window, keyColors::TWO) == GLFW_PRESS) {
+		changeActualColor(colors::BLUE);
+	}
 }
 
-void processInput(GLFWwindow* window) {
+void processMovementInput(GLFWwindow* window) {
 	float cameraSpeed = 0.005f;
 
 	if (glfwGetKey(window, keyDirections::FRONT) == GLFW_PRESS) {
@@ -78,10 +121,64 @@ void processInput(GLFWwindow* window) {
 	if (glfwGetKey(window, keyDirections::RIGHT) == GLFW_PRESS) {
 		cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
 	}
+}
 
+void setupCubesClass() {
+	int actualIndex = 0;
+
+	for (int i = 0; i < GRID_SIZE; i++) {
+		for (int j = 0; j < GRID_SIZE; j++) {
+			for (int k = 0; k < GRID_SIZE; k++) {
+				float* points = cubes[i][j][k].getPoints();
+
+				for (int l = 0; l < SIZE_PER_CUBE; l++) {
+					vertices[actualIndex] = points[l];
+
+					actualIndex++;
+				}
+			}
+		}
+	}
+
+	GLuint VBO;
+
+	glGenBuffers(1, &VBO);
+
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+	glGenVertexArrays(1, &VAO);
+
+	glBindVertexArray(VAO);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)0);
+	glEnableVertexAttribArray(0);
+
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+	glEnableVertexAttribArray(1);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	glBindVertexArray(0);
+}
+
+void processActionInput(GLFWwindow* window) {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
 		glfwSetWindowShouldClose(window, GL_TRUE);
 	}
+
+	if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS) {
+		cubes[actualCubeX][actualCubeY][actualCubeZ].changeColor(actualColor);
+
+		setupCubesClass();
+	}
+}
+
+void processInput(GLFWwindow* window) {
+	processColorInput(window); 
+	processActionInput(window);
+	processMovementInput(window);
 }
 
 void renderCubes() {
@@ -125,75 +222,75 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 	cameraFront = glm::normalize(front);
 }
 
-Cube initializateCube() {
-	Point frontBottomTriangleTopPoint = Point(0.0, 0.1, 0.0);
-	Point frontBottomTriangleLeftPoint = Point(0.0, 0.0, 0.0);
-	Point frontBottomTriangleRightPoint = Point(0.1, 0.0, 0.0);
+Cube instantiateNewCube(float addX, float addY, float addZ) {
+	Point frontBottomTriangleTopPoint = Point(0.0 + addX, 0.1 + addY, 0.0 + addZ);
+	Point frontBottomTriangleLeftPoint = Point(0.0 + addX, 0.0 + addY, 0.0 + addZ);
+	Point frontBottomTriangleRightPoint = Point(0.1 + addX, 0.0 + addY, 0.0 + addZ);
 	Triangle frontBottomTriangle = Triangle(frontBottomTriangleTopPoint, frontBottomTriangleLeftPoint, frontBottomTriangleRightPoint);
 
-	Point frontTopTriangleTopPoint = Point(0.1, 0.1, 0.0);
-	Point frontTopTriangleLeftPoint = Point(0.0, 0.1, 0.0);
-	Point frontTopTriangleRightPoint = Point(0.1, 0.0, 0.0);
+	Point frontTopTriangleTopPoint = Point(0.1 + addX, 0.1 + addY, 0.0 + addZ);
+	Point frontTopTriangleLeftPoint = Point(0.0 + addX, 0.1 + addY, 0.0 + addZ);
+	Point frontTopTriangleRightPoint = Point(0.1 + addX, 0.0 + addY, 0.0 + addZ);
 	Triangle frontTopTriangle = Triangle(frontTopTriangleTopPoint, frontTopTriangleLeftPoint, frontTopTriangleRightPoint);
 
 	Square frontSquare = Square(frontTopTriangle, frontBottomTriangle);
 
-	Point backBottomTriangleTopPoint = Point(0.0, 0.1, 0.1);
-	Point backBottomTriangleLeftPoint = Point(0.0, 0.0, 0.1);
-	Point backBottomTriangleRightPoint = Point(0.1, 0.0, 0.1);
+	Point backBottomTriangleTopPoint = Point(0.0 + addX, 0.1 + addY, 0.1 + addZ);
+	Point backBottomTriangleLeftPoint = Point(0.0 + addX, 0.0 + addY, 0.1 + addZ);
+	Point backBottomTriangleRightPoint = Point(0.1 + addX, 0.0 + addY, 0.1 + addZ);
 	Triangle backBottomTriangle = Triangle(backBottomTriangleTopPoint, backBottomTriangleLeftPoint, backBottomTriangleRightPoint);
 
-	Point backTopTriangleTopPoint = Point(0.1, 0.1, 0.1);
-	Point backTopTriangleLeftPoint = Point(0.0, 0.1, 0.1);
-	Point backTopTriangleRightPoint = Point(0.1, 0.0, 0.1);
+	Point backTopTriangleTopPoint = Point(0.1 + addX, 0.1 + addY, 0.1 + addZ);
+	Point backTopTriangleLeftPoint = Point(0.0 + addX, 0.1 + addY, 0.1 + addZ);
+	Point backTopTriangleRightPoint = Point(0.1 + addX, 0.0 + addY, 0.1 + addZ);
 	Triangle backTopTriangle = Triangle(backTopTriangleTopPoint, backTopTriangleLeftPoint, backTopTriangleRightPoint);
 
 	Square backSquare = Square(backTopTriangle, backBottomTriangle);
 
-	Point leftBottomTriangleTopPoint = Point(0.0, 0.1, 0.0);
-	Point leftBottomTriangleLeftPoint = Point(0.0, 0.0, 0.0);
-	Point leftBottomTriangleRightPoint = Point(0.0, 0.0, 0.1);
+	Point leftBottomTriangleTopPoint = Point(0.0 + addX, 0.1 + addY, 0.0 + addZ);
+	Point leftBottomTriangleLeftPoint = Point(0.0 + addX, 0.0 + addY, 0.0 + addZ);
+	Point leftBottomTriangleRightPoint = Point(0.0 + addX, 0.0 + addY, 0.1 + addZ);
 	Triangle leftBottomTriangle = Triangle(leftBottomTriangleTopPoint, leftBottomTriangleLeftPoint, leftBottomTriangleRightPoint);
 
-	Point leftTopTriangleTopPoint = Point(0.0, 0.1, 0.1);
-	Point leftTopTriangleLeftPoint = Point(0.0, 0.1, 0.0);
-	Point leftTopTriangleRightPoint = Point(0.0, 0.0, 0.1);
+	Point leftTopTriangleTopPoint = Point(0.0 + addX, 0.1 + addY, 0.1 + addZ);
+	Point leftTopTriangleLeftPoint = Point(0.0 + addX, 0.1 + addY, 0.0 + addZ);
+	Point leftTopTriangleRightPoint = Point(0.0 + addX, 0.0 + addY, 0.1 + addZ);
 	Triangle leftTopTriangle = Triangle(leftTopTriangleTopPoint, leftTopTriangleLeftPoint, leftTopTriangleRightPoint);
 
 	Square leftSquare = Square(leftTopTriangle, leftBottomTriangle);
 
-	Point rightBottomTriangleTopPoint = Point(0.1, 0.1, 0.0);
-	Point rightBottomTriangleLeftPoint = Point(0.1, 0.0, 0.0);
-	Point rightBottomTriangleRightPoint = Point(0.1, 0.0, 0.1);
+	Point rightBottomTriangleTopPoint = Point(0.1 + addX, 0.1 + addY, 0.0 + addZ);
+	Point rightBottomTriangleLeftPoint = Point(0.1 + addX, 0.0 + addY, 0.0 + addZ);
+	Point rightBottomTriangleRightPoint = Point(0.1 + addX, 0.0 + addY, 0.1 + addZ);
 	Triangle rightBottomTriangle = Triangle(rightBottomTriangleTopPoint, rightBottomTriangleLeftPoint, rightBottomTriangleRightPoint);
 
-	Point rightTopTriangleTopPoint = Point(0.1, 0.1, 0.1);
-	Point rightTopTriangleLeftPoint = Point(0.1, 0.1, 0.0);
-	Point rightTopTriangleRightPoint = Point(0.1, 0.0, 0.1);
+	Point rightTopTriangleTopPoint = Point(0.1 + addX, 0.1 + addY, 0.1 + addZ);
+	Point rightTopTriangleLeftPoint = Point(0.1 + addX, 0.1 + addY, 0.0 + addZ);
+	Point rightTopTriangleRightPoint = Point(0.1 + addX, 0.0 + addY, 0.1 + addZ);
 	Triangle rightTopTriangle = Triangle(rightTopTriangleTopPoint, rightTopTriangleLeftPoint, rightTopTriangleRightPoint);
 
 	Square rightSquare = Square(rightTopTriangle, rightBottomTriangle);
 
-	Point topBottomTriangleTopPoint = Point(0.0, 0.1, 0.0);
-	Point topBottomTriangleLeftPoint = Point(0.1, 0.1, 0.0);
-	Point topBottomTriangleRightPoint = Point(0.1, 0.1, 0.1);
+	Point topBottomTriangleTopPoint = Point(0.0 + addX, 0.1 + addY, 0.0 + addZ);
+	Point topBottomTriangleLeftPoint = Point(0.1 + addX, 0.1 + addY, 0.0 + addZ);
+	Point topBottomTriangleRightPoint = Point(0.1 + addX, 0.1 + addY, 0.1 + addZ);
 	Triangle topBottomTriangle = Triangle(topBottomTriangleTopPoint, topBottomTriangleLeftPoint, topBottomTriangleRightPoint);
 
-	Point topTopTriangleTopPoint = Point(0.0, 0.1, 0.1);
-	Point topTopTriangleLeftPoint = Point(0.0, 0.1, 0.0);
-	Point topTopTriangleRightPoint = Point(0.1, 0.1, 0.1);
+	Point topTopTriangleTopPoint = Point(0.0 + addX, 0.1 + addY, 0.1 + addZ);
+	Point topTopTriangleLeftPoint = Point(0.0 + addX, 0.1 + addY, 0.0 + addZ);
+	Point topTopTriangleRightPoint = Point(0.1 + addX, 0.1 + addY, 0.1 + addZ);
 	Triangle topTopTriangle = Triangle(topTopTriangleTopPoint, topTopTriangleLeftPoint, topTopTriangleRightPoint);
 
 	Square topSquare = Square(topTopTriangle, topBottomTriangle);
 
-	Point bottomBottomTriangleTopPoint = Point(0.0, 0.1, 0.0);
-	Point bottomBottomTriangleLeftPoint = Point(0.1, 0.1, 0.0);
-	Point bottomBottomTriangleRightPoint = Point(0.1, 0.1, 0.1);
+	Point bottomBottomTriangleTopPoint = Point(0.0 + addX, 0.1 + addY, 0.0 + addZ);
+	Point bottomBottomTriangleLeftPoint = Point(0.1 + addX, 0.1 + addY, 0.0 + addZ);
+	Point bottomBottomTriangleRightPoint = Point(0.1 + addX, 0.1 + addY, 0.1 + addZ);
 	Triangle bottomBottomTriangle = Triangle(bottomBottomTriangleTopPoint, bottomBottomTriangleLeftPoint, bottomBottomTriangleRightPoint);
 
-	Point bottomTopTriangleTopPoint = Point(0.0, 0.1, 0.1);
-	Point bottomTopTriangleLeftPoint = Point(0.0, 0.1, 0.0);
-	Point bottomTopTriangleRightPoint = Point(0.1, 0.1, 0.1);
+	Point bottomTopTriangleTopPoint = Point(0.0 + addX, 0.1 + addY, 0.1 + addZ);
+	Point bottomTopTriangleLeftPoint = Point(0.0 + addX, 0.1 + addY, 0.0 + addZ);
+	Point bottomTopTriangleRightPoint = Point(0.1 + addX, 0.1 + addY, 0.1 + addZ);
 	Triangle bottomTopTriangle = Triangle(bottomTopTriangleTopPoint, bottomTopTriangleLeftPoint, bottomTopTriangleRightPoint);
 
 	Square bottomSquare = Square(bottomTopTriangle, bottomBottomTriangle);
@@ -201,66 +298,31 @@ Cube initializateCube() {
 	return Cube(frontSquare, backSquare, leftSquare, rightSquare, topSquare, bottomSquare);
 }
 
-int setupCubesClass() {
-	Cube cube = initializateCube();
+void initializeCubeMatrix() {
+	float addX = 0.0;
+	float addY = 0.0;
+	float addZ = 0.0;
 
-	float* points = cube.getPoints();
-
-	GLfloat vertices[TOTAL_VERTICES_SIZE];
-
-	int actualIndex = 0;
-
-	for (int i = 0; i < TOTAL_CUBES; i++) {
-		for (int j = 0; j < SIZE_PER_CUBE; j++) {
-			vertices[actualIndex] = points[j];
-
-			actualIndex++;
+	for (int i = 0; i < GRID_SIZE; i++) {
+		for (int j = 0; j < GRID_SIZE; j++) {
+			for (int k = 0; k < GRID_SIZE; k++) {
+				cubes[i][j][k] = instantiateNewCube(addX, addY, addZ);
+				
+				addX += 0.1;
+			}
+			addY += 0.1; 
+			addX = 0.0;
 		}
-
-		cube.increaseX();
-
-		if (i != 0 && (i + 1) % GRID_SIZE == 0) {
-			cube.increaseY();
-			cube.initializateX();
-		}
-
-		if (i != 0 && (i + 1) % CUBES_PER_GRID == 0) {
-			cube.increaseZ();
-			cube.initializateY();
-		}
-
-		points = cube.getPoints();
+		addZ += 0.1;
+		addY = 0.0;
 	}
-
-	GLuint VBO, VAO;
-
-	glGenBuffers(1, &VBO);
-
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-	glGenVertexArrays(1, &VAO);
-
-	glBindVertexArray(VAO);
-
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)0);
-	glEnableVertexAttribArray(0);
-
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
-	glEnableVertexAttribArray(1);
-
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	glBindVertexArray(0);
-
-	return VAO;
 }
 
 int main() {
 	glfwInit();
 
-	//initializePaletteVector();
+	initializeColors();
+	initializeCubeMatrix();
 
 	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Trabalho Grau A - Marcelo dos Santos Alvarez!", nullptr, nullptr);
 
@@ -277,7 +339,7 @@ int main() {
 
 	Shader shader("../shaders/helloCamera.vs", "../shaders/helloCamera.fs");
 
-	GLuint VAO = setupCubesClass();
+	setupCubesClass();
 
 	glUseProgram(shader.ID);
 
@@ -296,8 +358,6 @@ int main() {
 	{
 		glfwPollEvents();
 
-		processInput(window);
-
 		int width, height;
 
 		glfwGetFramebufferSize(window, &width, &height);
@@ -314,14 +374,16 @@ int main() {
 
 		shader.setMat4("view", glm::value_ptr(view));
 
+		processInput(window);
+
 		glBindVertexArray(VAO);
 
 		glm::mat4 model = glm::mat4(1);
+
 		renderCubes();
-		//model = glm::translate(model, glm::vec3(0.4, 0.0, 0.0));
-		//model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(0, 1, 0));
-		//model = glm::scale(model, glm::vec3(2.0, 2.0, 1.0));
+
 		GLint modelLoc = glGetUniformLocation(shader.ID, "model");
+
 		glUniformMatrix4fv(modelLoc, 1, FALSE, glm::value_ptr(model));
 
 		glBindVertexArray(0);

@@ -102,3 +102,13 @@ void Cube::initializateY() {
 	topSquare.initializateY();
 	bottomSquare.initializateY();
 }
+
+
+void Cube::changeColor(Color color) {
+	frontSquare.changeColor(color);
+	backSquare.changeColor(color);
+	leftSquare.changeColor(color);
+	rightSquare.changeColor(color);
+	topSquare.changeColor(color);
+	bottomSquare.changeColor(color);
+}
