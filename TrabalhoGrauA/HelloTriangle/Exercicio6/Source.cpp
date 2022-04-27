@@ -114,17 +114,16 @@ enum keyColors {
 	NINE = '9',
 };
 
-namespace gridDirections
-{
-	enum gridDirectionsEnum {
-		UP = GLFW_KEY_UP,
-		DOWN = GLFW_KEY_DOWN,
-		LEFT = GLFW_KEY_LEFT,
-		RIGHT = GLFW_KEY_RIGHT
-	};
-}
+enum gridDirections {
+	GO_ON = GLFW_KEY_UP,
+	GO_BACK = GLFW_KEY_DOWN,
 
-using namespace gridDirections;
+	GO_UP = GLFW_KEY_SPACE,
+	GO_DOWN = GLFW_KEY_BACKSPACE,
+
+	GO_RIGHT = GLFW_KEY_RIGHT,
+	GO_LEFT = GLFW_KEY_LEFT,
+};
 
 void processColorInput(int key) {
 	switch (key) {
@@ -183,11 +182,23 @@ void processMovementInput(GLFWwindow* window) {
 
 void processGridInput(int key) {
 	switch (key) {
-		case gridDirections::UP:
+		case gridDirections::GO_ON:
+			actualCubeZ = actualCubeZ < GRID_SIZE - 1 ? actualCubeZ + 1 : actualCubeZ;
+			break;
+		case gridDirections::GO_BACK:
+			actualCubeZ = actualCubeZ >= 1 ? actualCubeZ - 1 : actualCubeZ;
+			break;
+		case gridDirections::GO_UP:
 			actualCubeY = actualCubeY < GRID_SIZE - 1 ? actualCubeY + 1 : actualCubeY;
 			break;
-		case gridDirections::DOWN:
-			actualCubeY = actualCubeY > 1 ? actualCubeY - 1 : actualCubeY;
+		case gridDirections::GO_DOWN:
+			actualCubeY = actualCubeY >= 1 ? actualCubeY - 1 : actualCubeY;
+			break;
+		case gridDirections::GO_RIGHT:
+			actualCubeX = actualCubeX < GRID_SIZE - 1 ? actualCubeX + 1 : actualCubeX;
+			break;
+		case gridDirections::GO_LEFT:
+			actualCubeX = actualCubeX >= 1 ? actualCubeX - 1 : actualCubeX;
 			break;
 	}
 }
