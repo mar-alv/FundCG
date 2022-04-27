@@ -49,10 +49,16 @@ GLfloat vertices[TOTAL_VERTICES_SIZE];
 GLuint VAO;
 
 enum colors {
+	WHITE,
 	RED,
 	GREEN,
 	BLUE,
-	WHITE
+	YELLOW,
+	ORANGE,
+	PURPLE,
+	BLACK,
+	PINK,
+	CYAN
 };
 
 void initializeColors() {
@@ -60,13 +66,25 @@ void initializeColors() {
 	Color green = Color(0.0, 1.0, 0.0);
 	Color blue = Color(0.0, 0.0, 1.0);
 	Color white = Color(1.0, 1.0, 1.0);
-
+	Color yellow = Color(1.0, 1.0, 0.0);
+	Color orange = Color(1.0, 0.65, 0.0);
+	Color purple = Color(0.5, 0.0, 0.5);
+	Color black = Color(0.0, 0.0, 0.0);
+	Color pink = Color(1.0, 0.08, 0.58);
+	Color cyan = Color(0.0, 1.0, 1.0);
+	
+	pallete.push_back(white);
 	pallete.push_back(red);
 	pallete.push_back(green);
 	pallete.push_back(blue);
-	pallete.push_back(white);
+	pallete.push_back(yellow);
+	pallete.push_back(orange);
+	pallete.push_back(purple);
+	pallete.push_back(black);
+	pallete.push_back(pink);
+	pallete.push_back(cyan);
 
-	actualColor = red;
+	actualColor = white;
 }
 
 void changeActualColor(int index) {
@@ -88,6 +106,12 @@ enum keyColors {
 	ONE = '1',
 	TWO = '2',
 	THREE = '3',
+	FOUR = '4',
+	FIVE = '5',
+	SIX = '6',
+	SEVEN = '7',
+	EIGHT = '8',
+	NINE = '9',
 };
 
 namespace gridDirections
@@ -105,16 +129,34 @@ using namespace gridDirections;
 void processColorInput(int key) {
 	switch (key) {
 		case keyColors::ZERO:
-			changeActualColor(colors::RED);
+			changeActualColor(colors::WHITE);
 			break;
 		case keyColors::ONE:
-			changeActualColor(colors::GREEN);
+			changeActualColor(colors::RED);
 			break;
 		case keyColors::TWO:
-			changeActualColor(colors::BLUE);
+			changeActualColor(colors::GREEN);
 			break;
 		case keyColors::THREE:
-			changeActualColor(colors::WHITE);
+			changeActualColor(colors::BLUE);
+			break;
+		case keyColors::FOUR:
+			changeActualColor(colors::YELLOW);
+			break;
+		case keyColors::FIVE:
+			changeActualColor(colors::ORANGE);
+			break;
+		case keyColors::SIX:
+			changeActualColor(colors::PURPLE);
+			break;
+		case keyColors::SEVEN:
+			changeActualColor(colors::BLACK);
+			break;
+		case keyColors::EIGHT:
+			changeActualColor(colors::PINK);
+			break;
+		case keyColors::NINE:
+			changeActualColor(colors::CYAN);
 			break;
 	}
 }
