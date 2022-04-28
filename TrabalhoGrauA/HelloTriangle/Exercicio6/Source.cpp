@@ -11,16 +11,9 @@
 #include <GLFW/glfw3.h>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include "Constants.h"
 
 using namespace std;
-
-const int GRID_SIZE = 3;
-const int SIZE_PER_CUBE = 216;
-const GLuint WIDTH = 800, HEIGHT = 600;
-const int POINTS_PER_SQUARE = SIZE_PER_CUBE / 6;
-const int CUBES_PER_GRID = GRID_SIZE * GRID_SIZE;
-const int TOTAL_CUBES = GRID_SIZE * GRID_SIZE * GRID_SIZE;
-const int TOTAL_VERTICES_SIZE = SIZE_PER_CUBE * TOTAL_CUBES;
 
 glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);

@@ -1,0 +1,9 @@
+#pragma once
+
+const int GRID_SIZE = 3;
+const int SIZE_PER_CUBE = 216;
+const GLuint WIDTH = 800, HEIGHT = 600;
+const int POINTS_PER_SQUARE = SIZE_PER_CUBE / 6;
+const int CUBES_PER_GRID = GRID_SIZE * GRID_SIZE;
+const int TOTAL_CUBES = GRID_SIZE * GRID_SIZE * GRID_SIZE;
+const int TOTAL_VERTICES_SIZE = SIZE_PER_CUBE * TOTAL_CUBES;
