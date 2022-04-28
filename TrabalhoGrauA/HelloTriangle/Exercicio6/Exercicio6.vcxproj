@@ -146,6 +146,7 @@
     <ClCompile Include="Color.cpp" />
     <ClCompile Include="Cube.cpp" />
     <ClCompile Include="glad.c" />
+    <ClCompile Include="Pallete.cpp" />
     <ClCompile Include="Point.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Source.cpp" />
@@ -159,6 +160,7 @@
     <ClInclude Include="Cube.h" />
     <ClInclude Include="GridDirectionsKeyEnum.h" />
     <ClInclude Include="NumbersKeyEnum.h" />
+    <ClInclude Include="Pallete.h" />
     <ClInclude Include="Point.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="SpaceDirectionsKeyEnum.h" />

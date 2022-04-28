@@ -15,8 +15,11 @@
 #include "SpaceDirectionsKeyEnum.h"
 #include "GridDirectionsKeyEnum.h"
 #include "NumbersKeyEnum.h"
+#include "Pallete.h"
 
 using namespace std;
+
+Pallete pallete;
 
 glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
@@ -30,84 +33,15 @@ bool firstTimeMovingMouse = true;
 float yaw = -90.0;
 float pitch = 0.0;
 
-Color actualColor;
-
 Cube cubes[GRID_SIZE][GRID_SIZE][GRID_SIZE];
 
 int actualCubeX = 0;
 int actualCubeY = 0;
 int actualCubeZ = 0;
 
-std::vector <Color> pallete;
-
 GLfloat vertices[TOTAL_VERTICES_SIZE];
 
 GLuint VAO;
-
-void initializeColors() {
-	Color red = Color(1.0, 0.0, 0.0);
-	Color green = Color(0.0, 1.0, 0.0);
-	Color blue = Color(0.0, 0.0, 1.0);
-	Color white = Color(1.0, 1.0, 1.0);
-	Color yellow = Color(1.0, 1.0, 0.0);
-	Color orange = Color(1.0, 0.65, 0.0);
-	Color purple = Color(0.5, 0.0, 0.5);
-	Color black = Color(0.0, 0.0, 0.0);
-	Color pink = Color(1.0, 0.08, 0.58);
-	Color cyan = Color(0.0, 1.0, 1.0);
-	
-	pallete.push_back(white);
-	pallete.push_back(red);
-	pallete.push_back(green);
-	pallete.push_back(blue);
-	pallete.push_back(yellow);
-	pallete.push_back(orange);
-	pallete.push_back(purple);
-	pallete.push_back(black);
-	pallete.push_back(pink);
-	pallete.push_back(cyan);
-
-	actualColor = white;
-}
-
-void changeActualColor(int index) {
-	actualColor = pallete.at(index);
-}
-
-void processColorInput(int key) {
-	switch (key) {
-		case NumbersKeyEnum::ZERO:
-			changeActualColor(ColorsEnum::WHITE);
-			break;
-		case NumbersKeyEnum::ONE:
-			changeActualColor(ColorsEnum::RED);
-			break;
-		case NumbersKeyEnum::TWO:
-			changeActualColor(ColorsEnum::GREEN);
-			break;
-		case NumbersKeyEnum::THREE:
-			changeActualColor(ColorsEnum::BLUE);
-			break;
-		case NumbersKeyEnum::FOUR:
-			changeActualColor(ColorsEnum::YELLOW);
-			break;
-		case NumbersKeyEnum::FIVE:
-			changeActualColor(ColorsEnum::ORANGE);
-			break;
-		case NumbersKeyEnum::SIX:
-			changeActualColor(ColorsEnum::PURPLE);
-			break;
-		case NumbersKeyEnum::SEVEN:
-			changeActualColor(ColorsEnum::BLACK);
-			break;
-		case NumbersKeyEnum::EIGHT:
-			changeActualColor(ColorsEnum::PINK);
-			break;
-		case NumbersKeyEnum::NINE:
-			changeActualColor(ColorsEnum::CYAN);
-			break;
-	}
-}
 
 void processMovementInput(GLFWwindow* window) {
 	float cameraSpeed = 0.001f;
@@ -198,7 +132,7 @@ void processActionInput(int key, GLFWwindow* window) {
 			glfwSetWindowShouldClose(window, GL_TRUE);
 			break;
 		case GLFW_KEY_ENTER:
-			cubes[actualCubeX][actualCubeY][actualCubeZ].changeColor(actualColor);
+			cubes[actualCubeX][actualCubeY][actualCubeZ].changeColor(pallete.getActualColor());
 
 			setupCubesClass();
 			break;
@@ -208,7 +142,7 @@ void processActionInput(int key, GLFWwindow* window) {
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode) {
 	if (action == GLFW_PRESS) {
 		processGridInput(key);
-		processColorInput(key);
+		pallete.processColorInput(key);
 		processActionInput(key, window);
 	}
 }
@@ -353,7 +287,6 @@ void initializeCubeMatrix() {
 int main() {
 	glfwInit();
 
-	initializeColors();
 	initializeCubeMatrix();
 
 	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Trabalho Grau A - Marcelo dos Santos Alvarez!", nullptr, nullptr);
