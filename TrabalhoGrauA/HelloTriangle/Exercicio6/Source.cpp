@@ -8,10 +8,13 @@
 #include <iterator>
 #include <glm/glm.hpp>
 #include <glad/glad.h>
-#include <GLFW/glfw3.h>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include "Constants.h"
+#include "ColorsEnum.h"
+#include "SpaceDirectionsKeyEnum.h"
+#include "GridDirectionsKeyEnum.h"
+#include "NumbersKeyEnum.h"
 
 using namespace std;
 
@@ -40,19 +43,6 @@ std::vector <Color> pallete;
 GLfloat vertices[TOTAL_VERTICES_SIZE];
 
 GLuint VAO;
-
-enum colors {
-	WHITE,
-	RED,
-	GREEN,
-	BLUE,
-	YELLOW,
-	ORANGE,
-	PURPLE,
-	BLACK,
-	PINK,
-	CYAN
-};
 
 void initializeColors() {
 	Color red = Color(1.0, 0.0, 0.0);
@@ -84,71 +74,37 @@ void changeActualColor(int index) {
 	actualColor = pallete.at(index);
 }
 
-enum keyDirections {
-	FRONT = 'W',
-	BACK = 'S',
-	LEFT = 'A',
-	RIGHT = 'D',
-	TOP = 'E',
-	BOTTOM = 'Q',
-	EXIT = 'ESC',
-};
-
-enum keyColors {
-	ZERO = '0',
-	ONE = '1',
-	TWO = '2',
-	THREE = '3',
-	FOUR = '4',
-	FIVE = '5',
-	SIX = '6',
-	SEVEN = '7',
-	EIGHT = '8',
-	NINE = '9',
-};
-
-enum gridDirections {
-	GO_ON = GLFW_KEY_UP,
-	GO_BACK = GLFW_KEY_DOWN,
-
-	GO_UP = GLFW_KEY_SPACE,
-	GO_DOWN = GLFW_KEY_BACKSPACE,
-
-	GO_RIGHT = GLFW_KEY_RIGHT,
-	GO_LEFT = GLFW_KEY_LEFT,
-};
-
 void processColorInput(int key) {
 	switch (key) {
-		case keyColors::ZERO:
-			changeActualColor(colors::WHITE);
+		case NumbersKeyEnum::ZERO:
+			changeActualColor(ColorsEnum::WHITE);
 			break;
-		case keyColors::ONE:
-			changeActualColor(colors::RED);
+		case NumbersKeyEnum::ONE:
+			changeActualColor(ColorsEnum::RED);
 			break;
-		case keyColors::TWO:
-			changeActualColor(colors::GREEN);
+		case NumbersKeyEnum::TWO:
+			changeActualColor(ColorsEnum::GREEN);
 			break;
-		case keyColors::THREE:
-			changeActualColor(colors::BLUE);
+		case NumbersKeyEnum::THREE:
+			changeActualColor(ColorsEnum::BLUE);
 			break;
-		case keyColors::FOUR:
-			changeActualColor(colors::YELLOW);
+		case NumbersKeyEnum::FOUR:
+			changeActualColor(ColorsEnum::YELLOW);
 			break;
-		case keyColors::FIVE:
-			changeActualColor(colors::ORANGE);
+		case NumbersKeyEnum::FIVE:
+			changeActualColor(ColorsEnum::ORANGE);
 			break;
-		case keyColors::SIX:
-			changeActualColor(colors::PURPLE);
+		case NumbersKeyEnum::SIX:
+			changeActualColor(ColorsEnum::PURPLE);
 			break;
-		case keyColors::SEVEN:
-			changeActualColor(colors::BLACK);
+		case NumbersKeyEnum::SEVEN:
+			changeActualColor(ColorsEnum::BLACK);
 			break;
-		case keyColors::EIGHT:
-			changeActualColor(colors::PINK);
+		case NumbersKeyEnum::EIGHT:
+			changeActualColor(ColorsEnum::PINK);
 			break;
-		case keyColors::NINE:
-			changeActualColor(colors::CYAN);
+		case NumbersKeyEnum::NINE:
+			changeActualColor(ColorsEnum::CYAN);
 			break;
 	}
 }
@@ -156,41 +112,41 @@ void processColorInput(int key) {
 void processMovementInput(GLFWwindow* window) {
 	float cameraSpeed = 0.001f;
 
-	if (glfwGetKey(window, keyDirections::FRONT) == GLFW_PRESS) {
+	if (glfwGetKey(window, SpaceDirectionsKeyEnum::FRONT) == GLFW_PRESS) {
 		cameraPos += cameraSpeed * cameraFront;
 	}
 
-	if (glfwGetKey(window, keyDirections::BACK) == GLFW_PRESS) {
+	if (glfwGetKey(window, SpaceDirectionsKeyEnum::BACK) == GLFW_PRESS) {
 		cameraPos -= cameraSpeed * cameraFront;
 	}
 
-	if (glfwGetKey(window, keyDirections::LEFT) == GLFW_PRESS) {
+	if (glfwGetKey(window, SpaceDirectionsKeyEnum::LEFT) == GLFW_PRESS) {
 		cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
 	}
 
-	if (glfwGetKey(window, keyDirections::RIGHT) == GLFW_PRESS) {
+	if (glfwGetKey(window, SpaceDirectionsKeyEnum::RIGHT) == GLFW_PRESS) {
 		cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
 	}
 }
 
 void processGridInput(int key) {
 	switch (key) {
-		case gridDirections::GO_ON:
+		case GridDirectionsKeyEnum::GO_ON:
 			actualCubeZ = actualCubeZ < GRID_SIZE - 1 ? actualCubeZ + 1 : actualCubeZ;
 			break;
-		case gridDirections::GO_BACK:
+		case GridDirectionsKeyEnum::GO_BACK:
 			actualCubeZ = actualCubeZ >= 1 ? actualCubeZ - 1 : actualCubeZ;
 			break;
-		case gridDirections::GO_UP:
+		case GridDirectionsKeyEnum::GO_UP:
 			actualCubeY = actualCubeY < GRID_SIZE - 1 ? actualCubeY + 1 : actualCubeY;
 			break;
-		case gridDirections::GO_DOWN:
+		case GridDirectionsKeyEnum::GO_DOWN:
 			actualCubeY = actualCubeY >= 1 ? actualCubeY - 1 : actualCubeY;
 			break;
-		case gridDirections::GO_RIGHT:
+		case GridDirectionsKeyEnum::GO_RIGHT:
 			actualCubeX = actualCubeX < GRID_SIZE - 1 ? actualCubeX + 1 : actualCubeX;
 			break;
-		case gridDirections::GO_LEFT:
+		case GridDirectionsKeyEnum::GO_LEFT:
 			actualCubeX = actualCubeX >= 1 ? actualCubeX - 1 : actualCubeX;
 			break;
 	}
