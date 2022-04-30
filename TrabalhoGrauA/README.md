@@ -4,10 +4,10 @@
 Em Constants.h mudar a constante GRID_SIZE para outro número
 
 # Teclas para mover-se no espaço 3D:
-W - Ir pra frente
-S - Ir pra trás
-A - Ir pra esquerda
-D - Ir pra direita
+* W - Ir pra frente
+* S - Ir pra trás
+* A - Ir pra esquerda
+* D - Ir pra direita
 
 # Teclas para mover-se no grid:
 Seta pra cima - Ir pra frente
