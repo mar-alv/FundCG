@@ -28,3 +28,7 @@ Em Constants.h mudar a constante GRID_SIZE para outro número
 * 7 - Preto
 * 8 - Rosa
 * 9 - Ciano
+
+# Teclas especiais:
+* ESC - Fechar o programa
+* Enter - Trocar a cor do cubo selecionado
