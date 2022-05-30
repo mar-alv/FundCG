@@ -1,17 +1,34 @@
 # FCG2022-1
 
-# Exercício 1) O que é a GLSL? Quais os dois tipos de shaders são obrigatórios no pipeline programável da versão atual que trabalhamos em aula e o que eles processam?
+# Alterar tamanho do grande cubo:
+Em Constants.h mudar a constante GRID_SIZE para outro número
 
-Assim como HLSL, é uma linguagem de shader que trabalha com programas executados na GPU. Tem como shaders obrigatórios:
-- Vertex Shader, que posiciona os vértices nas coordenadas finais antes do OpenGL rasterizar a geomentri para 2D
-- Fragment Shader, rodam para cada fragmento entre os vértices
+# Teclas para mover-se no espaço 3D:
+* W - Ir pra frente
+* S - Ir pra trás
+* A - Ir pra esquerda
+* D - Ir pra direita
 
-# Exercício 2) O que são primitivas gráficas? Como fazemos o armazenamento dos vértices na OpenGL?
-- Representação de uma forma geométrica
+# Teclas para mover-se no grid:
+* Seta pra cima - Ir pra frente
+* Seta pra baixo - Ir pra trás
+* Seta pra esquerda - Ir pra esquerda
+* Seta pra direita - Ir pra direita
+* Espaço - Ir pra cima
+* Backspace - Ir pra baixo
 
-# Exercício 3) Explique o que é VBO, VAO e EBO, e como se relacionam (se achar mais fácil, pode fazer um gráfico representando a relação entre eles). 
-- VBO: Buffer/Array, normalmente de float, que envia dados dos vértices diretamente na memória da GPU, permitindo que objs sejam renderizados mais rapdiamente pela place gráfica
-- VAO: Fazem a ligação dos atributos de um vértice(Posições, cores, normais) e define qual VBOserá usado, localização dos dados deles e seus formatos.
-- EBO: Faz associação da ideia de índices, evitando que vértices sejam replicadas no VBO
+# Teclas para trocar a cor:
+* 0 - Branco
+* 1 - Vermelho
+* 2 - Verde
+* 3 - Azul
+* 4 - Amarelo
+* 5 - Laranja
+* 6 - Roxo
+* 7 - Preto
+* 8 - Rosa
+* 9 - Ciano
 
-# Exercício 4) Analise o código fonte do projeto Hello Triangle. Localize e relacione os conceitos de shaders, VBOs e VAO apresentados até então. Não precisa entregar nada neste exercício. 
+# Teclas especiais:
+* ESC - Fechar o programa
+* Enter - Trocar a cor do cubo selecionado
