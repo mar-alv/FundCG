@@ -1,0 +1,9 @@
+﻿  Shader.cpp
+  Origem.cpp
+C:\Users\Marcelo\Desktop\Unisinos\2022 01\Fundamentos de Computação Gráfica\Repositório\FundCG\spritesheet\HelloTextures\HelloTextures\Origem.cpp(59,44): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Marcelo\Desktop\Unisinos\2022 01\Fundamentos de Computação Gráfica\Repositório\FundCG\spritesheet\HelloTextures\HelloTextures\Origem.cpp(59,32): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  Sprite.cpp
+C:\Users\Marcelo\Desktop\Unisinos\2022 01\Fundamentos de Computação Gráfica\Repositório\FundCG\spritesheet\HelloTextures\HelloTextures\Sprite.cpp(60,17): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Marcelo\Desktop\Unisinos\2022 01\Fundamentos de Computação Gráfica\Repositório\FundCG\spritesheet\HelloTextures\HelloTextures\Sprite.cpp(61,17): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+  Generating Code...
+  HelloTextures.vcxproj -> C:\Users\Marcelo\Desktop\Unisinos\2022 01\Fundamentos de Computação Gráfica\Repositório\FundCG\spritesheet\HelloTextures\Debug\HelloTextures.exe
