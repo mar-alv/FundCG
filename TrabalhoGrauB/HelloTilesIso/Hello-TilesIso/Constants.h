@@ -2,10 +2,11 @@
 #include <string>
 #include <glad/glad.h>
 
-const int GRID_SIZE = 10;
-
 const GLuint WIDTH = 800;
 const GLuint HEIGHT = 600;
+
+const float GRIDS_WIDTH = 64;
+const float GRIDS_HEIGHT = 32;
 
 const std::string SHADER_SPRITE_VS_PATH = "../shaders/sprite.vs";
 const std::string SHADER_SPRITE_FS_PATH = "../shaders/sprite.fs";

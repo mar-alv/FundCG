@@ -1,31 +1,30 @@
 #pragma once
-
 #include "Shader.h"
-
-// GLM
+#include "Constants.h"
 #include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-
+#include <glm/gtc/matrix_transform.hpp>
 
 class TileIso
 {
+protected:
+	GLuint VAO;
+
+	glm::vec4 cor;
+
+	Shader* shader;
+
 public:
 	TileIso();
 	~TileIso();
-	void inicializar(float th, float tw);
-	void setCor(float r, float g, float b);
-	void setCor(glm::vec4 cor);
+	
+	void inicializar();
+
 	void draw(glm::mat4 model);
+	
+	void setCor(glm::vec4 cor);
+	
 	void setShader(Shader *shader);
 
-	float getWidth() { return tw;  }
-	float getHeight() { return th; }
-protected:
-	GLuint VAO; //ids dos buffers (na real só precisaria guardar o VAO)
-
-	Shader *shader;
-	glm::vec4 cor;
-	float tw, th;
+	void setCor(float r, float g, float b);
 };
-

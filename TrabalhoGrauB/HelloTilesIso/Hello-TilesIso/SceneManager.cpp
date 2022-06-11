@@ -1,12 +1,14 @@
 #include "SceneManager.h"
 
-int SceneManager::dir = PARADO;
+int SceneManager::dir = GridDirectionsEnum::CENTER;
 bool SceneManager::resized = false;
 bool SceneManager::keys[1024] = { 0 };
 GLuint SceneManager::actualWindowWidth = WIDTH;
 GLuint SceneManager::actualWindowHeight = HEIGHT;
 
 SceneManager::SceneManager() {
+	actualLevel = 0;
+
 	srand(time(0));
 }
 
@@ -65,21 +67,31 @@ void SceneManager::key_callback(GLFWwindow* window, int key, int scancode, int a
 
 	if (action == GLFW_PRESS)
 	{
-		if (key == GLFW_KEY_W)
-		{
-			dir = NORTE;
-		}
-		if (key == GLFW_KEY_S)
-		{
-			dir = SUL;
-		}
-		if (key == GLFW_KEY_A)
-		{
-			dir = OESTE;
-		}
-		if (key == GLFW_KEY_D)
-		{
-			dir = LESTE;
+		switch (key) {
+		case GridDirectionsEnum::NORTH:
+			dir = GridDirectionsEnum::NORTH;
+			break;
+		case GridDirectionsEnum::SOUTH:
+			dir = GridDirectionsEnum::SOUTH;
+			break;
+		case GridDirectionsEnum::EAST:
+			dir = GridDirectionsEnum::EAST;
+			break;
+		case GridDirectionsEnum::WEST:
+			dir = GridDirectionsEnum::WEST;
+			break;
+		case GridDirectionsEnum::NORTH_EAST:
+			dir = GridDirectionsEnum::NORTH_EAST;
+			break;
+		case GridDirectionsEnum::NORTH_WEST:
+			dir = GridDirectionsEnum::NORTH_WEST;
+			break;
+		case GridDirectionsEnum::SOUTH_EAST:
+			dir = GridDirectionsEnum::SOUTH_EAST;
+			break;
+		case GridDirectionsEnum::SOUTH_WEST:
+			dir = GridDirectionsEnum::SOUTH_WEST;
+			break;
 		}
 	}
 }
@@ -98,28 +110,39 @@ void SceneManager::update() {
 	if (keys[GLFW_KEY_ESCAPE])
 		glfwSetWindowShouldClose(window, GL_TRUE);
 
-	if (dir == NORTE)
-	{
+	switch (dir) {
+	case GridDirectionsEnum::NORTH:
 		//atualiza posição do mapa onde personagem irá,
 		//conforme tabela de navegação do diamond
-	}
-
-	if (dir == SUL)
-	{
+		break;
+	case GridDirectionsEnum::SOUTH:
 		//atualiza posição do mapa onde personagem irá,
 		//conforme tabela de navegação do diamond
-	}
-
-	if (dir == LESTE)
-	{
+		break;
+	case GridDirectionsEnum::EAST:
 		//atualiza posição do mapa onde personagem irá,
 		//conforme tabela de navegação do diamond
-	}
-
-	if (dir == OESTE)
-	{
+		break;
+	case GridDirectionsEnum::WEST:
 		//atualiza posição do mapa onde personagem irá,
 		//conforme tabela de navegação do diamond
+		break;
+	case GridDirectionsEnum::NORTH_EAST:
+		//atualiza posição do mapa onde personagem irá,
+		//conforme tabela de navegação do diamond
+		break;
+	case GridDirectionsEnum::NORTH_WEST:
+		//atualiza posição do mapa onde personagem irá,
+		//conforme tabela de navegação do diamond
+		break;
+	case GridDirectionsEnum::SOUTH_EAST:
+		//atualiza posição do mapa onde personagem irá,
+		//conforme tabela de navegação do diamond
+		break;
+	case GridDirectionsEnum::SOUTH_WEST:
+		//atualiza posição do mapa onde personagem irá,
+		//conforme tabela de navegação do diamond
+		break;
 	}
 
 	if (poslinha < 0)
@@ -130,13 +153,13 @@ void SceneManager::update() {
 	{
 		poscoluna = 0;
 	}
-	if (poslinha > GRID_SIZE - 1)
+	if (poslinha > levels[actualLevel].getGridRowsCount() - 1)
 	{
-		poslinha = GRID_SIZE - 1;
+		poslinha = levels[actualLevel].getGridRowsCount() - 1;
 	}
-	if (poscoluna > GRID_SIZE - 1)
+	if (poscoluna > levels[actualLevel].getGridColumnCount() - 1)
 	{
-		poscoluna = GRID_SIZE - 1;
+		poscoluna = levels[actualLevel].getGridColumnCount() - 1;
 	}
 }
 
@@ -160,26 +183,15 @@ void SceneManager::render() {
 	float xi = 368;
 	float yi = 100;
 
-	for (int i = 0; i < GRID_SIZE; i++)
-	{
-		for (int j = 0; j < GRID_SIZE; j++)
-		{
-			float x = xi + (j - i) * tileset[0].getWidth() / 2.0;
-			float y = yi + (j + i) * tileset[0].getHeight() / 2.0;
+	levels[actualLevel].renderGridMap();
 
-			model = glm::mat4();
-			model = glm::translate(model, glm::vec3(x, y, 0.0));
-			tileset[map[i][j]].draw(model);
-		}
-	}
-	float x = xi + (poscoluna - poslinha) * tileset[0].getWidth() / 2.0;
-	float y = yi + (poscoluna + poslinha) * tileset[0].getHeight() / 2.0;
+	float x = xi + (poscoluna - poslinha) * GRIDS_WIDTH / 2.0;
+	float y = yi + (poscoluna + poslinha) * GRIDS_HEIGHT / 2.0;
 
 	model = glm::mat4();
 	model = glm::translate(model, glm::vec3(x, y, 0.0));
 
-	tileset[7].draw(model);
-
+	//levels[actualLevel].getTileset()[7].draw(model);
 	//Desenha o personagem
 }
 
@@ -196,144 +208,23 @@ void SceneManager::finish() {
 	glfwTerminate();
 }
 
-glm::vec4 normalizaRGB(glm::vec4 byteColor) {
-	glm::vec4 normColor(byteColor.r / 255.0, byteColor.g / 255.0, byteColor.b / 255.0, byteColor.a / 255.0);
-
-	return normColor;
-}
-
-
 void SceneManager::setupLevels() {
-	ifstream file;
-	std::string fileType = ".txt";
-	
-	char mat[GRID_SIZE][GRID_SIZE];
-	
-	file.open(LEVELS_PATH);
+	Level level0 = Level(shaders[0], '0');
+	//Level level1 = Level(shaders[0], '1');
+	//Level level2 = Level(shaders[0], '2');
 
-	int mapaauxiliar[GRID_SIZE][GRID_SIZE];
-
-	for (int i = 0; i < GRID_SIZE; i++) {
-		for (int j = 0; j < GRID_SIZE; j++) {
-			file >> mat[i][j];
-			// file >> mapaauxiliar[i][j];
-		}
-	}
-	/*for (int i = 0; i < GRID_SIZE; i++) {
-		for (int j = 0; j < GRID_SIZE; j++) {
-			cout << mat[i][j];
-		}
-		cout << endl;
-	}*/
-
-	file.close();
-
-
-
-
-	int rows = 10, cols = 10;
-	int** matrix = new int* [rows];
-	
-	matrix[0] = new int[rows * cols];
-	for (int i = 1; i < rows; ++i)
-		matrix[i] = matrix[0] + i * cols;
-
-	for (int i = 0; i < rows; i++) {
-		for (int j = 0; j < cols; j++) {
-			cout << "a:"<< matrix[i];
-		}
-		cout << endl;
-	}
+	levels.push_back(level0);
+	//levels.push_back(level1);
+	//levels.push_back(level2);
 }
 
 void SceneManager::setupScene() {
-	TileIso tile;
-	glm::vec4 corDoTile;
-
 	setupLevels();
-
-	tile.setShader(shaders[0]);
-
-	corDoTile.r = 47; corDoTile.g = 117; corDoTile.b = 181; corDoTile.a = 255;
-	tile.setCor(normalizaRGB(corDoTile));
-	tile.inicializar(32, 64);
-	tileset.push_back(tile);
-
-	corDoTile.r = 0; corDoTile.g = 176; corDoTile.b = 80; corDoTile.a = 255;
-	tile.setCor(normalizaRGB(corDoTile));
-	tile.inicializar(32, 64);
-	tileset.push_back(tile);
-
-	corDoTile.r = 191; corDoTile.g = 143; corDoTile.b = 0; corDoTile.a = 255;
-	tile.setCor(normalizaRGB(corDoTile));
-	tile.inicializar(32, 64);
-	tileset.push_back(tile);
-
-	corDoTile.r = 128; corDoTile.g = 96; corDoTile.b = 0; corDoTile.a = 255;
-	tile.setCor(normalizaRGB(corDoTile));
-	tile.inicializar(32, 64);
-	tileset.push_back(tile);
-
-	corDoTile.r = 191; corDoTile.g = 191; corDoTile.b = 191; corDoTile.a = 255;
-	tile.setCor(normalizaRGB(corDoTile));
-	tile.inicializar(32, 64);
-	tileset.push_back(tile);
-
-	corDoTile.r = 198; corDoTile.g = 89; corDoTile.b = 17; corDoTile.a = 255;
-	tile.setCor(normalizaRGB(corDoTile));
-	tile.inicializar(32, 64);
-	tileset.push_back(tile);
-
-	corDoTile.r = 31; corDoTile.g = 78; corDoTile.b = 120; corDoTile.a = 255;
-	tile.setCor(normalizaRGB(corDoTile));
-	tile.inicializar(32, 64);
-	tileset.push_back(tile);
-
-	corDoTile.r = 0; corDoTile.g = 0; corDoTile.b = 0; corDoTile.a = 255;
-	tile.setCor(normalizaRGB(corDoTile));
-	tile.inicializar(32, 64);
-	tileset.push_back(tile);
-
-	int mapaauxiliar[GRID_SIZE][GRID_SIZE] =
-	{
-		6,	6,	6,	6,	0,	3,	3,	3,	3,	2,
-		0,	0,	0,	0,	0,	3,	3,	3,	3,	2,
-		1,	1,	0,	0,	0,	0,	3,	3,	3,	2,
-		1,	1,	2,	2,	0,	0,	4,	4,	4,	2,
-		1,	1,	2,	2,	0,	0,	4,	4,	4,	2,
-		1,	1,	2,	2,	2,	4,	4,	4,	4,	2,
-		1,	1,	2,	2,	2,	4,	4,	4,	4,	2,
-		1,	1,	0,	0,	0,	4,	4,	5,	5,	5,
-		1,	1,	2,	2,	0,	4,	4,	5,	5,	5,
-		3,	3,	6,	6,	6,	4,	4,	5,	5,	5
-	};
-
-	int mapcaminhavel[GRID_SIZE][GRID_SIZE] =
-	{
-		0,	0,	0,	0,	1,	1,	1,	1,	1,	1,
-		1,	1,	1,	1,	1,	1,	1,	1,	1,	1,
-		1,	1,	1,	1,	1,	1,	1,	1,	1,	1,
-		1,	1,	1,	1,	1,	1,	1,	1,	1,	1,
-		1,	1,  1,	1,	1,	1,	1,	1,	1,	1,
-		1,	1,	1,	1,	1,	1,	1,	1,	1,	1,
-		1,	1,	1,	1,	1,	1,	1,	1,	1,	1,
-		1,	1,	1,	1,	1,	1,	1,	1,	1,	1,
-		1,	1,	1,	1,	1,	1,	1,	1,	1,	1,
-		1,	1,	0,	0,	0,	1,	1,	1,	1,	1
-	};
-
-	for (int i = 0; i < GRID_SIZE; i++)
-	{
-		for (int j = 0; j < GRID_SIZE; j++)
-		{
-			map[i][j] = mapaauxiliar[i][j];
-		}
-	}
 
 	poslinha = 0;
 	poscoluna = 0;
 
-	dir = PARADO;
+	dir = GridDirectionsEnum::CENTER;
 }
 
 void SceneManager::setupCamera2D() {

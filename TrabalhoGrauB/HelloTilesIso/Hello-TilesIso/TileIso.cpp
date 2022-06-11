@@ -1,37 +1,19 @@
 #include "TileIso.h"
 
+TileIso::TileIso() { }
+TileIso::~TileIso() { }
 
-
-TileIso::TileIso()
-{
-
-	cor.r = rand() % 101 / 100.0; // 0 a 1, 1 casa decimal
-	cor.g = rand() % 101 / 100.0;
-	cor.b = rand() % 101 / 100.0;
-	cor.a = 1.0; //por enquanto
-
-}
-
-
-TileIso::~TileIso()
-{
-}
-
-void TileIso::inicializar(float th, float tw)
-{
-	this->th = th;
-	this->tw = tw;
-
+void TileIso::inicializar() {
 	float vertices[] = {
-		0.0, th / 2.0, 0.0,
-		tw / 2.0, th, 0.0,
-		tw, th / 2.0, 0.0,
-		tw / 2.0, 0.0, 0.0,
+		0.0, GRIDS_HEIGHT / 2.0, 0.0,
+		GRIDS_WIDTH / 2.0, GRIDS_HEIGHT, 0.0,
+		GRIDS_WIDTH, GRIDS_HEIGHT / 2.0, 0.0,
+		GRIDS_WIDTH / 2.0, 0.0, 0.0,
 	};
 
 	int indices[] = {
-		0, 1 , 3,  //triangulo ABD
-		1, 2,  3,  //triangulo BCD
+		0, 1 , 3,
+		1, 2,  3,
 	};
 
 	GLuint VBO, EBO;
@@ -57,22 +39,18 @@ void TileIso::inicializar(float th, float tw)
 	//glEnableVertexAttribArray(1);
 }
 
-void TileIso::setCor(float r, float g, float b)
-{
+void TileIso::setCor(float r, float g, float b) {
 	cor.r = r;
 	cor.g = g;
 	cor.b = b;
 	cor.a = 1.0; //por enquanto
 }
 
-void TileIso::setCor(glm::vec4 cor)
-{
+void TileIso::setCor(glm::vec4 cor) {
 	this->cor = cor;
 }
 
-void TileIso::draw(glm::mat4 model)
-{
-
+void TileIso::draw(glm::mat4 model) {
 	//shader->Use();
 
 	// Pegando a localização do uniform em que passaremos a matriz de transformação/modelo
@@ -96,7 +74,6 @@ void TileIso::draw(glm::mat4 model)
 
 }
 
-void TileIso::setShader(Shader* shader)
-{
+void TileIso::setShader(Shader* shader) {
 	this->shader = shader;
 }

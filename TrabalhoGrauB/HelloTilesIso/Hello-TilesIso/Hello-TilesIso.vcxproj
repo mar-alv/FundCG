@@ -143,6 +143,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="glad.c" />
+    <ClCompile Include="Level.cpp" />
     <ClCompile Include="Object2D.cpp" />
     <ClCompile Include="Origem.cpp" />
     <ClCompile Include="SceneManager.cpp" />
@@ -154,6 +155,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Constants.h" />
+    <ClInclude Include="GridDirectionsEnum.h" />
+    <ClInclude Include="GridTypeEnum.h" />
+    <ClInclude Include="Level.h" />
     <ClInclude Include="Object2D.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="Shader.h" />

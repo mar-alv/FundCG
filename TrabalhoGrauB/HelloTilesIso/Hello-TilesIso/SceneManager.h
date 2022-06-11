@@ -1,18 +1,8 @@
 #pragma once
-#include <ctime>
-#include <vector>
-#include "Shader.h"
+#include "Level.h"
 #include "Sprite.h"
-#include "TileIso.h"
 #include "stb_image.h"
-#include <glm/glm.hpp>
-#include "Constants.h"
-#include <glm/gtc/type_ptr.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include "Constants.h"
-
-
-enum direcoes{PARADO, NORTE, SUL, LESTE, OESTE};
+#include "GridDirectionsEnum.h"
 
 class SceneManager
 {
@@ -26,9 +16,9 @@ private:
 	glm::mat4 model;
 	glm::mat4 projection;
 
-	vector <TileIso> tileset;
+	int actualLevel;
 
-	int map[GRID_SIZE][GRID_SIZE];
+	std::vector <Level> levels;
 
 	Sprite player;
 	glm::vec2 playerPosition;
