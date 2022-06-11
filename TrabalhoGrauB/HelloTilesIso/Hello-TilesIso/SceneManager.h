@@ -22,8 +22,9 @@ private:
 
 	Sprite player;
 	glm::vec2 playerPosition;
-	int poslinha; //POS Y DO PERSONAGEM NO MAPA
-	int poscoluna; //POS X DO PERSONAGEM NO MAPA
+
+	int playerY;
+	int playerX;
 
 public:
 	static int dir;

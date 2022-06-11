@@ -65,8 +65,7 @@ void SceneManager::key_callback(GLFWwindow* window, int key, int scancode, int a
 			keys[key] = false;
 	}
 
-	if (action == GLFW_PRESS)
-	{
+	if (action == GLFW_PRESS) {
 		switch (key) {
 		case GridDirectionsEnum::NORTH:
 			dir = GridDirectionsEnum::NORTH;
@@ -105,61 +104,58 @@ void SceneManager::resize(GLFWwindow* window, int newWindowWidth, int newWindowH
 	glViewport(0, 0, actualWindowWidth, actualWindowHeight);
 }
 
-
 void SceneManager::update() {
 	if (keys[GLFW_KEY_ESCAPE])
 		glfwSetWindowShouldClose(window, GL_TRUE);
 
 	switch (dir) {
 	case GridDirectionsEnum::NORTH:
-		//atualiza posição do mapa onde personagem irá,
-		//conforme tabela de navegação do diamond
+		playerX++;
+		playerY -= 2;
 		break;
 	case GridDirectionsEnum::SOUTH:
-		//atualiza posição do mapa onde personagem irá,
-		//conforme tabela de navegação do diamond
+		playerX++;
+		playerY++;
 		break;
 	case GridDirectionsEnum::EAST:
-		//atualiza posição do mapa onde personagem irá,
-		//conforme tabela de navegação do diamond
+		playerX++;
 		break;
 	case GridDirectionsEnum::WEST:
-		//atualiza posição do mapa onde personagem irá,
-		//conforme tabela de navegação do diamond
+		playerX--;
 		break;
 	case GridDirectionsEnum::NORTH_EAST:
-		//atualiza posição do mapa onde personagem irá,
-		//conforme tabela de navegação do diamond
+		playerX++;
+		playerY--;
 		break;
 	case GridDirectionsEnum::NORTH_WEST:
-		//atualiza posição do mapa onde personagem irá,
-		//conforme tabela de navegação do diamond
+		playerY--;
 		break;
 	case GridDirectionsEnum::SOUTH_EAST:
-		//atualiza posição do mapa onde personagem irá,
-		//conforme tabela de navegação do diamond
+		playerY++;
 		break;
 	case GridDirectionsEnum::SOUTH_WEST:
-		//atualiza posição do mapa onde personagem irá,
-		//conforme tabela de navegação do diamond
+		playerX--;
+		playerY++;
 		break;
 	}
 
-	if (poslinha < 0)
+	dir = GridDirectionsEnum::CENTER;
+
+	if (playerY < 0)
 	{
-		poslinha = 0;
+		playerY = 0;
 	}
-	if (poscoluna < 0)
+	if (playerX < 0)
 	{
-		poscoluna = 0;
+		playerX = 0;
 	}
-	if (poslinha > levels[actualLevel].getGridRowsCount() - 1)
+	if (playerY > levels[actualLevel].getGridRowsCount() - 1)
 	{
-		poslinha = levels[actualLevel].getGridRowsCount() - 1;
+		playerY = levels[actualLevel].getGridRowsCount() - 1;
 	}
-	if (poscoluna > levels[actualLevel].getGridColumnCount() - 1)
+	if (playerX > levels[actualLevel].getGridColumnCount() - 1)
 	{
-		poscoluna = levels[actualLevel].getGridColumnCount() - 1;
+		playerX = levels[actualLevel].getGridColumnCount() - 1;
 	}
 }
 
@@ -184,14 +180,14 @@ void SceneManager::render() {
 	float yi = 100;
 
 	levels[actualLevel].renderGridMap();
-
-	float x = xi + (poscoluna - poslinha) * GRIDS_WIDTH / 2.0;
-	float y = yi + (poscoluna + poslinha) * GRIDS_HEIGHT / 2.0;
+	
+	float x = xi + (playerX - playerY) * GRIDS_WIDTH / 2.0;
+	float y = yi + (playerX + playerY) * GRIDS_HEIGHT / 2.0;
 
 	model = glm::mat4();
 	model = glm::translate(model, glm::vec3(x, y, 0.0));
 
-	//levels[actualLevel].getTileset()[7].draw(model);
+	levels[actualLevel].getTileset()[7].draw(model);
 	//Desenha o personagem
 }
 
@@ -221,8 +217,8 @@ void SceneManager::setupLevels() {
 void SceneManager::setupScene() {
 	setupLevels();
 
-	poslinha = 0;
-	poscoluna = 0;
+	playerY = 0;
+	playerX = 0;
 
 	dir = GridDirectionsEnum::CENTER;
 }
@@ -253,7 +249,6 @@ void SceneManager::enableAlphaChannel() {
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
-
 
 GLuint SceneManager::setTextureWrapping() {
 	GLuint texID;
