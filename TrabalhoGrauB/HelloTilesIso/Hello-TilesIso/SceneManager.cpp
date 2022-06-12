@@ -110,8 +110,8 @@ void SceneManager::update() {
 
 	switch (dir) {
 	case GridDirectionsEnum::NORTH:
-		playerX++;
-		playerY -= 2;
+		playerX--;
+		playerY--;
 		break;
 	case GridDirectionsEnum::SOUTH:
 		playerX++;
@@ -119,22 +119,22 @@ void SceneManager::update() {
 		break;
 	case GridDirectionsEnum::EAST:
 		playerX++;
+		playerY--;
 		break;
 	case GridDirectionsEnum::WEST:
 		playerX--;
+		playerY++;
 		break;
 	case GridDirectionsEnum::NORTH_EAST:
-		playerX++;
 		playerY--;
 		break;
 	case GridDirectionsEnum::NORTH_WEST:
-		playerY--;
+		playerX--;
 		break;
 	case GridDirectionsEnum::SOUTH_EAST:
-		playerY++;
+		playerX++;
 		break;
 	case GridDirectionsEnum::SOUTH_WEST:
-		playerX--;
 		playerY++;
 		break;
 	}
