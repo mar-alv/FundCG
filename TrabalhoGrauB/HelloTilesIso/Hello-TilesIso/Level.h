@@ -8,7 +8,7 @@ class Level
 private:
 	int levelNumber;
 	int gridRowsCount;
-	int gridColumnCount;
+	int gridColumnsCount;
 
 	std::vector<TileIso> tileset;
 
@@ -18,7 +18,7 @@ public:
 	void renderGridMap();
 
 	int getGridRowsCount();
-	int getGridColumnCount();
+	int getGridColumnsCount();
 	
 	std::vector<TileIso> getTileset();
 };

@@ -1,13 +1,13 @@
 #include "SceneManager.h"
 
-int SceneManager::dir = GridDirectionsEnum::CENTER;
 bool SceneManager::resized = false;
 bool SceneManager::keys[1024] = { 0 };
 GLuint SceneManager::actualWindowWidth = WIDTH;
 GLuint SceneManager::actualWindowHeight = HEIGHT;
+Player SceneManager::player = Player();
 
 SceneManager::SceneManager() {
-	actualLevel = 0;
+	this->actualLevel = 0;
 
 	srand(time(0));
 }
@@ -32,8 +32,7 @@ void SceneManager::initializeGraphics() {
 
 	glfwSetWindowSizeCallback(window, resize);
 
-	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-	{
+	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
 		std::cout << "Failed to initialize GLAD" << std::endl;
 
 	}
@@ -48,51 +47,25 @@ void SceneManager::initializeGraphics() {
 	setupCamera2D();
 }
 
-void SceneManager::addShader(string vsFilePath, string fsFilePath) {
+void SceneManager::addShader(std::string vsFilePath, std::string fsFilePath) {
 	Shader* shader = new Shader(vsFilePath.c_str(), fsFilePath.c_str());
 
 	shaders.push_back(shader);
 }
 
 void SceneManager::key_callback(GLFWwindow* window, int key, int scancode, int action, int mode) {
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
 		glfwSetWindowShouldClose(window, GL_TRUE);
-	if (key >= 0 && key < 1024)
-	{
+	}
+
+	if (key >= 0 && key < 1024) {
 		if (action == GLFW_PRESS)
 			keys[key] = true;
 		else if (action == GLFW_RELEASE)
 			keys[key] = false;
 	}
 
-	if (action == GLFW_PRESS) {
-		switch (key) {
-		case GridDirectionsEnum::NORTH:
-			dir = GridDirectionsEnum::NORTH;
-			break;
-		case GridDirectionsEnum::SOUTH:
-			dir = GridDirectionsEnum::SOUTH;
-			break;
-		case GridDirectionsEnum::EAST:
-			dir = GridDirectionsEnum::EAST;
-			break;
-		case GridDirectionsEnum::WEST:
-			dir = GridDirectionsEnum::WEST;
-			break;
-		case GridDirectionsEnum::NORTH_EAST:
-			dir = GridDirectionsEnum::NORTH_EAST;
-			break;
-		case GridDirectionsEnum::NORTH_WEST:
-			dir = GridDirectionsEnum::NORTH_WEST;
-			break;
-		case GridDirectionsEnum::SOUTH_EAST:
-			dir = GridDirectionsEnum::SOUTH_EAST;
-			break;
-		case GridDirectionsEnum::SOUTH_WEST:
-			dir = GridDirectionsEnum::SOUTH_WEST;
-			break;
-		}
-	}
+	player.onMovementKeyPress(key, action);
 }
 
 void SceneManager::resize(GLFWwindow* window, int newWindowWidth, int newWindowHeight) {
@@ -108,55 +81,9 @@ void SceneManager::update() {
 	if (keys[GLFW_KEY_ESCAPE])
 		glfwSetWindowShouldClose(window, GL_TRUE);
 
-	switch (dir) {
-	case GridDirectionsEnum::NORTH:
-		playerX--;
-		playerY--;
-		break;
-	case GridDirectionsEnum::SOUTH:
-		playerX++;
-		playerY++;
-		break;
-	case GridDirectionsEnum::EAST:
-		playerX++;
-		playerY--;
-		break;
-	case GridDirectionsEnum::WEST:
-		playerX--;
-		playerY++;
-		break;
-	case GridDirectionsEnum::NORTH_EAST:
-		playerY--;
-		break;
-	case GridDirectionsEnum::NORTH_WEST:
-		playerX--;
-		break;
-	case GridDirectionsEnum::SOUTH_EAST:
-		playerX++;
-		break;
-	case GridDirectionsEnum::SOUTH_WEST:
-		playerY++;
-		break;
-	}
+	player.move();
 
-	dir = GridDirectionsEnum::CENTER;
-
-	if (playerY < 0)
-	{
-		playerY = 0;
-	}
-	if (playerX < 0)
-	{
-		playerX = 0;
-	}
-	if (playerY > levels[actualLevel].getGridRowsCount() - 1)
-	{
-		playerY = levels[actualLevel].getGridRowsCount() - 1;
-	}
-	if (playerX > levels[actualLevel].getGridColumnCount() - 1)
-	{
-		playerX = levels[actualLevel].getGridColumnCount() - 1;
-	}
+	player.stayInsideGrid(levels[actualLevel].getGridRowsCount(), levels[actualLevel].getGridColumnsCount());
 }
 
 void SceneManager::clearColorBuffer() {
@@ -167,8 +94,7 @@ void SceneManager::clearColorBuffer() {
 void SceneManager::render() {
 	clearColorBuffer();
 
-	if (resized)
-	{
+	if (resized) {
 		setupCamera2D();
 
 		resized = false;
@@ -181,8 +107,8 @@ void SceneManager::render() {
 
 	levels[actualLevel].renderGridMap();
 	
-	float x = xi + (playerX - playerY) * GRIDS_WIDTH / 2.0;
-	float y = yi + (playerX + playerY) * GRIDS_HEIGHT / 2.0;
+	float x = xi + (this->player.getActualX() - this->player.getActualY()) * GRIDS_WIDTH / 2.0;
+	float y = yi + (this->player.getActualX() + this->player.getActualY()) * GRIDS_HEIGHT / 2.0;
 
 	model = glm::mat4();
 	model = glm::translate(model, glm::vec3(x, y, 0.0));
@@ -216,11 +142,6 @@ void SceneManager::setupLevels() {
 
 void SceneManager::setupScene() {
 	setupLevels();
-
-	playerY = 0;
-	playerX = 0;
-
-	dir = GridDirectionsEnum::CENTER;
 }
 
 void SceneManager::setupCamera2D() {

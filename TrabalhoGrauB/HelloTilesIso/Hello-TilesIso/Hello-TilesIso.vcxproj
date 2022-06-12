@@ -146,6 +146,7 @@
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="Object2D.cpp" />
     <ClCompile Include="Origem.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Sprite.cpp" />
@@ -159,6 +160,7 @@
     <ClInclude Include="GridTypeEnum.h" />
     <ClInclude Include="Level.h" />
     <ClInclude Include="Object2D.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Sprite.h" />

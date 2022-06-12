@@ -22,10 +22,10 @@ Level::Level(Shader* shader, char levelNumber) {
 	file >> rowCount >> columnCount;
 
 	this->gridRowsCount = stoi(rowCount);
-	this->gridColumnCount = stoi(columnCount);
+	this->gridColumnsCount = stoi(columnCount);
 
 	for (int i = 0; i < gridRowsCount; i++) {
-		for (int j = 0; j < gridColumnCount; j++) {
+		for (int j = 0; j < gridColumnsCount; j++) {
 			TileIso tile;
 
 			glm::vec4 corDoTile;
@@ -79,7 +79,7 @@ void Level::renderGridMap() {
 
 	for (int i = 0; i < gridRowsCount; i++)
 	{
-		for (int j = 0; j < gridColumnCount; j++)
+		for (int j = 0; j < gridColumnsCount; j++)
 		{
 			float x = xi + (j - i) * GRIDS_WIDTH / 2.0;
 			float y = yi + (j + i) * GRIDS_HEIGHT / 2.0;
@@ -102,6 +102,6 @@ int Level::getGridRowsCount() {
 	return this->gridRowsCount;
 }
 
-int Level::getGridColumnCount() {
-	return this->gridColumnCount;
+int Level::getGridColumnsCount() {
+	return this->gridColumnsCount;
 }
