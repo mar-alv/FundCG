@@ -127,10 +127,9 @@ void SceneManager::render() {
 
 	levels[actualLevel].getTileset()[7].draw(model);
 
-/*
 	//Desenha o personagem
 	glm::mat4 model = glm::mat4(1);
-	model = glm::translate(model, glm::vec3(400.0, 300.0, 0));
+	model = glm::translate(model, glm::vec3(400.0 + player.getActualX(), 400.0 + player.getActualY(), 0));
 	model = glm::scale(model, glm::vec3(200.0, 200.0, 1.0));
 
 	shaders[1]->setMat4("model", glm::value_ptr(model));
@@ -152,12 +151,11 @@ void SceneManager::render() {
 
 	glBindVertexArray(0);
 
-	glBindTexture(GL_TEXTURE_2D, 0);*/
-
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void SceneManager::run() {
-	/*glUseProgram(shaders[1]->ID);
+	glUseProgram(shaders[1]->ID);
 
 	glUniform1i(glGetUniformLocation(shaders[1]->ID, "ourTexture1"), 0);
 
@@ -172,7 +170,7 @@ void SceneManager::run() {
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_ALWAYS);
 	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);*/
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
@@ -221,6 +219,6 @@ void SceneManager::setupCamera2D() {
 
 	glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
-	//testeID = this->player.getTexture().load(PLAYER_SPRITE_PATH);
-	//testeVAO = this->player.getTexture().setup(4,4);
+	testeID = this->player.getTexture().load(PLAYER_SPRITE_PATH);
+	testeVAO = this->player.getTexture().setup(4,4);
 }
