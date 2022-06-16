@@ -6,13 +6,11 @@
 class SceneManager
 {
 private:
-	GLuint VAO;
-
-	static Player player;
-
 	int actualLevel;
 
 	GLFWwindow* window;
+	
+	static Player player;
 
 	glm::mat4 model;
 	glm::mat4 projection;
@@ -37,21 +35,12 @@ public:
 	void render();
 	void update();
 	void clearColorBuffer();
-	void enableAlphaChannel();
 	
 	void initialize();
 	void initializeGraphics();
-
-	GLuint setTextureWrapping();
-	GLuint loadTexture(std::string filePath);
-
-	unsigned char* setupTexture(std::string filePath);
 
 	void addShader(std::string vsFilePath, std::string fsFilePath);
 
 	static void resize(GLFWwindow* window, int newWindowWidth, int newWindowHeight);
 	static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
-
-
-	void teste(int key, int action);
 };

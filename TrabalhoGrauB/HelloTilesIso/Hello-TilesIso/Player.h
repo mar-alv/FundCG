@@ -1,5 +1,6 @@
 #pragma once
-#include "Sprite.h"
+#include "Texture.h"
+#include "Constants.h"
 #include "GridDirectionsEnum.h"
 
 class Player
@@ -8,7 +9,8 @@ private:
 	int actualX;
 	int actualY;
 
-	Sprite sprite;
+	Texture texture;
+
 	glm::vec2 actualPosition;
 
 	static int actualDirection;
@@ -20,6 +22,7 @@ public:
 
 	int getActualX();
 	int getActualY();
+	Texture getTexture();
 
 	void onMovementKeyPress(int key, int action);
 

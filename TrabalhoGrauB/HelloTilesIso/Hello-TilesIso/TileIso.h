@@ -24,7 +24,7 @@ public:
 	
 	void setCor(glm::vec4 cor);
 	
-	void setShader(Shader *shader);
+	void setShader(Shader* shader);
 
 	void setCor(float r, float g, float b);
 };

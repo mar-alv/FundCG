@@ -20,6 +20,7 @@ class Shader
 {
 public:
 	GLuint ID;
+
 	// Constructor generates the shader on the fly
 	Shader(const GLchar* vertexPath, const GLchar* fragmentPath)
 	{

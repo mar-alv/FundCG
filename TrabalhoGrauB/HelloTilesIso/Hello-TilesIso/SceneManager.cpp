@@ -2,12 +2,16 @@
 
 bool SceneManager::resized = false;
 bool SceneManager::keys[1024] = { 0 };
+Player SceneManager::player = Player();
 GLuint SceneManager::actualWindowWidth = WIDTH;
 GLuint SceneManager::actualWindowHeight = HEIGHT;
-Player SceneManager::player = Player();
+GLuint testeVAO, testeID;
 
 SceneManager::SceneManager() {
 	this->actualLevel = 0;
+
+	int channelsCount = 4;
+	int textureProportions = 192;
 
 	srand(time(0));
 }
@@ -24,7 +28,7 @@ void SceneManager::initialize() {
 void SceneManager::initializeGraphics() {
 	glfwInit();
 
-	window = glfwCreateWindow(actualWindowWidth, actualWindowHeight, "Hello Transform", nullptr, nullptr);
+	window = glfwCreateWindow(actualWindowWidth, actualWindowHeight, "Trabalho Grau B - Marcelo Alvarez", nullptr, nullptr);
 
 	glfwMakeContextCurrent(window);
 
@@ -78,18 +82,26 @@ void SceneManager::resize(GLFWwindow* window, int newWindowWidth, int newWindowH
 }
 
 void SceneManager::update() {
-	if (keys[GLFW_KEY_ESCAPE])
+	int gridRowsCount = levels[actualLevel].getGridRowsCount();
+	int gridColumnsCount = levels[actualLevel].getGridColumnsCount();
+
+	if (keys[GLFW_KEY_ESCAPE]) {
 		glfwSetWindowShouldClose(window, GL_TRUE);
+	}
 
-	player.move();
+	this->player.move();
 
-	player.stayInsideGrid(levels[actualLevel].getGridRowsCount(), levels[actualLevel].getGridColumnsCount());
+	this->player.stayInsideGrid(gridRowsCount, gridColumnsCount);
 }
 
 void SceneManager::clearColorBuffer() {
 	glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
+
+int iFrame = 2;
+int iAnims = 0;
+int frameCount = 4;
 
 void SceneManager::render() {
 	clearColorBuffer();
@@ -114,10 +126,54 @@ void SceneManager::render() {
 	model = glm::translate(model, glm::vec3(x, y, 0.0));
 
 	levels[actualLevel].getTileset()[7].draw(model);
+
+/*
 	//Desenha o personagem
+	glm::mat4 model = glm::mat4(1);
+	model = glm::translate(model, glm::vec3(400.0, 300.0, 0));
+	model = glm::scale(model, glm::vec3(200.0, 200.0, 1.0));
+
+	shaders[1]->setMat4("model", glm::value_ptr(model));
+
+	float offsetx = player.getTexture().getDX() * iFrame;
+	float offsety = player.getTexture().getDY() * iAnims;
+
+	shaders[1]->setVec2("offsets", offsetx, offsety);
+
+	iFrame = (iFrame + 1) % frameCount;
+
+	glActiveTexture(GL_TEXTURE0);
+
+	glBindTexture(GL_TEXTURE_2D, testeID);
+
+	glBindVertexArray(testeVAO);
+
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+	glBindVertexArray(0);
+
+	glBindTexture(GL_TEXTURE_2D, 0);*/
+
 }
 
 void SceneManager::run() {
+	/*glUseProgram(shaders[1]->ID);
+
+	glUniform1i(glGetUniformLocation(shaders[1]->ID, "ourTexture1"), 0);
+
+	glm::mat4 projection = glm::mat4(1);
+
+	projection = glm::ortho(0.0, 800.0, 0.0, 600.0, -1.0, 1.0);
+
+	GLint projLoc = glGetUniformLocation(shaders[1]->ID, "projection");
+
+	glUniformMatrix4fv(projLoc, 1, FALSE, glm::value_ptr(projection));
+
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_ALWAYS);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);*/
+
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
 		update();
@@ -164,58 +220,7 @@ void SceneManager::setupCamera2D() {
 	projLoc = glGetUniformLocation(shaders[1]->ID, "projection");
 
 	glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
-}
 
-void SceneManager::enableAlphaChannel() {
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-}
-
-GLuint SceneManager::setTextureWrapping() {
-	GLuint texID;
-
-	glGenTextures(1, &texID);
-	glBindTexture(GL_TEXTURE_2D, texID);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	return texID;
-}
-
-unsigned char* SceneManager::setupTexture(std::string filePath) {
-	int width;
-	int height;
-	int numberOfChannels;
-
-	unsigned char* data = stbi_load(filePath.c_str(), &width, &height, &numberOfChannels, 0);
-
-	const bool isTextureNotPNG = numberOfChannels == 3;
-
-	const GLuint correctFormat = isTextureNotPNG ? GL_RGB : GL_RGBA;
-
-	glTexImage2D(GL_TEXTURE_2D, 0, correctFormat, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-
-	glGenerateMipmap(GL_TEXTURE_2D);
-
-	return data;
-}
-
-GLuint SceneManager::loadTexture(std::string filePath) {
-	GLuint texID = setTextureWrapping();
-
-	unsigned char* data = setupTexture(filePath);
-
-	stbi_image_free(data);
-
-	glBindTexture(GL_TEXTURE_2D, 0);
-
-	glActiveTexture(GL_TEXTURE0);
-
-	enableAlphaChannel();
-
-	return texID;
+	//testeID = this->player.getTexture().load(PLAYER_SPRITE_PATH);
+	//testeVAO = this->player.getTexture().setup(4,4);
 }

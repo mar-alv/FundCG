@@ -5,6 +5,8 @@ int Player::actualDirection = GridDirectionsEnum::CENTER;
 Player::Player() {
 	this->actualX = 0;
 	this->actualY = 0;
+
+	this->texture = Texture();
 }
 
 void Player::move() {
@@ -43,20 +45,19 @@ void Player::move() {
 }
 
 void Player::stayInsideGrid(int gridRowsCount, int gridColumnsCount) {
-	if (this->actualY < 0)
-	{
+	if (this->actualY < 0) {
 		this->actualY = 0;
 	}
-	if (this->actualX < 0)
-	{
+
+	if (this->actualX < 0) {
 		this->actualX = 0;
 	}
-	if (actualY > gridRowsCount - 1)
-	{
+
+	if (actualY > gridRowsCount - 1) {
 		this->actualY = gridRowsCount - 1;
 	}
-	if (actualX > gridColumnsCount - 1)
-	{
+
+	if (actualX > gridColumnsCount - 1) {
 		this->actualX = gridColumnsCount - 1;
 	}
 }
@@ -98,4 +99,8 @@ int Player::getActualX() {
 
 int Player::getActualY() {
 	return this->actualY;
+}
+
+Texture Player::getTexture() {
+	return this->texture;
 }

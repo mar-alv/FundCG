@@ -149,8 +149,8 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="Shader.cpp" />
-    <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="stb_image.cpp" />
+    <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TileIso.cpp" />
     <ClCompile Include="Timer.cpp" />
   </ItemGroup>
@@ -163,8 +163,8 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="Shader.h" />
-    <ClInclude Include="Sprite.h" />
     <ClInclude Include="stb_image.h" />
+    <ClInclude Include="Texture.h" />
     <ClInclude Include="TileIso.h" />
     <ClInclude Include="Timer.h" />
   </ItemGroup>
