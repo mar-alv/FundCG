@@ -96,40 +96,6 @@ void SceneManager::clearColorBuffer() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-int iFrame = 2;
-int iAnims = 0;
-int frameCount = 4;
-
-void SceneManager::drawPlayer() {
-	glUseProgram(shaders[1]->ID);
-	const float addaaa = 50.0;
-
-	glm::mat4 model = glm::mat4(1);
-	model = glm::translate(model, glm::vec3(400.0 + player.getActualX() + addaaa, 100.0 + player.getActualY() + addaaa, 0));
-	model = glm::scale(model, glm::vec3(200.0, 200.0, 1.0));
-
-	shaders[1]->setMat4("model", glm::value_ptr(model));
-
-	float offsetx = player.getTexture().getDX() * iFrame;
-	float offsety = player.getTexture().getDY() * iAnims;
-
-	shaders[1]->setVec2("offsets", offsetx, offsety);
-
-	iFrame = (iFrame + 1) % frameCount;
-
-	glActiveTexture(GL_TEXTURE0);
-
-	glBindTexture(GL_TEXTURE_2D, testeID);
-
-	glBindVertexArray(testeVAO);
-
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
-	glBindVertexArray(0);
-
-	glBindTexture(GL_TEXTURE_2D, 0);
-}
-
 void SceneManager::render() {
 	clearColorBuffer();
 
@@ -152,7 +118,7 @@ void SceneManager::render() {
 	model = glm::mat4();
 	model = glm::translate(model, glm::vec3(x, y, 0.0));
 
-	drawPlayer();
+	this->player.render();
 }
 
 void SceneManager::enableAlphaChannel() {
@@ -197,8 +163,9 @@ void SceneManager::setupLevels() {
 
 void SceneManager::setupScene() {
 	setupLevels();
-	testeID = this->player.getTexture().load(PLAYER_SPRITE_PATH);
-	testeVAO = this->player.getTexture().setup(4, 4);
+
+	this->player.initializeTexture();
+	this->player.setShader(shaders[1]);
 }
 
 void SceneManager::setupCamera2D() {

@@ -93,6 +93,46 @@ void Player::onMovementKeyPress(int key, int action) {
 	}
 }
 
+void Player::initializeTexture() {
+	this->VAO = this->texture.setup(4, 4);
+	this->textureId = this->texture.load(PLAYER_SPRITE_PATH);
+}
+
+int iFrame = 2;
+int iAnims = 0;
+int frameCount = 4;
+
+
+void Player::render() {
+	this->shader->Use();
+	const float addaaa = 50.0;
+
+	glm::mat4 model = glm::mat4(1);
+	model = glm::translate(model, glm::vec3(400.0 + actualX + addaaa, 100.0 + actualY + addaaa, 0));
+	model = glm::scale(model, glm::vec3(200.0, 200.0, 1.0));
+
+	this->shader->setMat4("model", glm::value_ptr(model));
+
+	float offsetx = this->texture.getDX() * iFrame;
+	float offsety = this->texture.getDY() * iAnims;
+
+	this->shader->setVec2("offsets", offsetx, offsety);
+
+	iFrame = (iFrame + 1) % frameCount;
+
+	glActiveTexture(GL_TEXTURE0);
+
+	glBindTexture(GL_TEXTURE_2D, this->textureId);
+
+	glBindVertexArray(this->VAO);
+
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+	glBindVertexArray(0);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
 int Player::getActualX() {
 	return this->actualX;
 }
@@ -103,4 +143,8 @@ int Player::getActualY() {
 
 Texture Player::getTexture() {
 	return this->texture;
+}
+
+void Player::setShader(Shader* shader) {
+	this->shader = shader;
 }
