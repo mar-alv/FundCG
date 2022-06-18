@@ -4,11 +4,15 @@ Level::Level(Shader* shader, char levelNumber) {
 	this->shader = shader;
 	this->levelNumber = (int)levelNumber;
 
+	initialize();
+}
+
+void Level::initialize() {
 	ifstream levelFile;
 
 	const std::string tileFileFormat = ".png";
 	const std::string levelFileFormat = ".txt";
-	const std::string fileCompletePath = LEVELS_PATH + levelNumber + levelFileFormat;
+	const std::string fileCompletePath = LEVELS_PATH + std::to_string(levelNumber - '0') + levelFileFormat;
 
 	levelFile.open(fileCompletePath);
 
@@ -38,7 +42,7 @@ Level::Level(Shader* shader, char levelNumber) {
 
 			tile.inicializar();
 
-			tileset.push_back(tile);
+			grid.push_back(tile);
 		}
 	}
 
@@ -54,27 +58,19 @@ void Level::render() {
 
 	for (int i = 0; i < gridRowsCount; i++) {
 		for (int j = 0; j < gridColumnsCount; j++) {
-			model = translateTileModel(model, i, j);
-
-			getTileset()[actualGrid].render(model);
+			getGrid()[actualGrid].setModel(model);
+			
+			model = getGrid()[actualGrid].translate(i, j);
+			
+			getGrid()[actualGrid].render(model);
 
 			actualGrid++;
 		}
 	}
 }
 
-glm::mat4 Level::translateTileModel(glm::mat4 model, int rowIndex, int columnIndex) {
-	float x = XI + (columnIndex - rowIndex) * TILE_WIDTH / 2.0;
-	float y = YI + (columnIndex + rowIndex) * TILE_HEIGHT / 2.0;
-
-	model = glm::mat4();
-	model = glm::translate(model, glm::vec3(x, y, 0.0));
-
-	return model;
-}
-
-std::vector<TileIso> Level::getTileset() { 
-	return tileset; 
+std::vector<TileIso> Level::getGrid() { 
+	return grid;
 }
 
 int Level::getGridRowsCount() {

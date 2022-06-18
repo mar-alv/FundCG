@@ -7,23 +7,19 @@
 class Level
 {
 private:
+	Shader* shader;
 	int levelNumber;
 	int gridRowsCount;
 	int gridColumnsCount;
-
-	Shader* shader;
-
-	std::vector<TileIso> tileset;
+	std::vector<TileIso> grid;
 
 public:
 	Level(Shader* shader, char levelNumber);
 
 	int getGridRowsCount();
 	int getGridColumnsCount();
-
-	std::vector<TileIso> getTileset();
+	std::vector<TileIso> getGrid();
 
 	void render();
-
-	glm::mat4 translateTileModel(glm::mat4 model, int rowIndex, int columnIndex);
+	void initialize();
 };

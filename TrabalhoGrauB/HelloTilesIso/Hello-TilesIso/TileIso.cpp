@@ -5,6 +5,7 @@ TileIso::TileIso(int type, GLuint VAO, Shader* shader, GLuint textureId) {
 	this->VAO = VAO;
 	this->shader = shader;
 	this->textureId = textureId;
+	this->model = glm::mat4();
 }
 
 TileIso::~TileIso() { }
@@ -57,8 +58,25 @@ void TileIso::render(glm::mat4 model) {
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
 
+glm::mat4 TileIso::translate(int rowIndex, int columnIndex) {
+	float x = XI + (columnIndex - rowIndex) * TILE_WIDTH / 2.0;
+	float y = YI + (columnIndex + rowIndex) * TILE_HEIGHT / 2.0;
+
+	model = glm::translate(model, glm::vec3(x, y, 0.0));
+
+	return model;
+}
+
 int TileIso::getType() {
 	return type;
+}
+
+glm::mat4 TileIso::getModel() {
+	return model;
+}
+
+void TileIso::setModel(glm::mat4 model) {
+	this->model = model;
 }
 
 void TileIso::setType(int type) {
