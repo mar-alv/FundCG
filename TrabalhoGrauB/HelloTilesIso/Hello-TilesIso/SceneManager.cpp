@@ -108,8 +108,7 @@ void SceneManager::setupCameraOnReize() {
 }
 
 void SceneManager::renderObjects() {
-	levels[actualLevel].renderGridMap();
-
+	levels[actualLevel].render();
 	player.render();
 }
 

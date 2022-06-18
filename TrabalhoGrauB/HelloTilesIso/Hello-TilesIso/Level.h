@@ -18,7 +18,7 @@ private:
 public:
 	Level(Shader* shader, char levelNumber);
 
-	void renderGridMap();
+	void render();
 
 	int getGridRowsCount();
 	int getGridColumnsCount();

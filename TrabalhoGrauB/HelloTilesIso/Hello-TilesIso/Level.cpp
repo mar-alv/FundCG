@@ -60,7 +60,7 @@ Level::Level(Shader* shader, char levelNumber) {
 	file.close();
 }
 
-void Level::renderGridMap() {
+void Level::render() {
 	shader->Use();
 
 	float xi = 640 - 64;
