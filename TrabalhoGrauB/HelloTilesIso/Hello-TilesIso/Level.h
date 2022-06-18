@@ -18,10 +18,12 @@ private:
 public:
 	Level(Shader* shader, char levelNumber);
 
-	void render();
-
 	int getGridRowsCount();
 	int getGridColumnsCount();
-	
+
 	std::vector<TileIso> getTileset();
+
+	void render();
+
+	glm::mat4 translateTileModel(glm::mat4 model, int rowIndex, int columnIndex);
 };

@@ -10,20 +10,22 @@ class TileIso
 protected:
 	int type;
 
-	GLuint VAO;
-
 	Shader* shader;
 
+	GLuint VAO;
+	GLuint textureId;
+
 public:
-	TileIso();
+	TileIso(int type, GLuint VAO, Shader* shader, GLuint textureId);
+
 	~TileIso();
-	
-	void inicializar(GLuint testeVAO);
 
 	int getType();
 
 	void setType(int type);
 	void setShader(Shader* shader);
 
-	void render(glm::mat4 model, GLuint testeID);
+	void inicializar();
+
+	void render(glm::mat4 model);
 };

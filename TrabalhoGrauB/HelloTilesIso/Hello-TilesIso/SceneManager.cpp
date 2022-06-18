@@ -5,7 +5,6 @@ bool SceneManager::keys[1024] = { 0 };
 Player SceneManager::player = Player();
 GLuint SceneManager::actualWindowWidth = WIDTH;
 GLuint SceneManager::actualWindowHeight = HEIGHT;
-GLuint testeVAO, testeID;
 
 SceneManager::SceneManager() {
 	actualLevel = 0;

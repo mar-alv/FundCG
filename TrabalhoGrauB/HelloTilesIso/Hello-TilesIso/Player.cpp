@@ -103,11 +103,8 @@ int iAnims = 0;
 int frameCount = 4;
 
 void Player::render() {
-	float xi = 640 - 64;
-	float yi = 80;
-
-	float x = xi + (actualX - actualY) * GRIDS_WIDTH / 2.0;
-	float y = yi + (actualX + actualY) * GRIDS_HEIGHT / 2.0;
+	float x = XI + (actualX - actualY) * TILE_WIDTH / 2.0;
+	float y = YI + (actualX + actualY) * TILE_HEIGHT / 2.0;
 
 	shader->Use();
 

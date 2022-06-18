@@ -4,100 +4,73 @@ Level::Level(Shader* shader, char levelNumber) {
 	this->shader = shader;
 	this->levelNumber = (int)levelNumber;
 
-	ifstream file;
+	ifstream levelFile;
 
-	const std::string fileType = ".txt";
-	const std::string fileCompletePath = LEVELS_PATH + levelNumber + fileType;
+	const std::string tileFileFormat = ".png";
+	const std::string levelFileFormat = ".txt";
+	const std::string fileCompletePath = LEVELS_PATH + levelNumber + levelFileFormat;
 
-	file.open(fileCompletePath);
+	levelFile.open(fileCompletePath);
 
 	std::string rowCount;
 	std::string columnCount;
 
-	file >> rowCount >> columnCount;
+	levelFile >> rowCount >> columnCount;
 
 	gridRowsCount = stoi(rowCount);
 	gridColumnsCount = stoi(columnCount);
 
-	Texture t = Texture();
-	GLuint testeVAO = t.setup(1, 1);
+	Texture texture = Texture();
+
+	GLuint VAO = texture.setup(1, 1);
 
 	for (int i = 0; i < gridRowsCount; i++) {
 		for (int j = 0; j < gridColumnsCount; j++) {
-			TileIso tile;
-
-			glm::vec4 corDoTile;
-
 			char tileType;
 
-			file >> tileType;
+			levelFile >> tileType;
 
-			tile.setShader(shader);
-			tile.inicializar(testeVAO);
+			const std::string gridTexturePath = GRIDS_PATH + tileType + tileFileFormat;
 
-			tile.setType((int)tileType - '0');
+			GLuint textureId = texture.load(gridTexturePath);
 
-			switch ((int)tileType - '0') {
-			case GridTypeEnum::DIRT:
-				break;
-			case GridTypeEnum::DEEP_WATER:
-				//tile.setType(GridTypeEnum::DEEP_WATER);
-				break;
-			case GridTypeEnum::GRASS:
-				//tile.setType(GridTypeEnum::GRASS);
-				break;
-			case GridTypeEnum::LAVA:
-				//tile.setType(GridTypeEnum::LAVA);
-				break;
-			case GridTypeEnum::SAND:
-				//tile.setType(GridTypeEnum::SAND);
-				break;
-			case GridTypeEnum::STONE:
-				//tile.setType(GridTypeEnum::STONE);
-				break;
-			case GridTypeEnum::WATER:
-				//tile.setType(GridTypeEnum::WATER);
-				break;
-			}
+			TileIso tile = TileIso((int)tileType - '0', VAO, shader, textureId);
+
+			tile.inicializar();
 
 			tileset.push_back(tile);
 		}
 	}
 
-	file.close();
+	levelFile.close();
 }
 
 void Level::render() {
 	shader->Use();
 
-	float xi = 640 - 64;
-	float yi = 80;
-
 	glm::mat4 model;
 
 	int actualGrid = 0;
 
-	Texture t = Texture();
-
 	for (int i = 0; i < gridRowsCount; i++) {
 		for (int j = 0; j < gridColumnsCount; j++) {
-			float x = xi + (j - i) * GRIDS_WIDTH / 2.0;
-			float y = yi + (j + i) * GRIDS_HEIGHT / 2.0;
+			model = translateTileModel(model, i, j);
 
-			const std::string tilePath = GRIDS_PATH + std::to_string(tileset[actualGrid].getType()) + ".png";
-
-			std::cout << tilePath << std::endl;
-
-			GLuint testeID = t.load(tilePath);
-
-			model = glm::mat4();
-			model = glm::translate(model, glm::vec3(x, y, 0.0));
-
-			getTileset()[actualGrid].render(model, testeID);
+			getTileset()[actualGrid].render(model);
 
 			actualGrid++;
 		}
 	}
+}
+
+glm::mat4 Level::translateTileModel(glm::mat4 model, int rowIndex, int columnIndex) {
+	float x = XI + (columnIndex - rowIndex) * TILE_WIDTH / 2.0;
+	float y = YI + (columnIndex + rowIndex) * TILE_HEIGHT / 2.0;
+
+	model = glm::mat4();
+	model = glm::translate(model, glm::vec3(x, y, 0.0));
+
+	return model;
 }
 
 std::vector<TileIso> Level::getTileset() { 
