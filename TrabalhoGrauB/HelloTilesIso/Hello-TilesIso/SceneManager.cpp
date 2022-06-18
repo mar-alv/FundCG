@@ -102,7 +102,7 @@ int frameCount = 4;
 
 void SceneManager::drawPlayer() {
 	glUseProgram(shaders[1]->ID);
-	const float addaaa = 25.0;
+	const float addaaa = 50.0;
 
 	glm::mat4 model = glm::mat4(1);
 	model = glm::translate(model, glm::vec3(400.0 + player.getActualX() + addaaa, 100.0 + player.getActualY() + addaaa, 0));
@@ -155,15 +155,23 @@ void SceneManager::render() {
 	drawPlayer();
 }
 
+void SceneManager::enableAlphaChannel() {
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+}
+
+void SceneManager::enableDepth() {
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_ALWAYS);
+}
+
 void SceneManager::run() {
 	glUseProgram(shaders[1]->ID);
 
 	glUniform1i(glGetUniformLocation(shaders[1]->ID, "ourTexture1"), 0);
 
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_ALWAYS);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	enableDepth();
+	enableAlphaChannel();
 
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
@@ -179,16 +187,18 @@ void SceneManager::finish() {
 
 void SceneManager::setupLevels() {
 	Level level0 = Level(shaders[0], '0');
-	//Level level1 = Level(shaders[0], '1');
-	//Level level2 = Level(shaders[0], '2');
+	Level level1 = Level(shaders[0], '1');
+	Level level2 = Level(shaders[0], '2');
 
 	levels.push_back(level0);
-	//levels.push_back(level1);
-	//levels.push_back(level2);
+	levels.push_back(level1);
+	levels.push_back(level2);
 }
 
 void SceneManager::setupScene() {
 	setupLevels();
+	testeID = this->player.getTexture().load(PLAYER_SPRITE_PATH);
+	testeVAO = this->player.getTexture().setup(4, 4);
 }
 
 void SceneManager::setupCamera2D() {
@@ -211,7 +221,4 @@ void SceneManager::setupCamera2D() {
 	projLoc = glGetUniformLocation(shaders[1]->ID, "projection");
 
 	glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
-
-	testeID = this->player.getTexture().load(PLAYER_SPRITE_PATH);
-	testeVAO = this->player.getTexture().setup(4,4);
 }

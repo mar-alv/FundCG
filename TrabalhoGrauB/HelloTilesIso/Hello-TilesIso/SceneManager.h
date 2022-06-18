@@ -40,6 +40,9 @@ public:
 	void initialize();
 	void initializeGraphics();
 
+	void enableDepth();
+	void enableAlphaChannel();
+
 	void addShader(std::string vsFilePath, std::string fsFilePath);
 
 	static void resize(GLFWwindow* window, int newWindowWidth, int newWindowHeight);
