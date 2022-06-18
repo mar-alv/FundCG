@@ -1,9 +1,8 @@
 #include "Level.h"
 
 Level::Level(Shader* shader, char levelNumber) {
-	this->levelNumber = (int)levelNumber;
-
 	this->shader = shader;
+	this->levelNumber = (int)levelNumber;
 
 	ifstream file;
 
@@ -34,25 +33,33 @@ Level::Level(Shader* shader, char levelNumber) {
 			file >> tileType;
 
 			tile.setShader(shader);
+			tile.inicializar(testeVAO);
+
+			tile.setType((int)tileType - '0');
 
 			switch ((int)tileType - '0') {
 			case GridTypeEnum::DIRT:
 				break;
 			case GridTypeEnum::DEEP_WATER:
+				//tile.setType(GridTypeEnum::DEEP_WATER);
 				break;
 			case GridTypeEnum::GRASS:
+				//tile.setType(GridTypeEnum::GRASS);
 				break;
 			case GridTypeEnum::LAVA:
+				//tile.setType(GridTypeEnum::LAVA);
 				break;
 			case GridTypeEnum::SAND:
+				//tile.setType(GridTypeEnum::SAND);
 				break;
 			case GridTypeEnum::STONE:
+				//tile.setType(GridTypeEnum::STONE);
 				break;
 			case GridTypeEnum::WATER:
+				//tile.setType(GridTypeEnum::WATER);
 				break;
 			}
 
-			tile.inicializar(testeVAO);
 			tileset.push_back(tile);
 		}
 	}
@@ -71,17 +78,22 @@ void Level::render() {
 	int actualGrid = 0;
 
 	Texture t = Texture();
-	GLuint testeID = t.load(GRIDS_PATH + "1.png");
 
 	for (int i = 0; i < gridRowsCount; i++) {
 		for (int j = 0; j < gridColumnsCount; j++) {
 			float x = xi + (j - i) * GRIDS_WIDTH / 2.0;
 			float y = yi + (j + i) * GRIDS_HEIGHT / 2.0;
 
+			const std::string tilePath = GRIDS_PATH + std::to_string(tileset[actualGrid].getType()) + ".png";
+
+			std::cout << tilePath << std::endl;
+
+			GLuint testeID = t.load(tilePath);
+
 			model = glm::mat4();
 			model = glm::translate(model, glm::vec3(x, y, 0.0));
 
-			getTileset()[actualGrid].draw(model, testeID);
+			getTileset()[actualGrid].render(model, testeID);
 
 			actualGrid++;
 		}

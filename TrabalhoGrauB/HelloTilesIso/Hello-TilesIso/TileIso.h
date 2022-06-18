@@ -8,6 +8,8 @@
 class TileIso
 {
 protected:
+	int type;
+
 	GLuint VAO;
 
 	Shader* shader;
@@ -18,7 +20,10 @@ public:
 	
 	void inicializar(GLuint testeVAO);
 
+	int getType();
+
+	void setType(int type);
 	void setShader(Shader* shader);
 
-	void draw(glm::mat4 model, GLuint testeID);
+	void render(glm::mat4 model, GLuint testeID);
 };
