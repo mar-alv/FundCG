@@ -3,13 +3,13 @@
 TileIso::TileIso() { }
 TileIso::~TileIso() { }
 
-void TileIso::inicializar() {
+void TileIso::inicializar(GLuint testeVAO) {
 	float vertices[] = {
-		0.0, GRIDS_HEIGHT / 2.0, 0.0,
-		GRIDS_WIDTH / 2.0, GRIDS_HEIGHT, 0.0,
-		GRIDS_WIDTH, GRIDS_HEIGHT / 2.0, 0.0,
-		GRIDS_WIDTH / 2.0, 0.0, 0.0,
-	};
+		0.0, GRIDS_HEIGHT / 2.0, 0.0,               0.0,0.5,
+		GRIDS_WIDTH / 2.0, GRIDS_HEIGHT, 0.0,         0.5,1.0,
+		GRIDS_WIDTH, GRIDS_HEIGHT / 2.0, 0.0,          1.0,0.5,
+		GRIDS_WIDTH / 2.0, 0.0, 0.0,                 0.5,0.0,
+	}; 
 
 	int indices[] = {
 		0, 1 , 3,
@@ -18,11 +18,11 @@ void TileIso::inicializar() {
 
 	GLuint VBO, EBO;
 
-	glGenVertexArrays(1, &VAO);
+	glGenVertexArrays(1, &testeVAO);
 	glGenBuffers(1, &VBO);
 	glGenBuffers(1, &EBO);
 
-	glBindVertexArray(VAO);
+	glBindVertexArray(testeVAO);
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
@@ -31,27 +31,18 @@ void TileIso::inicializar() {
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 	// position attribute
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 
 	// texture coord attribute
-	//glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-	//glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
+
+	this->VAO = testeVAO;
 }
 
-void TileIso::setCor(float r, float g, float b) {
-	cor.r = r;
-	cor.g = g;
-	cor.b = b;
-	cor.a = 1.0; //por enquanto
-}
-
-void TileIso::setCor(glm::vec4 cor) {
-	this->cor = cor;
-}
-
-void TileIso::draw(glm::mat4 model) {
-	//shader->Use();
+void TileIso::draw(glm::mat4 model, GLuint testeID) {
+	shader->Use();
 
 	// Pegando a localização do uniform em que passaremos a matriz de transformação/modelo
 	GLint modelLoc = glGetUniformLocation(shader->ID, "model");
@@ -59,19 +50,13 @@ void TileIso::draw(glm::mat4 model) {
 	// Passando para o shader
 	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
-	// Pegando a localização do uniform em que passaremos a cor (provisório
-	GLint colorLoc = glGetUniformLocation(shader->ID, "inputColor");
-	glUniform4fv(colorLoc, 1, glm::value_ptr(cor));
-
-
 	// vinculando a textura
-	// glBindTexture(GL_TEXTURE_2D, texture);
-	// glUniform1i(glGetUniformLocation(shader->ID, "ourTexture1"), 0);
+	glBindTexture(GL_TEXTURE_2D, testeID);
+	glUniform1i(glGetUniformLocation(shader->ID, "ourTexture1"), 0);
 
 	// Chama o shader
 	glBindVertexArray(VAO);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
 }
 
 void TileIso::setShader(Shader* shader) {

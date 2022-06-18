@@ -10,9 +10,6 @@ GLuint testeVAO, testeID;
 SceneManager::SceneManager() {
 	this->actualLevel = 0;
 
-	int channelsCount = 4;
-	int textureProportions = 192;
-
 	srand(time(0));
 }
 
@@ -103,33 +100,12 @@ int iFrame = 2;
 int iAnims = 0;
 int frameCount = 4;
 
-void SceneManager::render() {
-	clearColorBuffer();
+void SceneManager::drawPlayer() {
+	glUseProgram(shaders[1]->ID);
+	const float addaaa = 25.0;
 
-	if (resized) {
-		setupCamera2D();
-
-		resized = false;
-	}
-
-	shaders[0]->Use();
-
-	float xi = 368;
-	float yi = 100;
-
-	levels[actualLevel].renderGridMap();
-	
-	float x = xi + (this->player.getActualX() - this->player.getActualY()) * GRIDS_WIDTH / 2.0;
-	float y = yi + (this->player.getActualX() + this->player.getActualY()) * GRIDS_HEIGHT / 2.0;
-
-	model = glm::mat4();
-	model = glm::translate(model, glm::vec3(x, y, 0.0));
-
-	levels[actualLevel].getTileset()[7].draw(model);
-
-	//Desenha o personagem
 	glm::mat4 model = glm::mat4(1);
-	model = glm::translate(model, glm::vec3(400.0 + player.getActualX(), 400.0 + player.getActualY(), 0));
+	model = glm::translate(model, glm::vec3(400.0 + player.getActualX() + addaaa, 100.0 + player.getActualY() + addaaa, 0));
 	model = glm::scale(model, glm::vec3(200.0, 200.0, 1.0));
 
 	shaders[1]->setMat4("model", glm::value_ptr(model));
@@ -154,18 +130,35 @@ void SceneManager::render() {
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
+void SceneManager::render() {
+	clearColorBuffer();
+
+	if (resized) {
+		setupCamera2D();
+
+		resized = false;
+	}
+
+	shaders[0]->Use();
+
+	float xi = 640 - 64;
+	float yi = 80;
+
+	levels[actualLevel].renderGridMap();
+	
+	float x = xi + (this->player.getActualX() - this->player.getActualY()) * GRIDS_WIDTH / 2.0;
+	float y = yi + (this->player.getActualX() + this->player.getActualY()) * GRIDS_HEIGHT / 2.0;
+
+	model = glm::mat4();
+	model = glm::translate(model, glm::vec3(x, y, 0.0));
+
+	drawPlayer();
+}
+
 void SceneManager::run() {
 	glUseProgram(shaders[1]->ID);
 
 	glUniform1i(glGetUniformLocation(shaders[1]->ID, "ourTexture1"), 0);
-
-	glm::mat4 projection = glm::mat4(1);
-
-	projection = glm::ortho(0.0, 800.0, 0.0, 600.0, -1.0, 1.0);
-
-	GLint projLoc = glGetUniformLocation(shaders[1]->ID, "projection");
-
-	glUniformMatrix4fv(projLoc, 1, FALSE, glm::value_ptr(projection));
 
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_ALWAYS);

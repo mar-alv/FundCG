@@ -65,6 +65,7 @@ int Texture::setup(float framesCount, float animationCount) {
 		-0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // inferior esquerdo
 		-0.5f,  0.5f, 0.0f,  1.0f, 1.0f, 0.0f,   0.0f, this->dy  // superior esquerdo
 	};
+
 	unsigned int indices[] = {
 	0, 1, 3, // primeiro triangulo
 	1, 2, 3  // segundo triangulo

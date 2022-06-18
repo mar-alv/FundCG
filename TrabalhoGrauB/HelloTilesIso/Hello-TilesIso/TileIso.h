@@ -10,21 +10,15 @@ class TileIso
 protected:
 	GLuint VAO;
 
-	glm::vec4 cor;
-
 	Shader* shader;
 
 public:
 	TileIso();
 	~TileIso();
 	
-	void inicializar();
+	void inicializar(GLuint testeVAO);
 
-	void draw(glm::mat4 model);
-	
-	void setCor(glm::vec4 cor);
-	
 	void setShader(Shader* shader);
 
-	void setCor(float r, float g, float b);
+	void draw(glm::mat4 model, GLuint testeID);
 };

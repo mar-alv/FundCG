@@ -35,6 +35,7 @@ public:
 	void render();
 	void update();
 	void clearColorBuffer();
+	void drawPlayer();
 	
 	void initialize();
 	void initializeGraphics();

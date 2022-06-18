@@ -2,14 +2,15 @@
 #include <string>
 #include <glad/glad.h>
 
-const GLuint WIDTH = 800;
-const GLuint HEIGHT = 600;
+const GLuint WIDTH = 1280;
+const GLuint HEIGHT = 720;
 
-const float GRIDS_WIDTH = 64;
-const float GRIDS_HEIGHT = 32;
+const float GRIDS_WIDTH = 128;
+const float GRIDS_HEIGHT = 64;
 
 const std::string LEVELS_PATH = "../levels/level";
 
+const std::string GRIDS_PATH = "../textures/grid";
 const std::string PLAYER_SPRITE_PATH = "../textures/player.png";
 
 const std::string SHADER_SPRITE_VS_PATH = "../shaders/sprite.vs";

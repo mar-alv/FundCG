@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include "Texture.h"
 #include "TileIso.h"
 #include "GridTypeEnum.h"
 
