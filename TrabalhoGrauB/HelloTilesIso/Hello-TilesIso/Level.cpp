@@ -3,6 +3,8 @@
 Level::Level(Shader* shader, char levelNumber) {
 	this->levelNumber = (int)levelNumber;
 
+	this->shader = shader;
+
 	ifstream file;
 
 	const std::string fileType = ".txt";
@@ -15,8 +17,8 @@ Level::Level(Shader* shader, char levelNumber) {
 
 	file >> rowCount >> columnCount;
 
-	this->gridRowsCount = stoi(rowCount);
-	this->gridColumnsCount = stoi(columnCount);
+	gridRowsCount = stoi(rowCount);
+	gridColumnsCount = stoi(columnCount);
 
 	Texture t = Texture();
 	GLuint testeVAO = t.setup(1, 1);
@@ -59,6 +61,8 @@ Level::Level(Shader* shader, char levelNumber) {
 }
 
 void Level::renderGridMap() {
+	shader->Use();
+
 	float xi = 640 - 64;
 	float yi = 80;
 
@@ -85,13 +89,13 @@ void Level::renderGridMap() {
 }
 
 std::vector<TileIso> Level::getTileset() { 
-	return this->tileset; 
+	return tileset; 
 }
 
 int Level::getGridRowsCount() {
-	return this->gridRowsCount;
+	return gridRowsCount;
 }
 
 int Level::getGridColumnsCount() {
-	return this->gridColumnsCount;
+	return gridColumnsCount;
 }

@@ -11,6 +11,8 @@ private:
 	int gridRowsCount;
 	int gridColumnsCount;
 
+	Shader* shader;
+
 	std::vector<TileIso> tileset;
 
 public:

@@ -38,7 +38,7 @@ void TileIso::inicializar(GLuint testeVAO) {
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
 
-	this->VAO = testeVAO;
+	VAO = testeVAO;
 }
 
 void TileIso::draw(glm::mat4 model, GLuint testeID) {

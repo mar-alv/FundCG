@@ -3,62 +3,62 @@
 int Player::actualDirection = GridDirectionsEnum::CENTER;
 
 Player::Player() {
-	this->actualX = 0;
-	this->actualY = 0;
+	actualX = 0;
+	actualY = 0;
 
-	this->texture = Texture();
+	texture = Texture();
 }
 
 void Player::move() {
-	switch (this->actualDirection) {
+	switch (actualDirection) {
 	case GridDirectionsEnum::NORTH:
-		this->actualX--;
-		this->actualY--;
+		actualX--;
+		actualY--;
 		break;
 	case GridDirectionsEnum::SOUTH:
-		this->actualX++;
-		this->actualY++;
+		actualX++;
+		actualY++;
 		break;
 	case GridDirectionsEnum::EAST:
-		this->actualX++;
-		this->actualY--;
+		actualX++;
+		actualY--;
 		break;
 	case GridDirectionsEnum::WEST:
-		this->actualX--;
-		this->actualY++;
+		actualX--;
+		actualY++;
 		break;
 	case GridDirectionsEnum::NORTH_EAST:
-		this->actualY--;
+		actualY--;
 		break;
 	case GridDirectionsEnum::NORTH_WEST:
-		this->actualX--;
+		actualX--;
 		break;
 	case GridDirectionsEnum::SOUTH_EAST:
-		this->actualX++;
+		actualX++;
 		break;
 	case GridDirectionsEnum::SOUTH_WEST:
-		this->actualY++;
+		actualY++;
 		break;
 	}
 
-	this->actualDirection = GridDirectionsEnum::CENTER;
+	actualDirection = GridDirectionsEnum::CENTER;
 }
 
 void Player::stayInsideGrid(int gridRowsCount, int gridColumnsCount) {
-	if (this->actualY < 0) {
-		this->actualY = 0;
+	if (actualY < 0) {
+		actualY = 0;
 	}
 
-	if (this->actualX < 0) {
-		this->actualX = 0;
+	if (actualX < 0) {
+		actualX = 0;
 	}
 
 	if (actualY > gridRowsCount - 1) {
-		this->actualY = gridRowsCount - 1;
+		actualY = gridRowsCount - 1;
 	}
 
 	if (actualX > gridColumnsCount - 1) {
-		this->actualX = gridColumnsCount - 1;
+		actualX = gridColumnsCount - 1;
 	}
 }
 
@@ -66,65 +66,69 @@ void Player::onMovementKeyPress(int key, int action) {
 	if (action == GLFW_PRESS) {
 		switch (key) {
 		case GridDirectionsEnum::NORTH:
-			this->actualDirection = GridDirectionsEnum::NORTH;
+			actualDirection = GridDirectionsEnum::NORTH;
 			break;
 		case GridDirectionsEnum::SOUTH:
-			this->actualDirection = GridDirectionsEnum::SOUTH;
+			actualDirection = GridDirectionsEnum::SOUTH;
 			break;
 		case GridDirectionsEnum::EAST:
-			this->actualDirection = GridDirectionsEnum::EAST;
+			actualDirection = GridDirectionsEnum::EAST;
 			break;
 		case GridDirectionsEnum::WEST:
-			this->actualDirection = GridDirectionsEnum::WEST;
+			actualDirection = GridDirectionsEnum::WEST;
 			break;
 		case GridDirectionsEnum::NORTH_EAST:
-			this->actualDirection = GridDirectionsEnum::NORTH_EAST;
+			actualDirection = GridDirectionsEnum::NORTH_EAST;
 			break;
 		case GridDirectionsEnum::NORTH_WEST:
-			this->actualDirection = GridDirectionsEnum::NORTH_WEST;
+			actualDirection = GridDirectionsEnum::NORTH_WEST;
 			break;
 		case GridDirectionsEnum::SOUTH_EAST:
-			this->actualDirection = GridDirectionsEnum::SOUTH_EAST;
+			actualDirection = GridDirectionsEnum::SOUTH_EAST;
 			break;
 		case GridDirectionsEnum::SOUTH_WEST:
-			this->actualDirection = GridDirectionsEnum::SOUTH_WEST;
+			actualDirection = GridDirectionsEnum::SOUTH_WEST;
 			break;
 		}
 	}
 }
 
 void Player::initializeTexture() {
-	this->VAO = this->texture.setup(4, 4);
-	this->textureId = this->texture.load(PLAYER_SPRITE_PATH);
+	VAO = texture.setup(4, 4);
+	textureId = texture.load(PLAYER_SPRITE_PATH);
 }
 
 int iFrame = 2;
 int iAnims = 0;
 int frameCount = 4;
 
-
 void Player::render() {
-	this->shader->Use();
-	const float addaaa = 50.0;
+	float xi = 640 - 64;
+	float yi = 80;
 
-	glm::mat4 model = glm::mat4(1);
-	model = glm::translate(model, glm::vec3(400.0 + actualX + addaaa, 100.0 + actualY + addaaa, 0));
+	float x = xi + (actualX - actualY) * GRIDS_WIDTH / 2.0;
+	float y = yi + (actualX + actualY) * GRIDS_HEIGHT / 2.0;
+
+	shader->Use();
+
+	model = glm::mat4(1);
+	model = glm::translate(model, glm::vec3(x, y, 0.0));
 	model = glm::scale(model, glm::vec3(200.0, 200.0, 1.0));
 
-	this->shader->setMat4("model", glm::value_ptr(model));
+	shader->setMat4("model", glm::value_ptr(model));
 
-	float offsetx = this->texture.getDX() * iFrame;
-	float offsety = this->texture.getDY() * iAnims;
+	float offsetx = texture.getDX() * iFrame;
+	float offsety = texture.getDY() * iAnims;
 
-	this->shader->setVec2("offsets", offsetx, offsety);
+	shader->setVec2("offsets", offsetx, offsety);
 
 	iFrame = (iFrame + 1) % frameCount;
 
 	glActiveTexture(GL_TEXTURE0);
 
-	glBindTexture(GL_TEXTURE_2D, this->textureId);
+	glBindTexture(GL_TEXTURE_2D, textureId);
 
-	glBindVertexArray(this->VAO);
+	glBindVertexArray(VAO);
 
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
@@ -134,15 +138,15 @@ void Player::render() {
 }
 
 int Player::getActualX() {
-	return this->actualX;
+	return actualX;
 }
 
 int Player::getActualY() {
-	return this->actualY;
+	return actualY;
 }
 
 Texture Player::getTexture() {
-	return this->texture;
+	return texture;
 }
 
 void Player::setShader(Shader* shader) {

@@ -8,7 +8,7 @@ GLuint SceneManager::actualWindowHeight = HEIGHT;
 GLuint testeVAO, testeID;
 
 SceneManager::SceneManager() {
-	this->actualLevel = 0;
+	actualLevel = 0;
 
 	srand(time(0));
 }
@@ -60,10 +60,12 @@ void SceneManager::key_callback(GLFWwindow* window, int key, int scancode, int a
 	}
 
 	if (key >= 0 && key < 1024) {
-		if (action == GLFW_PRESS)
+		if (action == GLFW_PRESS) {
 			keys[key] = true;
-		else if (action == GLFW_RELEASE)
+		}
+		else if (action == GLFW_RELEASE) {
 			keys[key] = false;
+		}
 	}
 
 	player.onMovementKeyPress(key, action);
@@ -82,13 +84,14 @@ void SceneManager::update() {
 	int gridRowsCount = levels[actualLevel].getGridRowsCount();
 	int gridColumnsCount = levels[actualLevel].getGridColumnsCount();
 
-	if (keys[GLFW_KEY_ESCAPE]) {
-		glfwSetWindowShouldClose(window, GL_TRUE);
-	}
+	player.move();
+	player.stayInsideGrid(gridRowsCount, gridColumnsCount);
+}
 
-	this->player.move();
-
-	this->player.stayInsideGrid(gridRowsCount, gridColumnsCount);
+void SceneManager::render() {
+	clearColorBuffer();
+	setupCameraOnReize();
+	renderObjects();
 }
 
 void SceneManager::clearColorBuffer() {
@@ -96,29 +99,18 @@ void SceneManager::clearColorBuffer() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void SceneManager::render() {
-	clearColorBuffer();
-
+void SceneManager::setupCameraOnReize() {
 	if (resized) {
 		setupCamera2D();
 
 		resized = false;
 	}
+}
 
-	shaders[0]->Use();
-
-	float xi = 640 - 64;
-	float yi = 80;
-
+void SceneManager::renderObjects() {
 	levels[actualLevel].renderGridMap();
-	
-	float x = xi + (this->player.getActualX() - this->player.getActualY()) * GRIDS_WIDTH / 2.0;
-	float y = yi + (this->player.getActualX() + this->player.getActualY()) * GRIDS_HEIGHT / 2.0;
 
-	model = glm::mat4();
-	model = glm::translate(model, glm::vec3(x, y, 0.0));
-
-	this->player.render();
+	player.render();
 }
 
 void SceneManager::enableAlphaChannel() {
@@ -132,7 +124,7 @@ void SceneManager::enableDepth() {
 }
 
 void SceneManager::run() {
-	glUseProgram(shaders[1]->ID);
+	shaders[1]->Use();
 
 	glUniform1i(glGetUniformLocation(shaders[1]->ID, "ourTexture1"), 0);
 
@@ -151,6 +143,11 @@ void SceneManager::finish() {
 	glfwTerminate();
 }
 
+void SceneManager::setupScene() {
+	setupLevels();
+	setupPlayer();
+}
+
 void SceneManager::setupLevels() {
 	Level level0 = Level(shaders[0], '0');
 	Level level1 = Level(shaders[0], '1');
@@ -161,11 +158,9 @@ void SceneManager::setupLevels() {
 	levels.push_back(level2);
 }
 
-void SceneManager::setupScene() {
-	setupLevels();
-
-	this->player.initializeTexture();
-	this->player.setShader(shaders[1]);
+void SceneManager::setupPlayer() {
+	player.initializeTexture();
+	player.setShader(shaders[1]);
 }
 
 void SceneManager::setupCamera2D() {

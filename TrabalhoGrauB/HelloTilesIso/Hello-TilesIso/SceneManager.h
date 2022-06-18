@@ -28,6 +28,7 @@ public:
 
 	void setupScene();
 	void setupLevels();
+	void setupPlayer();
 	void setupCamera2D();
 	
 	void run();
@@ -35,10 +36,13 @@ public:
 	void render();
 	void update();
 	void clearColorBuffer();
-	void drawPlayer();
 	
 	void initialize();
 	void initializeGraphics();
+
+	void setupCameraOnReize();
+
+	void renderObjects();
 
 	void enableDepth();
 	void enableAlphaChannel();

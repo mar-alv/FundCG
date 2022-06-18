@@ -4,11 +4,11 @@ Texture::Texture() {
 }
 
 float Texture::getDX() {
-	return this->dx;
+	return dx;
 }
 
 float Texture::getDY() {
-	return this->dy;
+	return dy;
 }
 
 int Texture::load(std::string path) {
@@ -55,15 +55,15 @@ int Texture::setup(float framesCount, float animationCount) {
 	GLuint VAO;
 	GLuint VBO, EBO;
 
-	this->dx = 1.0 / framesCount;
-	this->dy = 1.0 / animationCount;
+	dx = 1.0 / framesCount;
+	dy = 1.0 / animationCount;
 
 	float vertices[] = {
 		// posicoes          // cores          // coordenadas de textura
-		0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   this->dx, this->dy, // superior direito
-		0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   this->dx, 0.0f, // inferior direito
+		0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   dx, dy, // superior direito
+		0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   dx, 0.0f, // inferior direito
 		-0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // inferior esquerdo
-		-0.5f,  0.5f, 0.0f,  1.0f, 1.0f, 0.0f,   0.0f, this->dy  // superior esquerdo
+		-0.5f,  0.5f, 0.0f,  1.0f, 1.0f, 0.0f,   0.0f, dy  // superior esquerdo
 	};
 
 	unsigned int indices[] = {

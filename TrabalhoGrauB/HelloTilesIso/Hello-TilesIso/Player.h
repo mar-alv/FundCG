@@ -15,6 +15,9 @@ private:
 	GLuint VAO;
 	GLuint textureId;
 
+
+	glm::mat4 model;
+
 	Texture texture;
 
 	glm::vec2 actualPosition;
