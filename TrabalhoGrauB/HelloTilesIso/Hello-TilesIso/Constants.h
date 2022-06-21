@@ -9,7 +9,7 @@ const float TILE_WIDTH = 128;
 const float TILE_HEIGHT = 64;
 
 const float XI = WIDTH / 2 - TILE_WIDTH / 2;
-const float YI = 80;
+const float YI = 70;
 
 const std::string LEVELS_PATH = "../levels/level";
 

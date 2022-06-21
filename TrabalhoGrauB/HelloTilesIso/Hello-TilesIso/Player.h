@@ -7,21 +7,16 @@
 class Player
 {
 private:
-	int actualX;
-	int actualY;
-
-	Shader* shader;
-
 	GLuint VAO;
-	GLuint textureId;
-
-
+	float actualX;
+	float actualY;
+	Shader* shader;
 	glm::mat4 model;
-
 	Texture texture;
-
+	GLuint textureId;
 	glm::vec2 actualPosition;
-
+	int actualRowPosition;
+	int actualColumnPosition;
 	static int actualDirection;
 	
 public:
@@ -29,15 +24,19 @@ public:
 
 	void move();
 	void render();
+	void updateShader();
 	void initializeTexture();
+	void updateModelOnShader();
+	void updateOffsetsOnShader();
+	void calculateActualPosition();
 
-	int getActualX();
-	int getActualY();
 	Texture getTexture();
+	int getActualRowPosition();
+	int getActualColumnPosition();
 
 	void setShader(Shader* shader);
 
-	void onMovementKeyPress(int key, int action);
 
+	void onMovementKeyPress(int key, int action);
 	void stayInsideGrid(int gridRowsCount, int gridColumnsCount);
 };

@@ -3,41 +3,42 @@
 int Player::actualDirection = GridDirectionsEnum::CENTER;
 
 Player::Player() {
-	actualX = 0;
-	actualY = 0;
-
+	actualX = 0.0;
+	actualY = 0.0;
 	texture = Texture();
+	actualRowPosition = 0;
+	actualColumnPosition = 0;
 }
 
 void Player::move() {
 	switch (actualDirection) {
 	case GridDirectionsEnum::NORTH:
-		actualX--;
-		actualY--;
+		actualColumnPosition--;
+		actualRowPosition--;
 		break;
 	case GridDirectionsEnum::SOUTH:
-		actualX++;
-		actualY++;
+		actualColumnPosition++;
+		actualRowPosition++;
 		break;
 	case GridDirectionsEnum::EAST:
-		actualX++;
-		actualY--;
+		actualColumnPosition++;
+		actualRowPosition--;
 		break;
 	case GridDirectionsEnum::WEST:
-		actualX--;
-		actualY++;
+		actualColumnPosition--;
+		actualRowPosition++;
 		break;
 	case GridDirectionsEnum::NORTH_EAST:
-		actualY--;
+		actualRowPosition--;
 		break;
 	case GridDirectionsEnum::NORTH_WEST:
-		actualX--;
+		actualColumnPosition--;
 		break;
 	case GridDirectionsEnum::SOUTH_EAST:
-		actualX++;
+		actualColumnPosition++;
 		break;
 	case GridDirectionsEnum::SOUTH_WEST:
-		actualY++;
+		actualRowPosition++;
 		break;
 	}
 
@@ -45,20 +46,20 @@ void Player::move() {
 }
 
 void Player::stayInsideGrid(int gridRowsCount, int gridColumnsCount) {
-	if (actualY < 0) {
-		actualY = 0;
+	if (actualRowPosition < 0) {
+		actualRowPosition = 0;
 	}
 
-	if (actualX < 0) {
-		actualX = 0;
+	if (actualColumnPosition < 0) {
+		actualColumnPosition = 0;
 	}
 
-	if (actualY > gridRowsCount - 1) {
-		actualY = gridRowsCount - 1;
+	if (actualRowPosition > gridRowsCount - 1) {
+		actualRowPosition = gridRowsCount - 1;
 	}
 
-	if (actualX > gridColumnsCount - 1) {
-		actualX = gridColumnsCount - 1;
+	if (actualColumnPosition > gridColumnsCount - 1) {
+		actualColumnPosition = gridColumnsCount - 1;
 	}
 }
 
@@ -98,26 +99,14 @@ void Player::initializeTexture() {
 	textureId = texture.load(PLAYER_SPRITE_PATH);
 }
 
-int iFrame = 1;
-int iAnims = 1;
+int iFrame = 0;
+int iAnims = 0;
 int frameCount = 4;
 
 void Player::render() {
-	float x = XI + (actualX - actualY) * TILE_WIDTH / 2.0;
-	float y = YI + (actualX + actualY) * TILE_HEIGHT / 2.0;
+	calculateActualPosition();
 
-	shader->Use();
-
-	model = glm::mat4(1);
-	model = glm::translate(model, glm::vec3(x, y, 0.0));
-	model = glm::scale(model, glm::vec3(200.0, 200.0, 1.0));
-
-	shader->setMat4("model", glm::value_ptr(model));
-
-	float offsetx = texture.getDX() * iFrame;
-	float offsety = texture.getDY() * iAnims;
-
-	shader->setVec2("offsets", offsetx, offsety);
+	updateShader();
 
 	iFrame = (iFrame + 1) % frameCount;
 
@@ -134,12 +123,39 @@ void Player::render() {
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-int Player::getActualX() {
-	return actualX;
+void Player::updateShader() {
+	shader->Use();
+
+	updateModelOnShader();
+	updateOffsetsOnShader();
 }
 
-int Player::getActualY() {
-	return actualY;
+void Player::calculateActualPosition() {
+	actualX = XI + XI / 10.0 + (actualColumnPosition - actualRowPosition) * TILE_WIDTH / 2.0;
+	actualY = YI + YI / 6.0 + (actualColumnPosition + actualRowPosition) * TILE_HEIGHT / 2.0;
+}
+
+void Player::updateModelOnShader() {
+	model = glm::mat4(1);
+	model = glm::translate(model, glm::vec3(actualX, actualY, 0.0));
+	model = glm::scale(model, glm::vec3(200.0, 200.0, 1.0));
+
+	shader->setMat4("model", glm::value_ptr(model));
+}
+
+void Player::updateOffsetsOnShader() {
+	float offsetx = texture.getDX() * iFrame;
+	float offsety = texture.getDY() * iAnims;
+
+	shader->setVec2("offsets", offsetx, offsety);
+}
+
+int Player::getActualRowPosition() {
+	return actualRowPosition;
+}
+
+int Player::getActualColumnPosition() {
+	return actualColumnPosition;
 }
 
 Texture Player::getTexture() {
