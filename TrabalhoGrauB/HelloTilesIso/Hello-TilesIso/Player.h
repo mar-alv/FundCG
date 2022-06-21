@@ -36,7 +36,6 @@ public:
 
 	void setShader(Shader* shader);
 
-
 	void onMovementKeyPress(int key, int action);
 	void stayInsideGrid(int gridRowsCount, int gridColumnsCount);
 };

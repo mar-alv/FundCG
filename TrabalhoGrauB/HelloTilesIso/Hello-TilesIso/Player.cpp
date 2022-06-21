@@ -5,8 +5,8 @@ int Player::actualDirection = GridDirectionsEnum::CENTER;
 Player::Player() {
 	actualX = 0.0;
 	actualY = 0.0;
-	texture = Texture();
 	actualRowPosition = 0;
+	texture = Texture(4, 4);
 	actualColumnPosition = 0;
 }
 
@@ -95,31 +95,20 @@ void Player::onMovementKeyPress(int key, int action) {
 }
 
 void Player::initializeTexture() {
-	VAO = texture.setup(4, 4);
+	VAO = texture.setup();
 	textureId = texture.load(PLAYER_SPRITE_PATH);
 }
 
-int iFrame = 0;
-int iAnims = 0;
-int frameCount = 4;
-
 void Player::render() {
 	calculateActualPosition();
-
 	updateShader();
-
-	iFrame = (iFrame + 1) % frameCount;
+	texture.updateActualFrame();
 
 	glActiveTexture(GL_TEXTURE0);
-
 	glBindTexture(GL_TEXTURE_2D, textureId);
-
 	glBindVertexArray(VAO);
-
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
 	glBindVertexArray(0);
-
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
@@ -144,8 +133,8 @@ void Player::updateModelOnShader() {
 }
 
 void Player::updateOffsetsOnShader() {
-	float offsetx = texture.getDX() * iFrame;
-	float offsety = texture.getDY() * iAnims;
+	float offsetx = texture.getDX() * texture.getIFrame();
+	float offsety = texture.getDY() * texture.getIAnims();
 
 	shader->setVec2("offsets", offsetx, offsety);
 }

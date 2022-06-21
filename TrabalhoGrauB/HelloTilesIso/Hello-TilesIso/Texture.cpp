@@ -3,12 +3,29 @@
 Texture::Texture() {
 }
 
+Texture::Texture(float framesCount, float animationsCount) {
+	this->dx = 0;
+	this->dy = 0;
+	this->iFrame = 0;
+	this->iAnims = 0;
+	this->framesCount = framesCount;
+	this->animationsCount = animationsCount;
+}
+
 float Texture::getDX() {
 	return dx;
 }
 
 float Texture::getDY() {
 	return dy;
+}
+
+int Texture::getIFrame() {
+	return iFrame;
+}
+
+int Texture::getIAnims() {
+	return iAnims;
 }
 
 int Texture::load(std::string path) {
@@ -51,12 +68,12 @@ int Texture::load(std::string path) {
 	return texID;
 }
 
-int Texture::setup(float framesCount, float animationCount) {
+int Texture::setup() {
 	GLuint VAO;
 	GLuint VBO, EBO;
 
 	dx = 1.0 / framesCount;
-	dy = 1.0 / animationCount;
+	dy = 1.0 / animationsCount;
 
 	float vertices[] = {
 		// posicoes          // cores          // coordenadas de textura
@@ -96,4 +113,8 @@ int Texture::setup(float framesCount, float animationCount) {
 	glBindVertexArray(0);
 
 	return VAO;
+}
+
+void Texture::updateActualFrame() {
+	iFrame = (iFrame + 1) % (int)framesCount;
 }

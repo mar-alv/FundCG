@@ -24,9 +24,9 @@ void Level::initialize() {
 	gridRowsCount = stoi(rowCount);
 	gridColumnsCount = stoi(columnCount);
 
-	Texture texture = Texture();
+	Texture texture = Texture(1, 1);
 
-	GLuint VAO = texture.setup(1, 1);
+	GLuint VAO = texture.setup();
 
 	for (int i = 0; i < gridRowsCount; i++) {
 		for (int j = 0; j < gridColumnsCount; j++) {
