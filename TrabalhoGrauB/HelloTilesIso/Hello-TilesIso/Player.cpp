@@ -72,15 +72,12 @@ void Player::stayInsideGrid(int gridRowsCount, int gridColumnsCount) {
 	if (actualRowPosition < 0) {
 		actualRowPosition = 0;
 	}
-
 	if (actualColumnPosition < 0) {
 		actualColumnPosition = 0;
 	}
-
 	if (actualRowPosition > gridRowsCount - 1) {
 		actualRowPosition = gridRowsCount - 1;
 	}
-
 	if (actualColumnPosition > gridColumnsCount - 1) {
 		actualColumnPosition = gridColumnsCount - 1;
 	}
