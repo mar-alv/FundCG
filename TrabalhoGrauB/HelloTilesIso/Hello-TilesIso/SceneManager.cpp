@@ -124,15 +124,23 @@ void SceneManager::enableDepth() {
 void SceneManager::run() {
 	shaders[1]->Use();
 
+	Timer timer = Timer();
+
 	glUniform1i(glGetUniformLocation(shaders[1]->ID, "ourTexture1"), 0);
 
 	enableDepth();
 	enableAlphaChannel();
 
 	while (!glfwWindowShouldClose(window)) {
+		timer.start();
+
 		glfwPollEvents();
 		update();
 		render();
+
+		timer.finish();
+		timer.delay();
+
 		glfwSwapBuffers(window);
 	}
 }

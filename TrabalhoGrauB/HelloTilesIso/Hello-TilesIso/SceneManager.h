@@ -1,5 +1,6 @@
 #pragma once
 #include "Level.h"
+#include "Timer.h"
 #include "Player.h"
 #include "stb_image.h"
 

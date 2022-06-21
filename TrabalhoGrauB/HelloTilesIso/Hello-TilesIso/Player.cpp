@@ -98,8 +98,8 @@ void Player::initializeTexture() {
 	textureId = texture.load(PLAYER_SPRITE_PATH);
 }
 
-int iFrame = 2;
-int iAnims = 0;
+int iFrame = 1;
+int iAnims = 1;
 int frameCount = 4;
 
 void Player::render() {
