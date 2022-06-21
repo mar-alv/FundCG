@@ -28,6 +28,10 @@ int Texture::getIAnims() {
 	return iAnims;
 }
 
+void Texture::setIAnims(int iAnims) {
+	this->iAnims = iAnims;
+}
+
 int Texture::load(std::string path) {
 	GLuint texID;
 

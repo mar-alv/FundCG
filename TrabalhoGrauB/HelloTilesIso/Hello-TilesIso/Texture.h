@@ -25,6 +25,8 @@ public:
 	int getIFrame();
 	int getIAnims();
 
+	void setIAnims(int iAnims);
+
 	int setup();
 	void updateActualFrame();
 	int load(std::string path);

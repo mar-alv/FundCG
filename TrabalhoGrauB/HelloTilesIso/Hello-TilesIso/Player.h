@@ -3,6 +3,7 @@
 #include "Texture.h"
 #include "Constants.h"
 #include "GridDirectionsEnum.h"
+#include "PlayerTextureDirectionFacingEnum.h"
 
 class Player
 {
@@ -25,6 +26,7 @@ public:
 	void move();
 	void render();
 	void updateShader();
+	void updateTexture();
 	void initializeTexture();
 	void updateModelOnShader();
 	void updateOffsetsOnShader();

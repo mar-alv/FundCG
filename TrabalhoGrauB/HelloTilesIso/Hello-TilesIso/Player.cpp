@@ -42,7 +42,30 @@ void Player::move() {
 		break;
 	}
 
+	updateTexture();
+
 	actualDirection = GridDirectionsEnum::CENTER;
+}
+
+void Player::updateTexture() {
+	switch (actualDirection) {
+	case GridDirectionsEnum::EAST:
+	case GridDirectionsEnum::NORTH_EAST:
+	case GridDirectionsEnum::SOUTH_EAST:
+		texture.setIAnims(PlayerTextureDirectionFacingEnum::RIGHT);
+		break;
+	case GridDirectionsEnum::WEST:
+	case GridDirectionsEnum::SOUTH_WEST:
+	case GridDirectionsEnum::NORTH_WEST:
+		texture.setIAnims(PlayerTextureDirectionFacingEnum::LEFT);
+		break;
+	case GridDirectionsEnum::SOUTH:
+		texture.setIAnims(PlayerTextureDirectionFacingEnum::BACK);
+		break;
+	case GridDirectionsEnum::NORTH:
+		texture.setIAnims(PlayerTextureDirectionFacingEnum::FRONT);
+		break;
+	}
 }
 
 void Player::stayInsideGrid(int gridRowsCount, int gridColumnsCount) {
@@ -104,12 +127,9 @@ void Player::render() {
 	updateShader();
 	texture.updateActualFrame();
 
-	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, textureId);
 	glBindVertexArray(VAO);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-	glBindVertexArray(0);
-	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void Player::updateShader() {

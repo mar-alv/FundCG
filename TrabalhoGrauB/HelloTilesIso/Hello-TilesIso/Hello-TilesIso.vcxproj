@@ -161,6 +161,7 @@
     <ClInclude Include="Level.h" />
     <ClInclude Include="Object2D.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="PlayerTextureDirectionFacingEnum.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="stb_image.h" />
