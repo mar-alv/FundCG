@@ -13,11 +13,12 @@ const float YI = 70;
 
 const std::string LEVELS_PATH = "../levels/level";
 
-const std::string GRIDS_PATH = "../textures/tile";
-const std::string PLAYER_SPRITE_PATH = "../textures/player.png";
-
 const std::string SHADER_SPRITE_VS_PATH = "../shaders/sprite.vs";
 const std::string SHADER_SPRITE_FS_PATH = "../shaders/sprite.fs";
+
+const std::string GRIDS_SPRITES_PATH = "../textures/tiles/tile";
+const std::string PLANT_SPRITES_PATH = "../textures/plants/plant";
+const std::string PLAYER_SPRITES_PATH = "../textures/player/player.png";
 
 const std::string SHADER_TRANSFORMATIONS_VS_PATH = "../shaders/transformations.vs";
 const std::string SHADER_TRANSFORMATIONS_FS_PATH = "../shaders/transformations.fs";

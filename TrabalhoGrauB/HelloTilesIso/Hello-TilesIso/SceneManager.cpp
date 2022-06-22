@@ -85,6 +85,16 @@ void SceneManager::update() {
 
 	player.move();
 	player.stayInsideGrid(gridRowsCount, gridColumnsCount);
+
+	if (levels[actualLevel].getGrid()[player.getActualRowPosition()][player.getActualColumnPosition()].getType() == 0) {
+		std::cout << "Estou pisando na grama agora" << std::endl;
+	}
+	if (levels[actualLevel].getGrid()[player.getActualRowPosition()][player.getActualColumnPosition()].getType() == 1) {
+		std::cout << "Estou pisando na terra agora" << std::endl;
+	}
+	if (levels[actualLevel].getGrid()[player.getActualRowPosition()][player.getActualColumnPosition()].getType() == 2) {
+		std::cout << "Estou pisando na água agora" << std::endl;
+	}
 }
 
 void SceneManager::render() {

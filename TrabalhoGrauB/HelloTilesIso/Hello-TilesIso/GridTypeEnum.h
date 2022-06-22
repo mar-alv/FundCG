@@ -1,11 +1,7 @@
 #pragma once
 
 enum GridTypeEnum {
-	DIRT,
-	LAVA,
-	SAND,
 	GRASS,
-	STONE,
+	DIRT,
 	WATER,
-	DEEP_WATER,
 };

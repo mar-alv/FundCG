@@ -9,9 +9,9 @@ class TileIso
 {
 protected:
 	int type;
+	GLuint VAO;
 	Shader* shader;
 	glm::mat4 model;
-	GLuint VAO;
 	GLuint textureId;
 
 public:

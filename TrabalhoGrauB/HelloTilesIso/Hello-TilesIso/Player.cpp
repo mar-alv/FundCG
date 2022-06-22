@@ -116,7 +116,7 @@ void Player::onMovementKeyPress(int key, int action) {
 
 void Player::initializeTexture() {
 	VAO = texture.setup();
-	textureId = texture.load(PLAYER_SPRITE_PATH);
+	textureId = texture.load(PLAYER_SPRITES_PATH);
 }
 
 void Player::render() {

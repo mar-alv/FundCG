@@ -1,4 +1,5 @@
 #include "Level.h"
+#include "GridTypeEnum.h"
 
 Level::Level(Shader* shader, char levelNumber) {
 	this->shader = shader;
@@ -29,12 +30,14 @@ void Level::initialize() {
 	GLuint VAO = texture.setup();
 
 	for (int i = 0; i < gridRowsCount; i++) {
+		std::vector<TileIso> temporaryGrid;
+
 		for (int j = 0; j < gridColumnsCount; j++) {
 			char tileType;
 
 			levelFile >> tileType;
 
-			const std::string gridTexturePath = GRIDS_PATH + tileType + tileFileFormat;
+			const std::string gridTexturePath = GRIDS_SPRITES_PATH + tileType + tileFileFormat;
 
 			GLuint textureId = texture.load(gridTexturePath);
 
@@ -42,8 +45,9 @@ void Level::initialize() {
 
 			tile.inicializar();
 
-			grid.push_back(tile);
+			temporaryGrid.push_back(tile);
 		}
+		grid.push_back(temporaryGrid);
 	}
 
 	levelFile.close();
@@ -54,22 +58,18 @@ void Level::render() {
 
 	glm::mat4 model;
 
-	int actualGrid = 0;
-
 	for (int i = 0; i < gridRowsCount; i++) {
 		for (int j = 0; j < gridColumnsCount; j++) {
-			getGrid()[actualGrid].setModel(model);
+			getGrid()[i][j].setModel(model);
 			
-			model = getGrid()[actualGrid].translate(i, j);
+			model = getGrid()[i][j].translate(i, j);
 			
-			getGrid()[actualGrid].render(model);
-
-			actualGrid++;
+			getGrid()[i][j].render(model);
 		}
 	}
 }
 
-std::vector<TileIso> Level::getGrid() { 
+std::vector<std::vector<TileIso>> Level::getGrid() {
 	return grid;
 }
 

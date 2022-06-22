@@ -145,6 +145,7 @@
     <ClCompile Include="glad.c" />
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="Origem.cpp" />
+    <ClCompile Include="Plant.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="Shader.cpp" />
@@ -158,6 +159,7 @@
     <ClInclude Include="GridDirectionsEnum.h" />
     <ClInclude Include="GridTypeEnum.h" />
     <ClInclude Include="Level.h" />
+    <ClInclude Include="Plant.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerTextureDirectionFacingEnum.h" />
     <ClInclude Include="SceneManager.h" />
