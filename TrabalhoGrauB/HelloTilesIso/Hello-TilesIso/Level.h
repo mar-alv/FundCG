@@ -1,19 +1,23 @@
 #pragma once
 #include <vector>
+#include "Plant.h"
 #include "Texture.h"
 #include "TileIso.h"
+#include "PlantTypeEnum.h"
 
 class Level
 {
 private:
-	Shader* shader;
 	int levelNumber;
 	int gridRowsCount;
+	Shader* shaderTile;
+	Shader* shaderPlant;
 	int gridColumnsCount;
+	std::vector<Plant> plants;
 	std::vector<std::vector<TileIso>> grid;
 
 public:
-	Level(Shader* shader, char levelNumber);
+	Level(Shader* shaderTile, Shader* shaderPlant, char levelNumber);
 
 	int getGridRowsCount();
 	int getGridColumnsCount();
@@ -21,4 +25,7 @@ public:
 
 	void render();
 	void initialize();
+	void renderTile();
+	void renderPlant();
+	void addPlant(int x, int y);
 };

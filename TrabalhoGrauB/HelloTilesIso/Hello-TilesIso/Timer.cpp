@@ -1,4 +1,5 @@
 #include "Timer.h"
+#include <iostream>
 
 Timer::Timer() {}
 
@@ -17,7 +18,14 @@ double Timer::getElapsedTimeMilliseconds() {
 }
 
 double Timer::getElapsedTime() {
+	end = std::chrono::system_clock::now();
+	begin = std::chrono::system_clock::now();
+	typedef std::chrono::milliseconds ms;
 	std::chrono::duration<double> elapsed_seconds = end - begin;
+
+	ms d = std::chrono::duration_cast<ms>(elapsed_seconds);
+
+	//std::cout << d.count() << std::endl;
 
 	return elapsed_seconds.count();
 }
@@ -30,6 +38,8 @@ double Timer::calculateWaitingTime(int fps, double elapsedTime) {
 
 void Timer::delay() {
 	double waitingTime = calculateWaitingTime(15, getElapsedTimeMilliseconds());
+
+	std::cout << waitingTime << std::endl;
 
 	if (waitingTime) {
 		std::this_thread::sleep_for(std::chrono::milliseconds((int)waitingTime));

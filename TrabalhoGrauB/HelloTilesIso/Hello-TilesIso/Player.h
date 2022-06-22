@@ -9,15 +9,16 @@ class Player
 {
 private:
 	GLuint VAO;
+	bool isCarryingWater;
 	float actualX;
 	float actualY;
 	Shader* shader;
 	glm::mat4 model;
 	Texture texture;
 	GLuint textureId;
-	glm::vec2 actualPosition;
 	int actualRowPosition;
 	int actualColumnPosition;
+	glm::vec2 actualPosition;
 	static int actualDirection;
 	
 public:

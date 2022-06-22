@@ -142,6 +142,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="Origem.cpp" />
@@ -156,10 +157,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Constants.h" />
+    <ClInclude Include="GameManager.h" />
     <ClInclude Include="GridDirectionsEnum.h" />
     <ClInclude Include="GridTypeEnum.h" />
     <ClInclude Include="Level.h" />
     <ClInclude Include="Plant.h" />
+    <ClInclude Include="PlantTypeEnum.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerTextureDirectionFacingEnum.h" />
     <ClInclude Include="SceneManager.h" />

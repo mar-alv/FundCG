@@ -87,13 +87,13 @@ void SceneManager::update() {
 	player.stayInsideGrid(gridRowsCount, gridColumnsCount);
 
 	if (levels[actualLevel].getGrid()[player.getActualRowPosition()][player.getActualColumnPosition()].getType() == 0) {
-		std::cout << "Estou pisando na grama agora" << std::endl;
+	//	std::cout << "Estou pisando na grama agora" << std::endl;
 	}
 	if (levels[actualLevel].getGrid()[player.getActualRowPosition()][player.getActualColumnPosition()].getType() == 1) {
-		std::cout << "Estou pisando na terra agora" << std::endl;
+	//	std::cout << "Estou pisando na terra agora" << std::endl;
 	}
 	if (levels[actualLevel].getGrid()[player.getActualRowPosition()][player.getActualColumnPosition()].getType() == 2) {
-		std::cout << "Estou pisando na água agora" << std::endl;
+	//	std::cout << "Estou pisando na água agora" << std::endl;
 	}
 }
 
@@ -135,11 +135,14 @@ void SceneManager::run() {
 	shaders[1]->Use();
 
 	Timer timer = Timer();
+	Timer timer2 = Timer();
 
 	glUniform1i(glGetUniformLocation(shaders[1]->ID, "ourTexture1"), 0);
 
 	enableDepth();
 	enableAlphaChannel();
+
+	timer2.start();
 
 	while (!glfwWindowShouldClose(window)) {
 		timer.start();
@@ -148,11 +151,15 @@ void SceneManager::run() {
 		update();
 		render();
 
+
 		timer.finish();
 		timer.delay();
+		timer2.getElapsedTime();
 
 		glfwSwapBuffers(window);
 	}
+
+	timer2.finish();
 }
 
 void SceneManager::finish() {
@@ -165,9 +172,9 @@ void SceneManager::setupScene() {
 }
 
 void SceneManager::setupLevels() {
-	Level level0 = Level(shaders[0], '0');
-	Level level1 = Level(shaders[0], '1');
-	Level level2 = Level(shaders[0], '2');
+	Level level0 = Level(shaders[0], shaders[1], '0');
+	Level level1 = Level(shaders[0], shaders[1], '1');
+	Level level2 = Level(shaders[0], shaders[1], '2');
 
 	levels.push_back(level0);
 	levels.push_back(level1);

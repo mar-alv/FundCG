@@ -1,8 +1,9 @@
 #include "Level.h"
 #include "GridTypeEnum.h"
 
-Level::Level(Shader* shader, char levelNumber) {
-	this->shader = shader;
+Level::Level(Shader* shaderTile, Shader* shaderPlant, char levelNumber) {
+	this->shaderTile = shaderTile;
+	this->shaderPlant = shaderPlant;
 	this->levelNumber = (int)levelNumber;
 
 	initialize();
@@ -11,7 +12,6 @@ Level::Level(Shader* shader, char levelNumber) {
 void Level::initialize() {
 	ifstream levelFile;
 
-	const std::string tileFileFormat = ".png";
 	const std::string levelFileFormat = ".txt";
 	const std::string fileCompletePath = LEVELS_PATH + std::to_string(levelNumber - '0') + levelFileFormat;
 
@@ -29,6 +29,16 @@ void Level::initialize() {
 
 	GLuint VAO = texture.setup();
 
+
+
+
+
+
+
+
+
+
+
 	for (int i = 0; i < gridRowsCount; i++) {
 		std::vector<TileIso> temporaryGrid;
 
@@ -37,11 +47,18 @@ void Level::initialize() {
 
 			levelFile >> tileType;
 
-			const std::string gridTexturePath = GRIDS_SPRITES_PATH + tileType + tileFileFormat;
+			const std::string gridTexturePath = GRIDS_SPRITES_PATH + tileType + TEXTURE_FILE_FORMAT;
 
 			GLuint textureId = texture.load(gridTexturePath);
 
-			TileIso tile = TileIso((int)tileType - '0', VAO, shader, textureId);
+			TileIso tile = TileIso((int)tileType - '0', VAO, shaderTile, textureId);
+
+			if (tile.getType() == 1) {
+				float x = XI + XI / 6.0 + (j - i) * TILE_WIDTH / 2.0;
+				float y = YI + (j + i) * TILE_HEIGHT / 2.0;
+
+				addPlant(x, y);
+			}
 
 			tile.inicializar();
 
@@ -53,19 +70,41 @@ void Level::initialize() {
 	levelFile.close();
 }
 
+void Level::addPlant(int x, int y) {
+	Plant plant = Plant(x, y, PlantTypeEnum::BERRY, shaderPlant);
+
+	plant.initializeTexture();
+
+	plants.push_back(plant);
+}
+
 void Level::render() {
-	shader->Use();
+	renderTile();
+	renderPlant();
+}
+
+void Level::renderTile() {
+	shaderTile->Use();
 
 	glm::mat4 model;
 
 	for (int i = 0; i < gridRowsCount; i++) {
 		for (int j = 0; j < gridColumnsCount; j++) {
 			getGrid()[i][j].setModel(model);
-			
+
 			model = getGrid()[i][j].translate(i, j);
-			
+
 			getGrid()[i][j].render(model);
 		}
+	}
+
+}
+
+void Level::renderPlant() {
+	shaderPlant->Use();
+
+	for (int i = 0; i < plants.size(); i++) {
+		plants[i].render();
 	}
 }
 
