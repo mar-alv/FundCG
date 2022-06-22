@@ -67,7 +67,7 @@ void SceneManager::key_callback(GLFWwindow* window, int key, int scancode, int a
 		}
 	}
 
-	player.onMovementKeyPress(key, action);
+	player.onKeyPress(key, action);
 }
 
 void SceneManager::resize(GLFWwindow* window, int newWindowWidth, int newWindowHeight) {
@@ -151,10 +151,8 @@ void SceneManager::run() {
 		update();
 		render();
 
-
 		timer.finish();
 		timer.delay();
-		timer2.getElapsedTime();
 
 		glfwSwapBuffers(window);
 	}
@@ -182,7 +180,7 @@ void SceneManager::setupLevels() {
 }
 
 void SceneManager::setupPlayer() {
-	player.initializeTexture();
+	player.initializeTextures();
 	player.setShader(shaders[1]);
 }
 

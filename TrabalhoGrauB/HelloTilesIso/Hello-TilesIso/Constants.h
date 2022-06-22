@@ -1,6 +1,6 @@
 #pragma once
-#include <string>
 #include <glad/glad.h>
+#include "ConstantsPlayer.h"
 
 const GLuint WIDTH = 1280;
 const GLuint HEIGHT = 720;
@@ -20,7 +20,6 @@ const std::string SHADER_SPRITE_FS_PATH = "../shaders/sprite.fs";
 
 const std::string GRIDS_SPRITES_PATH = "../textures/tiles/tile";
 const std::string PLANT_SPRITES_PATH = "../textures/plants/plant";
-const std::string PLAYER_SPRITES_PATH = "../textures/player/player" + TEXTURE_FILE_FORMAT;
 
 const std::string SHADER_TRANSFORMATIONS_VS_PATH = "../shaders/transformations.vs";
 const std::string SHADER_TRANSFORMATIONS_FS_PATH = "../shaders/transformations.fs";

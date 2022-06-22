@@ -39,8 +39,6 @@ double Timer::calculateWaitingTime(int fps, double elapsedTime) {
 void Timer::delay() {
 	double waitingTime = calculateWaitingTime(15, getElapsedTimeMilliseconds());
 
-	std::cout << waitingTime << std::endl;
-
 	if (waitingTime) {
 		std::this_thread::sleep_for(std::chrono::milliseconds((int)waitingTime));
 	}

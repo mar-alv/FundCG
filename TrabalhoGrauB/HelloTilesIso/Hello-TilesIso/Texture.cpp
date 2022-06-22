@@ -28,6 +28,14 @@ int Texture::getIAnims() {
 	return iAnims;
 }
 
+GLuint Texture::getVAO() {
+	return VAO;
+}
+
+GLuint Texture::getTextureId() {
+	return textureId;
+}
+
 void Texture::setIAnims(int iAnims) {
 	this->iAnims = iAnims;
 }
@@ -121,4 +129,9 @@ int Texture::setup() {
 
 void Texture::updateActualFrame() {
 	iFrame = (iFrame + 1) % (int)framesCount;
+}
+
+void Texture::initializeTextureIdAndVAO(std::string filePath) {
+	VAO = setup();
+	textureId = load(filePath);
 }

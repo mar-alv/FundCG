@@ -6,7 +6,6 @@ Player::Player() {
 	actualX = 0.0;
 	actualY = 0.0;
 	actualRowPosition = 0;
-	texture = Texture(4, 4);
 	actualColumnPosition = 0;
 }
 
@@ -41,7 +40,6 @@ void Player::move() {
 		actualRowPosition++;
 		break;
 	}
-
 	updateTexture();
 
 	actualDirection = GridDirectionsEnum::CENTER;
@@ -52,18 +50,18 @@ void Player::updateTexture() {
 	case GridDirectionsEnum::EAST:
 	case GridDirectionsEnum::NORTH_EAST:
 	case GridDirectionsEnum::SOUTH_EAST:
-		texture.setIAnims(PlayerTextureDirectionFacingEnum::RIGHT);
+		actualTexture.setIAnims(PlayerTextureDirectionFacingEnum::RIGHT);
 		break;
 	case GridDirectionsEnum::WEST:
 	case GridDirectionsEnum::SOUTH_WEST:
 	case GridDirectionsEnum::NORTH_WEST:
-		texture.setIAnims(PlayerTextureDirectionFacingEnum::LEFT);
+		actualTexture.setIAnims(PlayerTextureDirectionFacingEnum::LEFT);
 		break;
 	case GridDirectionsEnum::SOUTH:
-		texture.setIAnims(PlayerTextureDirectionFacingEnum::BACK);
+		actualTexture.setIAnims(PlayerTextureDirectionFacingEnum::BACK);
 		break;
 	case GridDirectionsEnum::NORTH:
-		texture.setIAnims(PlayerTextureDirectionFacingEnum::FRONT);
+		actualTexture.setIAnims(PlayerTextureDirectionFacingEnum::FRONT);
 		break;
 	}
 }
@@ -81,6 +79,11 @@ void Player::stayInsideGrid(int gridRowsCount, int gridColumnsCount) {
 	if (actualColumnPosition > gridColumnsCount - 1) {
 		actualColumnPosition = gridColumnsCount - 1;
 	}
+}
+
+void Player::onKeyPress(int key, int action) {
+	onActionKeyPress(key, action);
+	onMovementKeyPress(key, action);
 }
 
 void Player::onMovementKeyPress(int key, int action) {
@@ -114,18 +117,59 @@ void Player::onMovementKeyPress(int key, int action) {
 	}
 }
 
-void Player::initializeTexture() {
-	VAO = texture.setup();
-	textureId = texture.load(PLAYER_SPRITES_PATH);
+void Player::onActionKeyPress(int key, int action) {
+	if (action == GLFW_PRESS) {
+		switch (key) {
+		case PlayerActionEnum::ATTACKING:
+			attack();
+			break;
+		case PlayerActionEnum::WATERING_PLANT:
+			waterPlant();
+			collectWater();
+			break;
+		}
+	}
+}
+
+void Player::attack() {
+	isAttacking = true;
+}
+
+void Player::waterPlant() {
+	// ver se esta num tile com planta regavel
+	isWateringPlants = true;
+	isCarryingWater = false;
+}
+
+void Player::collectWater() {
+	// ver se esta num tile de agua
+	isCarryingWater = true;
+	isCollectingWater = true;
+}
+
+void Player::initializeTextures() {
+	Texture idleTexture = Texture(4, 4);
+	Texture attackingTexture = Texture(2, 4);
+	Texture wateringPlantTexture = Texture(2, 4);
+
+	idleTexture.initializeTextureIdAndVAO(PLAYER_SPRITES_PATH + PLAYER_SPRITE_IDLE_FILE_NAME);
+	attackingTexture.initializeTextureIdAndVAO(PLAYER_SPRITES_PATH + PLAYER_SPRITE_ATTACKING_FILE_NAME);
+	wateringPlantTexture.initializeTextureIdAndVAO(PLAYER_SPRITES_PATH + PLAYER_SPRITE_WATERING_PLANT_FILE_NAME);
+
+	textures.push_back(idleTexture);
+	textures.push_back(attackingTexture);
+	textures.push_back(wateringPlantTexture);
+
+	actualTexture = idleTexture;
 }
 
 void Player::render() {
 	calculateActualPosition();
 	updateShader();
-	texture.updateActualFrame();
+	actualTexture.updateActualFrame();
 
-	glBindTexture(GL_TEXTURE_2D, textureId);
-	glBindVertexArray(VAO);
+	glBindTexture(GL_TEXTURE_2D, actualTexture.getTextureId());
+	glBindVertexArray(actualTexture.getVAO());
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
 
@@ -150,8 +194,8 @@ void Player::updateModelOnShader() {
 }
 
 void Player::updateOffsetsOnShader() {
-	float offsetx = texture.getDX() * texture.getIFrame();
-	float offsety = texture.getDY() * texture.getIAnims();
+	float offsetx = actualTexture.getDX() * actualTexture.getIFrame();
+	float offsety = actualTexture.getDY() * actualTexture.getIAnims();
 
 	shader->setVec2("offsets", offsetx, offsety);
 }
@@ -164,8 +208,8 @@ int Player::getActualColumnPosition() {
 	return actualColumnPosition;
 }
 
-Texture Player::getTexture() {
-	return texture;
+Texture Player::getActualTexture() {
+	return actualTexture;
 }
 
 void Player::setShader(Shader* shader) {
