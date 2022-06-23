@@ -89,6 +89,8 @@ void SceneManager::update() {
 
 	if (player.getHasWatered()) {
 		player.setHasWatered(false);
+
+		levels[actualLevel].growPlant(player.getActualColumnPosition(), player.getActualRowPosition());
 	}
 }
 

@@ -1,12 +1,14 @@
 #include "Plant.h"
 #include "Constants.h"
 
-Plant::Plant(int actualX, int actualY, int type, Shader* shader) {
+Plant::Plant(int actualX, int actualY, int type, Shader* shader, int actualRowPosition, int actualColumnPosition) {
 	this->type = type;
 	this->shader = shader;
 	this->actualX = actualX;
 	this->actualY = actualY;
 	this->texture = Texture(5, 1);
+	this->actualRowPosition = actualRowPosition;
+	this->actualColumnPosition = actualColumnPosition;
 }
 
 void Plant::initializeTexture() {
@@ -19,7 +21,6 @@ void Plant::initializeTexture() {
 void Plant::render() {
 	updateModelOnShader();
 	updateOffsetsOnShader();
-	//texture.updateActualFrame();
 
 	glBindTexture(GL_TEXTURE_2D, textureId);
 	glBindVertexArray(VAO);
@@ -39,4 +40,16 @@ void Plant::updateOffsetsOnShader() {
 	float offsety = texture.getDY() * texture.getIAnims();
 
 	shader->setVec2("offsets", offsetx, offsety);
+}
+
+void Plant::grow() {
+	texture.updateActualFrame();
+}
+
+float Plant::getActualRowPosition() {
+	return actualRowPosition;
+}
+
+float Plant::getActualColumnPosition() {
+	return actualColumnPosition;
 }

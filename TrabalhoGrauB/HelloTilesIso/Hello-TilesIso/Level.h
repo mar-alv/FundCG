@@ -27,5 +27,6 @@ public:
 	void initialize();
 	void renderTile();
 	void renderPlant();
-	void addPlant(int x, int y);
+	void growPlant(int x, int y);
+	void addPlant(int x, int y, int actualRowPosition, int actualColumnPosition);
 };

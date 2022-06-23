@@ -46,7 +46,7 @@ void Level::initialize() {
 				float x = XI + XI / 6.0 + (j - i) * TILE_WIDTH / 2.0;
 				float y = YI + (j + i) * TILE_HEIGHT / 2.0;
 
-				addPlant(x, y);
+				addPlant(x, y, i, j);
 			}
 
 			tile.inicializar();
@@ -59,8 +59,8 @@ void Level::initialize() {
 	levelFile.close();
 }
 
-void Level::addPlant(int x, int y) {
-	Plant plant = Plant(x, y, PlantTypeEnum::BERRY, shaderPlant);
+void Level::addPlant(int x, int y, int actualRowPosition, int actualColumnPosition) {
+	Plant plant = Plant(x, y, PlantTypeEnum::BERRY, shaderPlant, actualRowPosition, actualColumnPosition);
 
 	plant.initializeTexture();
 
@@ -94,6 +94,16 @@ void Level::renderPlant() {
 
 	for (int i = 0; i < plants.size(); i++) {
 		plants[i].render();
+		std::cout << "Planta " << i << ", X: " << plants[i].getActualColumnPosition() << ", Y: " << plants[i].getActualRowPosition() << std::endl;
+	}
+}
+
+void Level::growPlant(int x, int y) {
+	for (int i = 0; i < plants.size(); i++) {
+		if (plants[i].getActualColumnPosition() == x && plants[i].getActualRowPosition() == y) {
+			plants[i].grow();
+			std::cout << "Cresci";
+		}
 	}
 }
 
