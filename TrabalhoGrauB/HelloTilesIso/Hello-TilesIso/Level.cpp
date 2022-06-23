@@ -42,7 +42,7 @@ void Level::initialize() {
 
 			TileIso tile = TileIso((int)tileType - '0', VAO, shaderTile, textureId);
 
-			if (tile.getType() == 1) {
+			if (tile.getType() == GridTypeEnum::DIRT) {
 				float x = XI + XI / 6.0 + (j - i) * TILE_WIDTH / 2.0;
 				float y = YI + (j + i) * TILE_HEIGHT / 2.0;
 
@@ -94,15 +94,19 @@ void Level::renderPlant() {
 
 	for (int i = 0; i < plants.size(); i++) {
 		plants[i].render();
-		std::cout << "Planta " << i << ", X: " << plants[i].getActualColumnPosition() << ", Y: " << plants[i].getActualRowPosition() << std::endl;
 	}
 }
 
 void Level::growPlant(int x, int y) {
-	for (int i = 0; i < plants.size(); i++) {
-		if (plants[i].getActualColumnPosition() == x && plants[i].getActualRowPosition() == y) {
-			plants[i].grow();
-			std::cout << "Cresci";
+	for (std::vector<Plant>::iterator it = plants.begin(); it != plants.end(); it++) {
+		if (it->getActualColumnPosition() == x && it->getActualRowPosition() == y) {
+			if (!it->getIsFarmed()) {
+				it->grow();
+			}
+			else {
+				plants.erase(it);
+				break;
+			}
 		}
 	}
 }

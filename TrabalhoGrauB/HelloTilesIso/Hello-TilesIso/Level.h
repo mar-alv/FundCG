@@ -3,6 +3,7 @@
 #include "Plant.h"
 #include "Texture.h"
 #include "TileIso.h"
+#include "GridTypeEnum.h"
 #include "PlantTypeEnum.h"
 
 class Level

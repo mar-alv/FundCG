@@ -190,6 +190,7 @@ void Player::updateTexture() {
 	}
 	else if (isAttacking && actualTexture.getTextureId() != textures[1].getTextureId()) {
 		actualTexture = textures[1];
+		isAttacking = false;
 	}
 	else if (!isCarryingWater && !isAttacking && actualTexture.getTextureId() != textures[0].getTextureId()) {
 		actualTexture = textures[0];

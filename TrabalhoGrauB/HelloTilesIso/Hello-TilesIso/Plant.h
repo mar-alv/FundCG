@@ -10,6 +10,7 @@ private:
 	GLuint VAO;
 	int actualX;
 	int actualY;
+	bool isFarmed;
 	Shader* shader;
 	Texture texture;
 	glm::mat4 model;
@@ -20,6 +21,7 @@ private:
 public:
 	Plant(int actualX, int actualY, int type, Shader* shader, int actualRowPosition, int actualColumnPosition);
 
+	bool getIsFarmed();
 	float getActualRowPosition();
 	float getActualColumnPosition();
 
