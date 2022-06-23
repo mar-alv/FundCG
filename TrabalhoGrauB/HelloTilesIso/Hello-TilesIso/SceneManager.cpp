@@ -87,14 +87,8 @@ void SceneManager::update() {
 	player.stayInsideGrid(gridRowsCount, gridColumnsCount);
 	player.setActualTileType(levels[actualLevel].getGrid()[player.getActualRowPosition()][player.getActualColumnPosition()].getType());
 
-	if (levels[actualLevel].getGrid()[player.getActualRowPosition()][player.getActualColumnPosition()].getType() == 0) {
-	//	std::cout << "Estou pisando na grama agora" << std::endl;
-	}
-	if (levels[actualLevel].getGrid()[player.getActualRowPosition()][player.getActualColumnPosition()].getType() == 1) {
-	//	std::cout << "Estou pisando na terra agora" << std::endl;
-	}
-	if (levels[actualLevel].getGrid()[player.getActualRowPosition()][player.getActualColumnPosition()].getType() == 2) {
-	//	std::cout << "Estou pisando na água agora" << std::endl;
+	if (player.getHasWatered()) {
+		player.setHasWatered(false);
 	}
 }
 

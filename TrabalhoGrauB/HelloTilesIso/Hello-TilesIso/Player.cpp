@@ -140,13 +140,17 @@ void Player::attack() {
 }
 
 void Player::waterPlant() {
-	// ver se esta num tile com planta regavel
-	isWateringPlants = true;
+	if (isCarryingWater && actualTileType == GridTypeEnum::DIRT) {
+		hasWatered = true;
+	}
+
 	isCarryingWater = false;
 }
 
 void Player::collectWater() {
-	isCarryingWater = actualTileType == GridTypeEnum::WATER;
+	if (actualTileType == GridTypeEnum::WATER) {
+		isCarryingWater = true;
+	}
 }
 
 void Player::initializeTextures() {
@@ -219,6 +223,10 @@ void Player::updateOffsetsOnShader() {
 	shader->setVec2("offsets", offsetx, offsety);
 }
 
+bool Player::getHasWatered() {
+	return hasWatered;
+}
+
 int Player::getActualRowPosition() {
 	return actualRowPosition;
 }
@@ -233,6 +241,10 @@ Texture Player::getActualTexture() {
 
 void Player::setShader(Shader* shader) {
 	this->shader = shader;
+}
+
+void Player::setHasWatered(bool hasWatered) {
+	this->hasWatered = hasWatered;
 }
 
 void Player::setActualTileType(int actualTileType) {

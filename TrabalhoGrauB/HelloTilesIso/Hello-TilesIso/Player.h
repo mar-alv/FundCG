@@ -15,12 +15,12 @@ private:
 	float actualY;
 	Shader* shader;
 	glm::mat4 model;
+	bool hasWatered;
 	bool isAttacking;
 	int actualTileType;
 	bool isCarryingWater;
 	int actualRowPosition;
 	Texture actualTexture;
-	bool isWateringPlants;
 	int actualColumnPosition;
 	glm::vec2 actualPosition;
 	static int actualDirection;
@@ -29,11 +29,13 @@ private:
 public:
 	Player();
 
+	bool getHasWatered();
 	int getActualRowPosition();
 	Texture getActualTexture();
 	int getActualColumnPosition();
 
 	void setShader(Shader* shader);
+	void setHasWatered(bool hasWatered);
 	void setActualTileType(int actualTileType);
 
 	void move();
