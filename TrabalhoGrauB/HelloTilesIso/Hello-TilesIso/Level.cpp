@@ -1,5 +1,4 @@
 #include "Level.h"
-#include "GridTypeEnum.h"
 
 Level::Level(Shader* shaderTile, Shader* shaderPlant, char levelNumber) {
 	this->shaderTile = shaderTile;
@@ -28,16 +27,6 @@ void Level::initialize() {
 	Texture texture = Texture(1, 1);
 
 	GLuint VAO = texture.setup();
-
-
-
-
-
-
-
-
-
-
 
 	for (int i = 0; i < gridRowsCount; i++) {
 		std::vector<TileIso> temporaryGrid;

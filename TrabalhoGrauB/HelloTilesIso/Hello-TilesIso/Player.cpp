@@ -10,6 +10,13 @@ Player::Player() {
 }
 
 void Player::move() {
+	updatePosition();
+	updateTextureFrame();
+
+	actualDirection = GridDirectionsEnum::CENTER;
+}
+
+void Player::updatePosition() {
 	switch (actualDirection) {
 	case GridDirectionsEnum::NORTH:
 		actualColumnPosition--;
@@ -40,12 +47,9 @@ void Player::move() {
 		actualRowPosition++;
 		break;
 	}
-	updateTexture();
-
-	actualDirection = GridDirectionsEnum::CENTER;
 }
 
-void Player::updateTexture() {
+void Player::updateTextureFrame() {
 	switch (actualDirection) {
 	case GridDirectionsEnum::EAST:
 	case GridDirectionsEnum::NORTH_EAST:
@@ -142,35 +146,50 @@ void Player::waterPlant() {
 }
 
 void Player::collectWater() {
-	// ver se esta num tile de agua
-	isCarryingWater = true;
-	isCollectingWater = true;
+	isCarryingWater = actualTileType == GridTypeEnum::WATER;
 }
 
 void Player::initializeTextures() {
-	Texture idleTexture = Texture(4, 4);
-	Texture attackingTexture = Texture(2, 4);
-	Texture wateringPlantTexture = Texture(2, 4);
+	Texture idleTexture = Texture(4, 4, PLAYER_SPRITES_PATH + PLAYER_SPRITE_IDLE_FILE_NAME);
+	Texture attackingTexture = Texture(2, 4, PLAYER_SPRITES_PATH + PLAYER_SPRITE_ATTACKING_FILE_NAME);
+	Texture wateringPlantTexture = Texture(2, 4, PLAYER_SPRITES_PATH + PLAYER_SPRITE_WATERING_PLANT_FILE_NAME);
 
-	idleTexture.initializeTextureIdAndVAO(PLAYER_SPRITES_PATH + PLAYER_SPRITE_IDLE_FILE_NAME);
-	attackingTexture.initializeTextureIdAndVAO(PLAYER_SPRITES_PATH + PLAYER_SPRITE_ATTACKING_FILE_NAME);
-	wateringPlantTexture.initializeTextureIdAndVAO(PLAYER_SPRITES_PATH + PLAYER_SPRITE_WATERING_PLANT_FILE_NAME);
-
-	textures.push_back(idleTexture);
-	textures.push_back(attackingTexture);
-	textures.push_back(wateringPlantTexture);
+	addTexture(idleTexture);
+	addTexture(attackingTexture);
+	addTexture(wateringPlantTexture);
 
 	actualTexture = idleTexture;
 }
 
+void Player::addTexture(Texture texture) {
+	textures.push_back(texture);
+}
+
 void Player::render() {
 	calculateActualPosition();
-	updateShader();
+	update();
 	actualTexture.updateActualFrame();
 
 	glBindTexture(GL_TEXTURE_2D, actualTexture.getTextureId());
 	glBindVertexArray(actualTexture.getVAO());
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+}
+
+void Player::update() {
+	updateTexture();
+	updateShader();
+}
+
+void Player::updateTexture() {
+	if (isCarryingWater && actualTexture.getTextureId() != textures[2].getTextureId()) {
+		actualTexture = textures[2];
+	}
+	else if (isAttacking && actualTexture.getTextureId() != textures[1].getTextureId()) {
+		actualTexture = textures[1];
+	}
+	else if (!isCarryingWater && !isAttacking && actualTexture.getTextureId() != textures[0].getTextureId()) {
+		actualTexture = textures[0];
+	}
 }
 
 void Player::updateShader() {
@@ -214,4 +233,8 @@ Texture Player::getActualTexture() {
 
 void Player::setShader(Shader* shader) {
 	this->shader = shader;
+}
+
+void Player::setActualTileType(int actualTileType) {
+	this->actualTileType = actualTileType;
 }

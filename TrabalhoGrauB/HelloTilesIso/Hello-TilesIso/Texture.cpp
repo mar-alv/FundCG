@@ -12,6 +12,22 @@ Texture::Texture(float framesCount, float animationsCount) {
 	this->animationsCount = animationsCount;
 }
 
+Texture::Texture(float framesCount, float animationsCount, std::string filePath) {
+	this->dx = 0;
+	this->dy = 0;
+	this->iFrame = 0;
+	this->iAnims = 0;
+	this->framesCount = framesCount;
+	this->animationsCount = animationsCount;
+
+	initializeTextureIdAndVAO(filePath);
+}
+
+void Texture::initializeTextureIdAndVAO(std::string filePath) {
+	VAO = setup();
+	textureId = load(filePath);
+}
+
 float Texture::getDX() {
 	return dx;
 }
@@ -129,9 +145,4 @@ int Texture::setup() {
 
 void Texture::updateActualFrame() {
 	iFrame = (iFrame + 1) % (int)framesCount;
-}
-
-void Texture::initializeTextureIdAndVAO(std::string filePath) {
-	VAO = setup();
-	textureId = load(filePath);
 }

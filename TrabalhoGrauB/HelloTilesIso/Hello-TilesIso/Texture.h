@@ -21,6 +21,7 @@ private:
 public:
 	Texture();
 	Texture(float framesCount, float animationsCount);
+	Texture(float framesCount, float animationsCount, std::string filePath);
 
 	float getDX();
 	float getDY();

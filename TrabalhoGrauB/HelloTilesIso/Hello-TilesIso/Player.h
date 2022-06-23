@@ -3,6 +3,7 @@
 #include "Shader.h"
 #include "Texture.h"
 #include "Constants.h"
+#include "GridTypeEnum.h"
 #include "PlayerActionEnum.h"
 #include "GridDirectionsEnum.h"
 #include "PlayerTextureDirectionFacingEnum.h"
@@ -15,11 +16,11 @@ private:
 	Shader* shader;
 	glm::mat4 model;
 	bool isAttacking;
+	int actualTileType;
 	bool isCarryingWater;
 	int actualRowPosition;
 	Texture actualTexture;
 	bool isWateringPlants;
-	bool isCollectingWater;
 	int actualColumnPosition;
 	glm::vec2 actualPosition;
 	static int actualDirection;
@@ -28,24 +29,28 @@ private:
 public:
 	Player();
 
-	void move();
-	void render();
-	void updateShader();
-	void updateTexture();
-	void initializeTextures();
-	void updateModelOnShader();
-	void updateOffsetsOnShader();
-	void calculateActualPosition();
-
 	int getActualRowPosition();
 	Texture getActualTexture();
 	int getActualColumnPosition();
 
 	void setShader(Shader* shader);
+	void setActualTileType(int actualTileType);
 
+	void move();
+	void render();
 	void attack();
+	void update();
 	void waterPlant();
 	void collectWater();
+	void updateShader();
+	void updateTexture();
+	void updatePosition();
+	void updateTextureFrame();
+	void initializeTextures();
+	void updateModelOnShader();
+	void updateOffsetsOnShader();
+	void calculateActualPosition();
+	void addTexture(Texture texture);
 	void onKeyPress(int key, int action);
 	void onActionKeyPress(int key, int action);
 	void onMovementKeyPress(int key, int action);
