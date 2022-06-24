@@ -60,7 +60,20 @@ void Level::initialize() {
 }
 
 void Level::addPlant(int x, int y, int actualRowPosition, int actualColumnPosition) {
-	Plant plant = Plant(x, y, PlantTypeEnum::BERRY, shaderPlant, actualRowPosition, actualColumnPosition);
+	int range = 1 - 0 + 1;
+	int num = rand() % range + 0;
+	int plantType;
+
+	switch (num) {
+	case PlantTypeEnum::BERRY:
+		plantType = PlantTypeEnum::BERRY;
+		break;
+	case PlantTypeEnum::WHEAT:
+		plantType = PlantTypeEnum::WHEAT;
+		break;
+	}
+
+	Plant plant = Plant(x, y, plantType, shaderPlant, actualRowPosition, actualColumnPosition);
 
 	plant.initializeTexture();
 

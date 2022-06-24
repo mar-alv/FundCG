@@ -7,7 +7,7 @@ GLuint SceneManager::actualWindowWidth = WIDTH;
 GLuint SceneManager::actualWindowHeight = HEIGHT;
 
 SceneManager::SceneManager() {
-	actualLevel = 2;
+	actualLevel = 0;
 	areEnemiesAbleToMove = false;
 
 	srand(time(0));
@@ -106,6 +106,7 @@ void SceneManager::update() {
 	if (levels[actualLevel].checkIfPlayerWon()) {
 		actualLevel++;
 	}
+
 	if (levels[actualLevel].checkIfPlayerLost()) {
 		resetLevels();
 	}
