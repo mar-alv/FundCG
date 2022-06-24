@@ -32,6 +32,7 @@ public:
 	void enableDepth();
 	void setupLevels();
 	void setupPlayer();
+	void resetLevels();
 	void renderObjects();
 	void setupCamera2D();
 	void clearColorBuffer();

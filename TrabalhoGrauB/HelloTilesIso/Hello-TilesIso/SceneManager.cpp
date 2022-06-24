@@ -107,8 +107,14 @@ void SceneManager::update() {
 		actualLevel++;
 	}
 	if (levels[actualLevel].checkIfPlayerLost()) {
-		// TODO: chamar função para resetar a fase
+		resetLevels();
 	}
+}
+
+void SceneManager::resetLevels() {
+	actualLevel = 0;
+	levels.clear();
+	setupLevels();
 }
 
 void SceneManager::render() {

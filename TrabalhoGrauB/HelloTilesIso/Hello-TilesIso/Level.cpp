@@ -126,9 +126,7 @@ void Level::makeEnemiesMoveOrAttack() {
 					if (!plants[j].getIsFarmed() && !plants[j].getIsDestroyed()) {
 						enemies[i].attack(plants[j]);
 
-						std::cout << "Antes: " << (float)plants[j].getTexture().getIFrame() << std::endl;
 						plants[j].getTexture().setIFrame();
-						std::cout << "Depois: " << (float) plants[j].getTexture().getIFrame() << std::endl;
 						
 						if (plants[j].getTexture().getIFrame() <= 0) {
 							plants[j].setIsDestroyed(true);
