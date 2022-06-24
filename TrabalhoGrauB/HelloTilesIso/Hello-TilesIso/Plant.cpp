@@ -7,6 +7,7 @@ Plant::Plant(int actualX, int actualY, int type, Shader* shader, int actualRowPo
 	this->isFarmed = false;
 	this->actualX = actualX;
 	this->actualY = actualY;
+	this->isDestroyed = false;
 	this->texture = Texture(5, 1);
 	this->actualRowPosition = actualRowPosition;
 	this->actualColumnPosition = actualColumnPosition;
@@ -46,7 +47,7 @@ void Plant::updateOffsetsOnShader() {
 void Plant::grow() {
 	texture.updateActualFrame();
 
-	if (texture.getIFrame() == 4) {
+	if (texture.getIFrame() == 0) {
 		isFarmed = true;
 	}
 }

@@ -93,7 +93,9 @@ void Level::renderPlant() {
 	shaderPlant->Use();
 
 	for (int i = 0; i < plants.size(); i++) {
-		plants[i].render();
+		if (!plants[i].getIsFarmed()) {
+			plants[i].render();
+		}
 	}
 }
 
@@ -103,8 +105,16 @@ void Level::growPlant(int x, int y) {
 			if (!it->getIsFarmed()) {
 				it->grow();
 			}
-			else {
-				plants.erase(it);
+			
+			if (it->getIsFarmed()) {
+				Texture texture = Texture();
+
+				const std::string gridTexturePath = GRIDS_SPRITES_PATH + "0" + TEXTURE_FILE_FORMAT;
+
+				GLuint textureId = texture.load(gridTexturePath);
+
+				grid[it->getActualColumnPosition()][it->getActualRowPosition()].setTextureId(textureId);
+
 				break;
 			}
 		}

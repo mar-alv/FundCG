@@ -24,6 +24,7 @@ public:
 	void setType(int type);
 	void setModel(glm::mat4 model);
 	void setShader(Shader* shader);
+	void setTextureId(GLuint textureId);
 
 	void inicializar();
 	void render(glm::mat4 model);

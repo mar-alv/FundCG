@@ -14,6 +14,7 @@ private:
 	Shader* shader;
 	Texture texture;
 	glm::mat4 model;
+	bool isDestroyed;
 	GLuint textureId;
 	int actualRowPosition;
 	int actualColumnPosition;

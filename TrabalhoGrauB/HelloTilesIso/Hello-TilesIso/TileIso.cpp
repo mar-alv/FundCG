@@ -86,3 +86,7 @@ void TileIso::setType(int type) {
 void TileIso::setShader(Shader* shader) {
 	this->shader = shader;
 }
+
+void TileIso::setTextureId(GLuint textureId) {
+	this->textureId = textureId;
+}
