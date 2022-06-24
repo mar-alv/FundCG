@@ -23,8 +23,12 @@ public:
 	Plant(int actualX, int actualY, int type, Shader* shader, int actualRowPosition, int actualColumnPosition);
 
 	bool getIsFarmed();
+	Texture getTexture();
+	bool getIsDestroyed();
 	float getActualRowPosition();
 	float getActualColumnPosition();
+
+	void setIsDestroyed(bool isDestroyed);
 
 	void grow();
 	void render();

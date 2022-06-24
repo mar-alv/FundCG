@@ -52,8 +52,20 @@ void Plant::grow() {
 	}
 }
 
+void Plant::setIsDestroyed(bool isDestroyed) {
+	this->isDestroyed = isDestroyed;
+}
+
+Texture Plant::getTexture() {
+	return texture;
+}
+
 bool Plant::getIsFarmed() {
 	return isFarmed;
+}
+
+bool Plant::getIsDestroyed() {
+	return isDestroyed;
 }
 
 float Plant::getActualRowPosition() {

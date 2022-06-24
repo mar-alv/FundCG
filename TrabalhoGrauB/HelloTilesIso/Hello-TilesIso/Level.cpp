@@ -5,10 +5,6 @@ Level::Level(Shader* shaderTile, Shader* shaderPlant, char levelNumber) {
 	this->shaderPlant = shaderPlant;
 	this->levelNumber = (int)levelNumber;
 
-	Enemy enemy = Enemy(shaderPlant);
-
-	enemies.push_back(enemy);
-
 	initialize();
 }
 
@@ -98,7 +94,7 @@ void Level::renderPlants() {
 	shaderPlant->Use();
 
 	for (int i = 0; i < plants.size(); i++) {
-		if (!plants[i].getIsFarmed()) {
+		if (!plants[i].getIsFarmed() && !plants[i].getIsDestroyed()) {
 			plants[i].render();
 		}
 	}
@@ -112,10 +108,83 @@ void Level::renderEnemies() {
 	}
 }
 
-void Level::moveEnemies() {
+void Level::spawnEnemy() {
+	Enemy enemy = Enemy(shaderPlant);
+
+	enemies.push_back(enemy);
+}
+
+void Level::makeEnemiesMoveOrAttack() {
 	for (int i = 0; i < enemies.size(); i++) {
-		enemies[i].move();
-		enemies[i].stayInsideGrid(gridRowsCount, gridColumnsCount);
+		if (enemies[i].getActualTileType() != GridTypeEnum::DIRT) {
+			enemies[i].move();
+			enemies[i].stayInsideGrid(gridRowsCount, gridColumnsCount);
+		}
+		else {
+			for (int j = 0; j < plants.size(); j++) {
+				if (plants[j].getActualRowPosition() == enemies[i].getActualRowPosition() && plants[j].getActualColumnPosition() == enemies[i].getActualColumnPosition()) {
+					if (!plants[j].getIsFarmed() && !plants[j].getIsDestroyed()) {
+						enemies[i].attack(plants[j]);
+
+						std::cout << "Antes: " << (float)plants[j].getTexture().getIFrame() << std::endl;
+						plants[j].getTexture().setIFrame();
+						std::cout << "Depois: " << (float) plants[j].getTexture().getIFrame() << std::endl;
+						
+						if (plants[j].getTexture().getIFrame() <= 0) {
+							plants[j].setIsDestroyed(true);
+						}
+					}
+					else if (plants[j].getIsDestroyed() || plants[j].getIsFarmed()) {
+						enemies[i].move();
+						enemies[i].stayInsideGrid(gridRowsCount, gridColumnsCount);
+					}
+				}
+			}
+		}
+	}
+}
+
+
+bool Level::checkIfPlayerWon() {
+	int farmedPlantsCounter = 0;
+
+	for (int i = 0; i < plants.size(); i++) {
+		if (plants[i].getIsFarmed()) {
+			farmedPlantsCounter++;
+		}
+	}
+
+	if (farmedPlantsCounter >= plants.size() / 2) {
+		return true;
+	}
+
+	return false;
+}
+
+bool Level::checkIfPlayerLost() {
+	int destroyedPlantsCounter = 0;
+
+	for (int i = 0; i < plants.size(); i++) {
+		if (plants[i].getIsDestroyed()) {
+			destroyedPlantsCounter++;
+		}
+	}
+
+	if (destroyedPlantsCounter >= plants.size() / 2) {
+		return true;
+	}
+
+	return false;
+
+}
+
+void Level::killEnemy(int playerX, int playerY) {
+	for (std::vector<Enemy>::iterator it = enemies.begin(); it != enemies.end(); it++) {
+		if (it->getActualRowPosition() == playerX && it->getActualColumnPosition() == playerY) {
+			enemies.erase(it);
+			
+			break;
+		}
 	}
 }
 
@@ -134,7 +203,7 @@ void Level::updateEnemyActualTileType() {
 void Level::growPlant(int x, int y) {
 	for (std::vector<Plant>::iterator it = plants.begin(); it != plants.end(); it++) {
 		if (it->getActualColumnPosition() == x && it->getActualRowPosition() == y) {
-			if (!it->getIsFarmed()) {
+			if (!it->getIsFarmed() && !it->getIsDestroyed()) {
 				it->grow();
 			}
 			

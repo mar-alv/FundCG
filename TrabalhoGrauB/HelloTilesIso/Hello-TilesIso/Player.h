@@ -30,6 +30,7 @@ public:
 	Player();
 
 	bool getHasWatered();
+	bool getIsAttacking();
 	int getActualRowPosition();
 	Texture getActualTexture();
 	int getActualColumnPosition();

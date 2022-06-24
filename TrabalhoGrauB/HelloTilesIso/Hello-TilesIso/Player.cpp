@@ -224,6 +224,10 @@ void Player::updateOffsetsOnShader() {
 	shader->setVec2("offsets", offsetx, offsety);
 }
 
+bool Player::getIsAttacking() {
+	return isAttacking;
+}
+
 bool Player::getHasWatered() {
 	return hasWatered;
 }

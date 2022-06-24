@@ -8,6 +8,7 @@ Texture::Texture(float framesCount, float animationsCount) {
 	this->dy = 0;
 	this->iFrame = 0;
 	this->iAnims = 0;
+	this->previousIFrame = 0;
 	this->framesCount = framesCount;
 	this->animationsCount = animationsCount;
 }
@@ -17,6 +18,7 @@ Texture::Texture(float framesCount, float animationsCount, std::string filePath)
 	this->dy = 0;
 	this->iFrame = 0;
 	this->iAnims = 0;
+	this->previousIFrame = 0;
 	this->framesCount = framesCount;
 	this->animationsCount = animationsCount;
 
@@ -54,6 +56,12 @@ GLuint Texture::getTextureId() {
 
 void Texture::setIAnims(int iAnims) {
 	this->iAnims = iAnims;
+}
+
+void Texture::setIFrame() {
+	std::cout << "Anest no set: " << iFrame << std::endl;
+	iFrame = previousIFrame;
+	std::cout << "Depois no set: " << iFrame << std::endl;
 }
 
 int Texture::load(std::string path) {
@@ -144,5 +152,7 @@ int Texture::setup() {
 }
 
 void Texture::updateActualFrame() {
+	this->previousIFrame = iFrame;
+
 	iFrame = (iFrame + 1) % (int)framesCount;
 }

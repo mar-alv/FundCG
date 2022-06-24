@@ -89,16 +89,25 @@ void SceneManager::update() {
 	player.setActualTileType(levels[actualLevel].getGrid()[player.getActualRowPosition()][player.getActualColumnPosition()].getType());
 
 	if (areEnemiesAbleToMove) {
-		levels[actualLevel].moveEnemies();
+		levels[actualLevel].makeEnemiesMoveOrAttack();
 		levels[actualLevel].updateEnemyActualTileType();
 
 		areEnemiesAbleToMove = false;
 	}
-
+	if (player.getIsAttacking()) {
+		levels[actualLevel].killEnemy(player.getActualRowPosition(), player.getActualColumnPosition());
+	}
 	if (player.getHasWatered()) {
 		player.setHasWatered(false);
 
 		levels[actualLevel].growPlant(player.getActualColumnPosition(), player.getActualRowPosition());
+	}
+
+	if (levels[actualLevel].checkIfPlayerWon()) {
+		actualLevel++;
+	}
+	if (levels[actualLevel].checkIfPlayerLost()) {
+		// TODO: chamar função para resetar a fase
 	}
 }
 
@@ -140,8 +149,8 @@ void SceneManager::run() {
 	shaders[1]->Use();
 
 	Timer timer = Timer();
-	Timer timerMoveEnemies = Timer(2000);
-	// Timer timerSpawnEnemies = Timer(5000);
+	Timer timerMoveEnemies = Timer(2500);
+	Timer timerSpawnEnemies = Timer(5000);
 
 	glUniform1i(glGetUniformLocation(shaders[1]->ID, "ourTexture1"), 0);
 
@@ -155,6 +164,12 @@ void SceneManager::run() {
 			timerMoveEnemies.resetTimer();
 
 			areEnemiesAbleToMove = true;
+		}
+
+		if (timerSpawnEnemies.getElapsedTime() <= 0) {
+			timerSpawnEnemies.resetTimer();
+
+			levels[actualLevel].spawnEnemy();
 		}
 
 		glfwPollEvents();

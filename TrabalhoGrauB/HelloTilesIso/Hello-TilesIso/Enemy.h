@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include "Plant.h"
 #include "Shader.h"
 #include "Texture.h"
 #include "Constants.h"
@@ -27,6 +28,7 @@ private:
 public:
 	Enemy(Shader* shader);
 
+	int getActualTileType();
 	int getActualRowPosition();
 	int getActualColumnPosition();
 
@@ -34,10 +36,10 @@ public:
 
 	void move();
 	void render();
-	void attack();
 	void update();
 	void updateShader();
 	void updatePosition();
+	void attack(Plant plant);
 	void initializeTexture();
 	void updateModelOnShader();
 	void updateOffsetsOnShader();

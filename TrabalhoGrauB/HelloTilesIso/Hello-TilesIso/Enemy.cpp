@@ -24,10 +24,6 @@ void Enemy::updatePosition() {
 	int range = 9 - 1 + 1;
 	int num = rand() % range + 1;
 
-	std::cout << num << std::endl;
-
-	std::cout << "Antes: " << actualRowPosition << "/" << actualColumnPosition << std::endl;
-
 	switch (num) {
 	case EnemyGridDirectionsEnum::ENEMY_NORTH:
 		actualColumnPosition--;
@@ -58,8 +54,6 @@ void Enemy::updatePosition() {
 		actualRowPosition++;
 		break;
 	}
-
-	std::cout << "Depois: " << actualRowPosition << "/" << actualColumnPosition << std::endl;
 }
 
 void Enemy::stayInsideGrid(int gridRowsCount, int gridColumnsCount) {
@@ -77,8 +71,7 @@ void Enemy::stayInsideGrid(int gridRowsCount, int gridColumnsCount) {
 	}
 }
 
-void Enemy::attack() {
-	//isAttacking = true;
+void Enemy::attack(Plant plant) {
 }
 
 void Enemy::render() {
@@ -120,6 +113,10 @@ void Enemy::updateOffsetsOnShader() {
 	float offsety = texture.getDY() * texture.getIAnims();
 
 	shader->setVec2("offsets", offsetx, offsety);
+}
+
+int Enemy::getActualTileType() {
+	return actualTileType;
 }
 
 int Enemy::getActualRowPosition() {

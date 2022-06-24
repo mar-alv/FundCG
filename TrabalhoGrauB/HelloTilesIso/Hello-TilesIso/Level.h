@@ -28,11 +28,15 @@ public:
 
 	void render();
 	void initialize();
-	void moveEnemies();
+	void spawnEnemy();
 	void renderTiles();
 	void renderPlants();
 	void renderEnemies();
+	bool checkIfPlayerWon();
+	bool checkIfPlayerLost();
 	void growPlant(int x, int y);
+	void makeEnemiesMoveOrAttack();
 	void updateEnemyActualTileType();
+	void killEnemy(int playerX, int playerY);
 	void addPlant(int x, int y, int actualRowPosition, int actualColumnPosition);
 };

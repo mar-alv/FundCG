@@ -12,6 +12,7 @@ private:
 	float dx;
 	float dy;
 	int iFrame;
+	int previousIFrame;
 	int iAnims;
 	GLuint VAO;
 	GLuint textureId;
@@ -31,6 +32,7 @@ public:
 	GLuint getTextureId();
 
 	void setIAnims(int iAnims);
+	void setIFrame();
 
 	int setup();
 	void updateActualFrame();
