@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include "Plant.h"
+#include "Enemy.h"
 #include "Texture.h"
 #include "TileIso.h"
 #include "GridTypeEnum.h"
@@ -15,6 +16,7 @@ private:
 	Shader* shaderPlant;
 	int gridColumnsCount;
 	std::vector<Plant> plants;
+	std::vector<Enemy> enemies;
 	std::vector<std::vector<TileIso>> grid;
 
 public:
@@ -26,8 +28,11 @@ public:
 
 	void render();
 	void initialize();
-	void renderTile();
-	void renderPlant();
+	void moveEnemies();
+	void renderTiles();
+	void renderPlants();
+	void renderEnemies();
 	void growPlant(int x, int y);
+	void initializeEnemiesTexture(Shader* shader);
 	void addPlant(int x, int y, int actualRowPosition, int actualColumnPosition);
 };

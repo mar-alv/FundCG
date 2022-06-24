@@ -5,6 +5,10 @@ Level::Level(Shader* shaderTile, Shader* shaderPlant, char levelNumber) {
 	this->shaderPlant = shaderPlant;
 	this->levelNumber = (int)levelNumber;
 
+	Enemy enemy = Enemy();
+
+	enemies.push_back(enemy);
+
 	initialize();
 }
 
@@ -68,11 +72,12 @@ void Level::addPlant(int x, int y, int actualRowPosition, int actualColumnPositi
 }
 
 void Level::render() {
-	renderTile();
-	renderPlant();
+	renderTiles();
+	renderPlants();
+	renderEnemies();
 }
 
-void Level::renderTile() {
+void Level::renderTiles() {
 	shaderTile->Use();
 
 	glm::mat4 model;
@@ -89,13 +94,36 @@ void Level::renderTile() {
 
 }
 
-void Level::renderPlant() {
+void Level::renderPlants() {
 	shaderPlant->Use();
 
 	for (int i = 0; i < plants.size(); i++) {
 		if (!plants[i].getIsFarmed()) {
 			plants[i].render();
 		}
+	}
+}
+
+void Level::renderEnemies() {
+	shaderPlant->Use();
+
+	for (int i = 0; i < enemies.size(); i++) {
+		enemies[i].render();
+	}
+}
+
+void Level::moveEnemies() {
+	for (int i = 0; i < enemies.size(); i++) {
+		enemies[i].move();
+		enemies[i].stayInsideGrid(gridRowsCount, gridColumnsCount);
+	}
+}
+
+
+void Level::initializeEnemiesTexture(Shader* shader) {
+	for (int i = 0; i < enemies.size(); i++) {
+		enemies[i].initializeTexture();
+		enemies[i].setShader(shader);
 	}
 }
 

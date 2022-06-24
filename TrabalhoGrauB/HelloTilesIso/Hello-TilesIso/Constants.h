@@ -1,6 +1,7 @@
 #pragma once
 #include <glad/glad.h>
 #include "ConstantsPlayer.h"
+#include "ConstantsEnemies.h"
 
 const GLuint WIDTH = 1280;
 const GLuint HEIGHT = 720;
