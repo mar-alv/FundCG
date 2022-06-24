@@ -84,9 +84,12 @@ void SceneManager::update() {
 	int gridColumnsCount = levels[actualLevel].getGridColumnsCount();
 
 	player.move();
-	levels[actualLevel].moveEnemies();
 	player.stayInsideGrid(gridRowsCount, gridColumnsCount);
+
+	levels[actualLevel].moveEnemies();
+
 	player.setActualTileType(levels[actualLevel].getGrid()[player.getActualRowPosition()][player.getActualColumnPosition()].getType());
+	levels[actualLevel].updateEnemyActualTileType();
 
 	if (player.getHasWatered()) {
 		player.setHasWatered(false);
@@ -165,7 +168,6 @@ void SceneManager::finish() {
 void SceneManager::setupScene() {
 	setupLevels();
 	setupPlayer();
-	setupEnemies();
 }
 
 void SceneManager::setupLevels() {
@@ -181,10 +183,6 @@ void SceneManager::setupLevels() {
 void SceneManager::setupPlayer() {
 	player.initializeTextures();
 	player.setShader(shaders[1]);
-}
-
-void SceneManager::setupEnemies() {
-	levels[actualLevel].initializeEnemiesTexture(shaders[1]);
 }
 
 void SceneManager::setupCamera2D() {

@@ -1,11 +1,14 @@
 #include "Enemy.h"
 
-Enemy::Enemy() {
+Enemy::Enemy(Shader* shader) {
 	actualX = 0.0;
 	actualY = 0.0;
+	this->shader = shader;
 	actualRowPosition = 2;
 	actualColumnPosition = 2;
 	this->texture = Texture(2, 1);
+
+	initializeTexture();
 }
 
 void Enemy::initializeTexture() {
@@ -99,7 +102,7 @@ void Enemy::calculateActualPosition() {
 void Enemy::updateModelOnShader() {
 	model = glm::mat4(1);
 	model = glm::translate(model, glm::vec3(actualX, actualY, 0.0));
-	model = glm::scale(model, glm::vec3(200.0, 200.0, 1.0));
+	model = glm::scale(model, glm::vec3(100.0, 100.0, 1.0));
 
 	shader->setMat4("model", glm::value_ptr(model));
 }
@@ -117,10 +120,6 @@ int Enemy::getActualRowPosition() {
 
 int Enemy::getActualColumnPosition() {
 	return actualColumnPosition;
-}
-
-void Enemy::setShader(Shader* shader) {
-	this->shader = shader;
 }
 
 void Enemy::setActualTileType(int actualTileType) {

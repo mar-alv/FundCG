@@ -5,7 +5,7 @@ Level::Level(Shader* shaderTile, Shader* shaderPlant, char levelNumber) {
 	this->shaderPlant = shaderPlant;
 	this->levelNumber = (int)levelNumber;
 
-	Enemy enemy = Enemy();
+	Enemy enemy = Enemy(shaderPlant);
 
 	enemies.push_back(enemy);
 
@@ -119,11 +119,15 @@ void Level::moveEnemies() {
 	}
 }
 
-
-void Level::initializeEnemiesTexture(Shader* shader) {
-	for (int i = 0; i < enemies.size(); i++) {
-		enemies[i].initializeTexture();
-		enemies[i].setShader(shader);
+void Level::updateEnemyActualTileType() {
+	for (int i = 0; i < gridRowsCount; i++) {
+		for (int j = 0; j < gridColumnsCount; j++) {
+			for (int k = 0; k < enemies.size(); k++) {
+				if (enemies[k].getActualRowPosition() == i && enemies[k].getActualColumnPosition() == j) {
+					enemies[k].setActualTileType(grid[i][j].getType());
+				}
+			}
+		}
 	}
 }
 

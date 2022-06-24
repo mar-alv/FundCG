@@ -25,12 +25,11 @@ private:
 	glm::vec2 actualPosition;
 
 public:
-	Enemy();
+	Enemy(Shader* shader);
 
 	int getActualRowPosition();
 	int getActualColumnPosition();
 
-	void setShader(Shader* shader);
 	void setActualTileType(int actualTileType);
 
 	void move();

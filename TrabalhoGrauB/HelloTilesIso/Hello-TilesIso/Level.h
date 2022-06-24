@@ -33,6 +33,6 @@ public:
 	void renderPlants();
 	void renderEnemies();
 	void growPlant(int x, int y);
-	void initializeEnemiesTexture(Shader* shader);
+	void updateEnemyActualTileType();
 	void addPlant(int x, int y, int actualRowPosition, int actualColumnPosition);
 };

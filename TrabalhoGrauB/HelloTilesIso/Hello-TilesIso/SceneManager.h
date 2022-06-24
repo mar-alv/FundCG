@@ -31,7 +31,6 @@ public:
 	void enableDepth();
 	void setupLevels();
 	void setupPlayer();
-	void setupEnemies();
 	void renderObjects();
 	void setupCamera2D();
 	void clearColorBuffer();
