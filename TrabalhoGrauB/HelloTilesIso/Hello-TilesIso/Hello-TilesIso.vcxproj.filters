@@ -116,5 +116,8 @@
     <ClInclude Include="Enemy.h">
       <Filter>Arquivos de Cabeçalho</Filter>
     </ClInclude>
+    <ClInclude Include="EnemyGridDirectionsEnum.h">
+      <Filter>Arquivos de Cabeçalho</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

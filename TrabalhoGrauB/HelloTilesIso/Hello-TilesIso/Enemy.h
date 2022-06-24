@@ -6,6 +6,7 @@
 #include "GridTypeEnum.h"
 #include "PlayerActionEnum.h"
 #include "GridDirectionsEnum.h"
+#include "EnemyGridDirectionsEnum.h"
 #include "PlayerTextureDirectionFacingEnum.h"
 
 class Enemy
@@ -19,7 +20,6 @@ private:
 	Texture texture;
 	GLuint textureId;
 	int actualTileType;
-	int actualDirection;
 	int actualRowPosition;
 	int actualColumnPosition;
 	glm::vec2 actualPosition;

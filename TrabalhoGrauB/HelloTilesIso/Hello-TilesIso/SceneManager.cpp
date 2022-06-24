@@ -8,6 +8,7 @@ GLuint SceneManager::actualWindowHeight = HEIGHT;
 
 SceneManager::SceneManager() {
 	actualLevel = 0;
+	areEnemiesAbleToMove = false;
 
 	srand(time(0));
 }
@@ -85,11 +86,14 @@ void SceneManager::update() {
 
 	player.move();
 	player.stayInsideGrid(gridRowsCount, gridColumnsCount);
-
-	levels[actualLevel].moveEnemies();
-
 	player.setActualTileType(levels[actualLevel].getGrid()[player.getActualRowPosition()][player.getActualColumnPosition()].getType());
-	levels[actualLevel].updateEnemyActualTileType();
+
+	if (areEnemiesAbleToMove) {
+		levels[actualLevel].moveEnemies();
+		levels[actualLevel].updateEnemyActualTileType();
+
+		areEnemiesAbleToMove = false;
+	}
 
 	if (player.getHasWatered()) {
 		player.setHasWatered(false);
@@ -136,17 +140,22 @@ void SceneManager::run() {
 	shaders[1]->Use();
 
 	Timer timer = Timer();
-	Timer timer2 = Timer();
+	Timer timerMoveEnemies = Timer(2000);
+	// Timer timerSpawnEnemies = Timer(5000);
 
 	glUniform1i(glGetUniformLocation(shaders[1]->ID, "ourTexture1"), 0);
 
 	enableDepth();
 	enableAlphaChannel();
 
-	timer2.start();
-
 	while (!glfwWindowShouldClose(window)) {
 		timer.start();
+
+		if (timerMoveEnemies.getElapsedTime() <= 0) {
+			timerMoveEnemies.resetTimer();
+
+			areEnemiesAbleToMove = true;
+		}
 
 		glfwPollEvents();
 		update();
@@ -158,7 +167,7 @@ void SceneManager::run() {
 		glfwSwapBuffers(window);
 	}
 
-	timer2.finish();
+	timerMoveEnemies.finish();
 }
 
 void SceneManager::finish() {

@@ -10,10 +10,11 @@ private:
 	glm::mat4 model;
 	int actualLevel;
 	GLFWwindow* window;
+	static bool resized;
 	static Player player;
 	glm::mat4 projection;
-	static bool resized;
 	static bool keys[1024];
+	bool areEnemiesAbleToMove;
 	std::vector <Level> levels;
 	std::vector <Shader*> shaders;
 	static GLuint actualWindowWidth, actualWindowHeight;

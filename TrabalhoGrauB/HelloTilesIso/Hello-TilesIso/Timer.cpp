@@ -1,7 +1,15 @@
 #include "Timer.h"
-#include <iostream>
+using namespace std::chrono_literals;
 
 Timer::Timer() {}
+
+Timer::Timer(int timeToWaitInMilliseconds) {
+	this->timeToWaitInMilliseconds = timeToWaitInMilliseconds;
+
+	start();
+
+	end = begin + std::chrono::milliseconds(timeToWaitInMilliseconds);
+}
 
 void Timer::start() {
 	begin = std::chrono::system_clock::now();
@@ -17,17 +25,18 @@ double Timer::getElapsedTimeMilliseconds() {
 	return elapsed_seconds.count() * 1000;
 }
 
-double Timer::getElapsedTime() {
-	end = std::chrono::system_clock::now();
+float Timer::getElapsedTime() {
 	begin = std::chrono::system_clock::now();
-	typedef std::chrono::milliseconds ms;
-	std::chrono::duration<double> elapsed_seconds = end - begin;
 
-	ms d = std::chrono::duration_cast<ms>(elapsed_seconds);
+	this->elapsedTime = end - begin;
 
-	//std::cout << d.count() << std::endl;
+	return elapsedTime.count();
+}
 
-	return elapsed_seconds.count();
+void Timer::resetTimer() {
+	start();
+
+	end = begin + std::chrono::milliseconds(timeToWaitInMilliseconds);
 }
 
 double Timer::calculateWaitingTime(int fps, double elapsedTime) {

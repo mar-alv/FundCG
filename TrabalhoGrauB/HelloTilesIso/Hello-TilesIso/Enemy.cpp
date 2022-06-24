@@ -21,37 +21,45 @@ void Enemy::move() {
 }
 
 void Enemy::updatePosition() {
-	switch (actualDirection) {
-	case GridDirectionsEnum::NORTH:
+	int range = 9 - 1 + 1;
+	int num = rand() % range + 1;
+
+	std::cout << num << std::endl;
+
+	std::cout << "Antes: " << actualRowPosition << "/" << actualColumnPosition << std::endl;
+
+	switch (num) {
+	case EnemyGridDirectionsEnum::ENEMY_NORTH:
 		actualColumnPosition--;
 		actualRowPosition--;
 		break;
-	case GridDirectionsEnum::SOUTH:
+	case EnemyGridDirectionsEnum::ENEMY_SOUTH:
 		actualColumnPosition++;
 		actualRowPosition++;
 		break;
-	case GridDirectionsEnum::EAST:
+	case EnemyGridDirectionsEnum::ENEMY_EAST:
 		actualColumnPosition++;
 		actualRowPosition--;
 		break;
-	case GridDirectionsEnum::WEST:
+	case EnemyGridDirectionsEnum::ENEMY_WEST:
 		actualColumnPosition--;
 		actualRowPosition++;
 		break;
-	case GridDirectionsEnum::NORTH_EAST:
+	case EnemyGridDirectionsEnum::ENEMY_NORTH_EAST:
 		actualRowPosition--;
 		break;
-	case GridDirectionsEnum::NORTH_WEST:
+	case EnemyGridDirectionsEnum::ENEMY_NORTH_WEST:
 		actualColumnPosition--;
 		break;
-	case GridDirectionsEnum::SOUTH_EAST:
+	case EnemyGridDirectionsEnum::ENEMY_SOUTH_EAST:
 		actualColumnPosition++;
 		break;
-	case GridDirectionsEnum::SOUTH_WEST:
+	case EnemyGridDirectionsEnum::ENEMY_SOUTH_WEST:
 		actualRowPosition++;
 		break;
 	}
-	actualDirection = GridDirectionsEnum::CENTER;
+
+	std::cout << "Depois: " << actualRowPosition << "/" << actualColumnPosition << std::endl;
 }
 
 void Enemy::stayInsideGrid(int gridRowsCount, int gridColumnsCount) {

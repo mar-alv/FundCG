@@ -161,6 +161,7 @@
     <ClInclude Include="ConstantsEnemies.h" />
     <ClInclude Include="ConstantsPlayer.h" />
     <ClInclude Include="Enemy.h" />
+    <ClInclude Include="EnemyGridDirectionsEnum.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="GridDirectionsEnum.h" />
     <ClInclude Include="GridTypeEnum.h" />
