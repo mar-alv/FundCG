@@ -7,7 +7,7 @@ GLuint SceneManager::actualWindowWidth = WIDTH;
 GLuint SceneManager::actualWindowHeight = HEIGHT;
 
 SceneManager::SceneManager() {
-	actualLevel = 0;
+	actualLevel = 2;
 	areEnemiesAbleToMove = false;
 
 	srand(time(0));

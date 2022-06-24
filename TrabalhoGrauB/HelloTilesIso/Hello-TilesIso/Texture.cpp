@@ -59,9 +59,7 @@ void Texture::setIAnims(int iAnims) {
 }
 
 void Texture::setIFrame() {
-	std::cout << "Anest no set: " << iFrame << std::endl;
 	iFrame = previousIFrame;
-	std::cout << "Depois no set: " << iFrame << std::endl;
 }
 
 int Texture::load(std::string path) {
