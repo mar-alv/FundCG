@@ -143,7 +143,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Enemy.cpp" />
-    <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="Origem.cpp" />
@@ -162,7 +161,6 @@
     <ClInclude Include="ConstantsPlayer.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="EnemyGridDirectionsEnum.h" />
-    <ClInclude Include="GameManager.h" />
     <ClInclude Include="GridDirectionsEnum.h" />
     <ClInclude Include="GridTypeEnum.h" />
     <ClInclude Include="Level.h" />

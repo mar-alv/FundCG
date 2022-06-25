@@ -100,7 +100,6 @@ void Level::renderTiles() {
 			getGrid()[i][j].render(model);
 		}
 	}
-
 }
 
 void Level::renderPlants() {
@@ -154,7 +153,6 @@ void Level::makeEnemiesMoveOrAttack() {
 		}
 	}
 }
-
 
 bool Level::checkIfPlayerWon() {
 	int farmedPlantsCounter = 0;
